@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Trivia Francisco Tau - Mejorada</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <style>
+    /* Global CSS Variables */
+    :root {
+      --color-primario-verde: #4CAF50;
+      --color-primario-verde-claro: #66bb6a;
+      --color-primario-verde-oscuro: #388E3C;
+      --color-secundario-azul: #2196f3;
+      --color-secundario-azul-claro: #42a5f5;
+      --color-secundario-azul-oscuro: #1976D2;
+      --color-error-rojo: #e53935;
+      --color-error-rojo-claro: #ef5350;
+      --color-texto-oscuro: #333;
+      --color-texto-blanco: #fff;
+      --color-fondo-overlay: rgba(255, 255, 255, 0.85); /* Slightly increased opacity for better contrast */
+
+      --radio-borde-general: 8px;
+      --radio-borde-modal: 12px;
+      --radio-borde-modal-grande: 15px;
+
+      --padding-boton: 12px 25px;
+      --padding-modal: 30px;
+      --padding-modal-grande: 35px 30px;
+
+      --sombra-elemento: 0 4px 10px rgba(0, 0, 0, 0.15), 0 2px 5px rgba(0, 0, 0, 0.1);
+      --sombra-elemento-hover: 0 6px 12px rgba(0, 0, 0, 0.2);
+      --sombra-modal: 0 15px 40px rgba(0, 0, 0, 0.2), 0 6px 20px rgba(0, 0, 0, 0.15);
+      --sombra-modal-hover: 0 8px 20px rgba(0,0,0,0.25);
+
+      --fuente-principal: Arial, sans-serif;
+      --tamano-fuente-normal: 16px;
+      --tamano-fuente-boton: 17px;
+      --tamano-fuente-titulo-modal: 1.8em; /* Adjusted for h2 in modals */
+    }
+
+    /* General styles for the page body */
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: var(--fuente-principal);
+      font-size: var(--tamano-fuente-normal);
+      background-image: url('https://placehold.co/1920x1080/4CAF50/FFFFFF?text=Fondo+de+Parque'); /* Placeholder for background image */
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+    }
+
+    #map {
+      height: 100vh;
+      width: 100%;
+    }
+
+    /* Base styles for all modal windows */
+    .modal-base {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: var(--padding-modal);
+      border-radius: var(--radio-borde-modal);
+      z-index: 1000;
+      width: 90vw;
+      max-width: 450px;
+      text-align: center;
+      border: 1px solid rgba(0, 0, 0, 0.1); /* Subtle border */
+      box-shadow: var(--sombra-modal);
+      display: none; /* Hidden by default */
+      animation: fadeIn 0.5s ease-out;
+
+      /* Background with image and overlay for readability */
+      background: linear-gradient(var(--color-fondo-overlay), var(--color-fondo-overlay)), url('https://placehold.co/450x300/2196f3/FFFFFF?text=Fondo+Ventanas'); /* Placeholder for window background image */
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    .modal-base.mostrar {
+      display: block;
+    }
+
+    .modal-base h2 {
+      font-size: var(--tamano-fuente-titulo-modal);
+      color: var(--color-texto-oscuro);
+      margin-bottom: 20px;
+      font-weight: bold;
+      text-shadow: 0 0 8px var(--color-texto-blanco);
+    }
+
+    .modal-base p {
+      color: var(--color-texto-oscuro);
+      text-shadow: 0 0 8px var(--color-texto-blanco);
+      font-weight: bold; /* Maintained from original style */
+      margin-bottom: 15px;
+      line-height: 1.6;
+    }
+
+    /* Styles for general buttons */
+    button, .button-style { /* .button-style for elements that are not buttons but should look like one */
+      margin: 10px 5px; /* Margin adjustment */
+      padding: var(--padding-boton);
+      font-size: var(--tamano-fuente-boton);
+      border-radius: var(--radio-borde-general);
+      border: 1px solid rgba(0, 0, 0, 0.2); /* More subtle border */
+      background: linear-gradient(135deg, var(--color-primario-verde-claro) 0%, var(--color-primario-verde) 100%);
+      color: var(--color-texto-blanco);
+      cursor: pointer;
+      box-shadow: var(--sombra-elemento);
+      transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease; /* Added border-color to transition */
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-decoration: none; /* For .button-style if it's an <a> */
+      display: inline-block; /* For .button-style if it's an <a> */
+      outline: none; /* Remove default outline */
+    }
+
+    button:hover, .button-style:hover {
+      background: linear-gradient(135deg, var(--color-primario-verde) 0%, var(--color-primario-verde-oscuro) 100%);
+      transform: translateY(-2px);
+      box-shadow: var(--sombra-elemento-hover);
+    }
+
+    /* Styles for focus and active states (keyboard navigation/click feedback) */
+    button:focus-visible,
+    button:focus,
+    button:active,
+    .button-style:focus-visible,
+    .button-style:focus,
+    .button-style:active {
+      transform: translateY(0);
+      border: 3px solid var(--color-secundario-azul-claro); /* Thicker blue border */
+      box-shadow: 0 0 0 2px var(--color-secundario-azul-claro), /* Blue outline effect (slightly smaller to complement border) */
+                  0 3px 8px rgba(0, 0, 0, 0.25); /* Original shadow */
+    }
+
+    /* Style for buttons that should always have the blue border */
+    .age-selection-button { /* New class for age selection buttons */
+      border: 3px solid var(--color-secundario-azul-claro) !important; /* Force blue border */
+      box-shadow: 0 0 0 2px var(--color-secundario-azul-claro), /* Blue outline effect */
+                  var(--sombra-elemento) !important; /* Keep original shadow */
+    }
+
+    /* Fixed buttons */
+    #botones-fijos {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 9999; /* Over the map but below highest priority modals */
+      display: flex; /* Use flexbox for layout */
+      flex-direction: column; /* Stack vertically */
+      gap: 5px; /* Space between buttons */
+    }
+    #botones-fijos button {
+      display: flex; /* Align icon and text */
+      align-items: center;
+      justify-content: center;
+      padding: 10px 15px; /* Adjust padding for icons */
+    }
+    #botones-fijos button svg {
+      width: 20px; /* Icon size */
+      height: 20px;
+      margin-right: 8px; /* Space between icon and text */
+      fill: var(--color-texto-blanco); /* Icon color */
+    }
+    #botones-fijos button span {
+      display: none; /* Hide text by default on small screens */
+    }
+
+    /* Progress panel */
+    #panel-progreso {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      width: 300px;
+      background: var(--color-fondo-overlay);
+      border: 1px solid rgba(0,0,0,0.2);
+      border-radius: var(--radio-borde-general);
+      padding: 10px;
+      z-index: 9999;
+      box-shadow: var(--sombra-elemento);
+      font-size: 14px;
+      color: var(--color-texto-oscuro);
+    }
+    #barra-progreso {
+      width: 100%;
+      height: 20px;
+      background-color: #e0e0e0;
+      border-radius: var(--radio-borde-general);
+      overflow: hidden;
+      margin-bottom: 5px;
+    }
+    #progreso-porcentaje {
+      height: 100%;
+      width: 0%;
+      background-color: var(--color-primario-verde);
+      transition: width 0.5s ease;
+    }
+
+    /* Specific Final Window */
+    #ventana-final { /* Inherits from .modal-base but with adjustments */
+      max-width: 480px;
+      padding: var(--padding-modal-grande);
+      border-radius: var(--radio-borde-modal-grande);
+      background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); /* Specific soft green */
+      z-index: 10001; /* Above other modals */
+    }
+    #ventana-final h2 {
+      color: var(--color-primario-verde-oscuro); /* Specific color for final title */
+    }
+    #ventana-final button { /* Specific close final button */
+      background: linear-gradient(135deg, var(--color-secundario-azul-claro) 0%, var(--color-secundario-azul) 100%);
+    }
+    #ventana-final button:hover {
+      background: linear-gradient(135deg, var(--color-secundario-azul) 0%, var(--color-secundario-azul-oscuro) 100%);
+    }
+
+    /* Styles for the custom modal created by JS */
+    .custom-js-modal {
+        position: fixed; /* Use fixed so it's always visible in viewport */
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: var(--color-texto-blanco); /* Solid white background */
+        padding: var(--padding-modal);
+        border-radius: var(--radio-borde-modal);
+        box-shadow: var(--sombra-modal);
+        z-index: 10005; /* High priority */
+        text-align: center;
+        max-width: 380px; /* Adjusted width */
+        width: 85vw;
+        color: var(--color-texto-oscuro);
+    }
+    .custom-js-modal h3 { /* Title for JS modal */
+        font-size: 1.5em;
+        color: var(--color-texto-oscuro);
+        margin-bottom: 15px;
+        font-weight: bold;
+    }
+    .custom-js-modal p { /* Message for JS modal */
+        font-size: 1.1em;
+        margin-bottom: 25px;
+        line-height: 1.5;
+        text-shadow: none; /* No shadow for better readability on white background */
+        font-weight: normal; /* Normal weight for paragraph */
+    }
+    .custom-js-modal .modal-botones button {
+        margin: 8px;
+        padding: 10px 20px; /* Specific padding */
+    }
+    /* Specific confirmation/error buttons for JS modal */
+    .custom-js-modal .boton-confirmacion {
+        background: linear-gradient(135deg, var(--color-primario-verde-claro) 0%, var(--color-primario-verde) 100%);
+    }
+    .custom-js-modal .boton-confirmacion:hover {
+        background: linear-gradient(135deg, var(--color-primario-verde) 0%, var(--color-primario-verde-oscuro) 100%);
+    }
+    .custom-js-modal .boton-negacion {
+        background: linear-gradient(135deg, var(--color-error-rojo-claro) 0%, var(--color-error-rojo) 100%);
+    }
+    .custom-js-modal .boton-negacion:hover {
+        background: linear-gradient(135deg, var(--color-error-rojo) 0%, #d32f2f 100%); /* Darker red */
+    }
+
+    /* Style for the explanation text after answering a question */
+    #explicacion-respuesta {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: rgba(240, 240, 240, 0.9);
+      border-radius: var(--radio-borde-general);
+      text-align: left;
+      font-size: 0.95em;
+      color: var(--color-texto-oscuro);
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+      display: none; /* Hidden by default */
+    }
+    #explicacion-respuesta.mostrar {
+      display: block;
+      animation: fadeIn 0.5s ease-out;
+    }
+
+
+    /* Animaciones */
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: translate(-50%, -55%); }
+      100% { opacity: 1; transform: translate(-50%, -50%); }
+    }
+    @keyframes aparecerVentana { /* Maintained in case it's used specifically */
+      0% { opacity: 0; transform: translate(-50%, -60%); }
+      100% { opacity: 1; transform: translate(-50%, -50%); }
+    }
+
+    /* Media queries for responsive design */
+    @media (max-width: 600px) {
+      .modal-base, #ventana-final, .custom-js-modal {
+        width: 95vw; /* Wider modals on small screens */
+        max-width: 95vw;
+      }
+      .modal-base h2 { font-size: 1.5em; }
+      .custom-js-modal h3 { font-size: 1.3em; }
+      .custom-js-modal p { font-size: 1em; }
+
+      #panel-progreso {
+        width: calc(100% - 20px); /* Occupy almost full width */
+        left: 10px;
+        transform: translateX(0); /* No centering, as it's full width */
+        bottom: 10px;
+        font-size: 13px;
+      }
+      #botones-fijos {
+        top: 10px;
+        right: 10px;
+        display: flex;
+        flex-direction: column; /* Stacked vertically */
+        gap: 6px; /* Space between buttons */
+        align-items: flex-end; /* Align to the right */
+      }
+      #botones-fijos button {
+        margin-bottom: 0; /* Remove bottom margin if there's a gap */
+        padding: 8px 12px;
+        font-size: 14px;
+      }
+      #botones-fijos button span {
+        display: inline; /* Show text on small screens */
+      }
+    }
+    /* Media query for larger screens to show text next to icons */
+    @media (min-width: 601px) {
+      #botones-fijos button span {
+        display: inline; /* Show text on larger screens */
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div id="map"></div>
+
+<div id="ventana-bienvenida" class="modal-base" role="dialog" aria-modal="true" aria-labelledby="titulo-bienvenida">
+  <h2 id="titulo-bienvenida">¡Bienvenido a la trivia del "Parque Natural Francisco Tau"!</h2>
+  <p>¿En qué rango de edad te encontrás?</p>
+  <div id="botones-edad">
+    <button data-edad="menor10" class="age-selection-button">Menor a 10 años</button>
+    <button data-edad="10a15" class="age-selection-button">Entre 10 y 15 años</button>
+    <button data-edad="mayor15" class="age-selection-button">Mayor a 15 años</button>
+  </div>
+</div>
+
+<div id="ventana-instrucciones" class="modal-base" role="dialog" aria-modal="true" aria-labelledby="titulo-instrucciones">
+    <h2 id="titulo-instrucciones">¡Bienvenido a la trivia del Parque Natural Francisco Tau!</h2>
+    <p>En esta trivia aprenderemos diferentes aspectos naturales, culturales y sociales de nuestro parque natural.</p>
+    <p>Para poder realizar la experiencia de la forma más óptima debemos realizar dos cosas:</p>
+    <p>En primer lugar, activar la ubicación y en segundo, activar el sonido.</p>
+    <p>¡Esperamos que disfrutes este viaje por el parque!</p>
+    <button id="boton-comenzar-instrucciones">¡Comencemos!</button>
+</div>
+
+<div id="pregunta" class="modal-base" role="dialog" aria-modal="true" aria-labelledby="texto-pregunta">
+  <p id="texto-pregunta"></p>
+  <div id="opciones"></div>
+  <div id="explicacion-respuesta"></div> </div>
+
+<div id="botones-fijos" style="display: none;">
+  <button id="boton-reiniciar" aria-label="Reiniciar Trivia">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>
+    <span>Reiniciar</span>
+  </button>
+  <button id="boton-mostrar-ubicacion" aria-label="Mostrar mi ubicación">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+    <span>Mi ubicación</span>
+  </button>
+  <button id="boton-toggle-sonido" aria-label="Activar/Desactivar Sonido">
+    <svg id="icon-sound-on" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+    <svg id="icon-sound-off" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="display:none;"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .9-.23 1.74-.63 2.5L20.5 17c.92-1.23 1.5-2.77 1.5-4.5 0-4.01-2.99-7.11-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27l9 9V19c0 1.38-1.12 2.5-2.5 2.5S6 20.38 6 19v-1H2v1c0 2.21 1.79 4 4 4s4-1.79 4-4V7.27L1.27 0 0 1.27l3 3zm7.53 10.73L7.27 9H3v6h3.73l4.5 4.5c.66.33 1.41.5 2.22.5 2.05 0 3.8-.96 4.99-2.4l-2.72-2.72z"/></svg>
+    <span>Sonido</span>
+  </button>
+</div>
+
+<div id="panel-progreso" style="display: none;">
+  <div id="barra-progreso">
+    <div id="progreso-porcentaje"></div>
+  </div>
+  <div id="progreso-texto">0 / 0 preguntas respondidas - Puntaje: 0 / 0</div>
+</div>
+
+<div id="ventana-final" class="modal-base" role="dialog" aria-modal="true" aria-labelledby="titulo-final">
+  <h2 id="titulo-final">🎉 ¡Felicitaciones!</h2>
+  <p>Has finalizado la trivia del <strong>Parque Natural Francisco Tau</strong>.</p>
+  <p id="mensaje-final"></p>
+  <p>Tu puntaje final es: <span id="puntaje-final"></span></p>
+  <button id="boton-cerrar-final">Cerrar</button>
+</div>
+
+<audio id="sonido-correcto" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg" preload="auto"></audio>
+<audio id="sonido-incorrecto" src="https://actions.google.com/sounds/v1/cartoon/boing.ogg" preload="auto"></audio>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script>
+  // --- Global Variables and Configuration ---
+  // Questions data loaded from a simulated JSON structure
+  const preguntasData = {
+    "menor10": [
+      { "coords": [-34.70354, -58.29256], "texto": "¿Qué árbol muy viejo puedes tocar en el parque? (Fácil)", "opciones": ["Algarrobo", "Pino", "Eucalipto"], "correcta": 0, "explicacion": "El Algarrobo es un árbol emblemático del parque, conocido por su longevidad y su importancia ecológica en la región." },
+      { "coords": [-34.70273, -58.29226], "texto": "¿Qué representa la estatua que está en el parque? (Fácil)", "opciones": ["Un gaucho", "Un soldado", "Un indio"], "correcta": 0, "explicacion": "La estatua rinde homenaje al gaucho argentino, figura central de la cultura y la historia rural de nuestro país." },
+      { "coords": [-34.70198,-58.29264], "texto": "¿Qué animales puedes ver en la zona de aves? (Fácil)", "opciones": ["Aves", "Leones", "Elefantes"], "correcta": 0, "explicacion": "La zona de avistaje está dedicada a la observación de diversas especies de aves autóctonas que habitan el parque." },
+      { "coords": [-34.70172, -58.29371], "texto": "¿Qué se está plantando en el área de reforestación? (Fácil)", "opciones": ["Árboles autóctonos", "Palmeras", "Pinos"], "correcta": 0, "explicacion": "En el área de reforestación se plantan árboles autóctonos para restaurar el ecosistema original del parque." },
+      { "coords": [-34.70141, -58.29481], "texto": "¿Qué puedes aprender en el Centro de Interpretación Ambiental? (Fácil)", "opciones": ["Sobre plantas y animales", "Sobre deportes", "Sobre música"], "correcta": 0, "explicacion": "El Centro de Interpretación Ambiental ofrece información y actividades educativas sobre la flora y fauna local, y la importancia de su conservación." }
+    ],
+    "10a15": [
+      { "coords": [-34.70354, -58.29256], "texto": "¿Qué tipo de árbol centenario destaca en el parque? (Intermedio)", "opciones": ["Algarrobo", "Pino", "Eucalipto"], "correcta": 0, "explicacion": "El Algarrobo es un árbol centenario característico del Espinal, una ecorregión importante de Argentina." },
+      { "coords": [-34.70273, -58.29226], "texto": "¿A quién rinde homenaje la estatua ubicada en el parque? (Intermedio)", "opciones": ["Al gaucho argentino", "A un soldado", "A un músico"], "correcta": 0, "explicacion": "La escultura es un tributo al gaucho, figura icónica de la identidad cultural y la historia de las llanuras argentinas." },
+      { "coords": [-34.70198,-58.29264], "texto": "¿Qué tipo de fauna puedes observar en la zona de avistaje del parque? (Intermedio)", "opciones": ["Aves autóctonas", "Felinos grandes", "Mamíferos marinos"], "correcta": 0, "explicacion": "En esta zona se pueden observar diversas especies de aves autóctonas, vitales para el equilibrio del ecosistema local." },
+      { "coords": [-34.70172, -58.29371], "texto": "¿Cuál es el objetivo del área de reforestación? (Intermedio)", "opciones": ["Restaurar especies autóctonas", "Crear jardines exóticos", "Construir senderos"], "correcta": 0, "explicacion": "El objetivo principal es la restauración del ecosistema nativo mediante la reforestación con especies de árboles y arbustos propios de la región." },
+      { "coords": [-34.70141, -58.29481], "texto": "¿Qué actividades realiza el Centro de Interpretación Ambiental? (Intermedio)", "opciones": ["Educación ambiental e investigación", "Competencias deportivas", "Conciertos musicales"], "correcta": 0, "explicacion": "El Centro se dedica a la educación ambiental, promoviendo la conciencia sobre la biodiversidad y la investigación para la conservación del parque." }
+    ],
+    "mayor15": [
+      { "coords": [-34.70354, -58.29256], "texto": "En términos de botánica histórica, ¿qué ejemplar arbóreo centenario predomina en el parque? (Difícil)", "opciones": ["Algarrobo", "Pino", "Eucalipto"], "correcta": 0, "explicacion": "El Algarrobo (Prosopis alba/nigra) es un árbol nativo de gran valor histórico y ecológico en la región del Espinal, conocido por su resistencia y longevidad." },
+      { "coords": [-34.70273, -58.29226], "texto": "¿Cuál es el significado cultural de la escultura ubicada en el parque? (Difícil)", "opciones": ["Homenaje al gaucho argentino", "Representación de un soldado", "Tributo a un músico"], "correcta": 0, "explicacion": "La escultura es un monumento al gaucho, símbolo de la identidad nacional y la cultura rural argentina, representando la conexión del hombre con la tierra." },
+      { "coords": [-34.70198,-58.29264], "texto": "Desde un punto de vista ecológico, ¿qué tipo de fauna destaca en el avistaje ubicado en el parque? (Difícil)", "opciones": ["Aves autóctonas del Espinal", "Felinos exóticos", "Mamíferos marinos"], "correcta": 0, "explicacion": "La zona de avistaje está diseñada para observar la avifauna autóctona del bioma del Espinal, que incluye especies endémicas y migratorias esenciales para la salud del ecosistema." },
+      { "coords": [-34.70172, -58.29371], "texto": "¿Cuál es la importancia ecológica del área de reforestación en el parque? (Difícil)", "opciones": ["Restaurar el ecosistema original con especies autóctonas", "Crear jardines ornamentales", "Construcción de áreas recreativas"], "correcta": 0, "explicacion": "El área de reforestación es crucial para la restauración ecológica, promoviendo la biodiversidad y la resiliencia del ecosistema al reintroducir especies nativas que han sido desplazadas." },
+      { "coords": [-34.70141, -58.29481], "texto": "Analizando la función del Centro de Interpretación Ambiental, ¿qué rol cumple en la conservación del parque? (Difícil)", "opciones": ["Fomenta la educación ambiental y la investigación científica", "Organiza eventos deportivos", "Promueve festivales culturales"], "correcta": 0, "explicacion": "El Centro de Interpretación Ambiental actúa como un pilar en la conservación, facilitando la investigación científica, la educación pública y la sensibilización sobre la importancia de proteger el patrimonio natural del parque." }
+    ]
+  };
+
+  let edadSeleccionada = null;
+  let progreso = { actual: 0, puntaje: 0, intentos: {} };
+  let mapa;
+  let marcadorUbicacion;
+  let ubicacionWatchId = null;
+  const ACTIVATION_RADIUS = 30; // Meters
+  const preguntaMarkers = [];
+  let currentQuestionRadiusCircle = null;
+  let sonidoActivado = true; // New variable for sound control
+
+  // DOM Elements (cache)
+  const ventanaBienvenida = document.getElementById("ventana-bienvenida");
+  const ventanaInstrucciones = document.getElementById("ventana-instrucciones");
+  const ventanaPregunta = document.getElementById("pregunta");
+  const ventanaFinal = document.getElementById("ventana-final");
+  const panelProgreso = document.getElementById("panel-progreso");
+  const botonesFijos = document.getElementById("botones-fijos");
+  const sonidoCorrecto = document.getElementById("sonido-correcto");
+  const sonidoIncorrecto = document.getElementById("sonido-incorrecto");
+  const botonToggleSonido = document.getElementById("boton-toggle-sonido");
+  const iconSoundOn = document.getElementById("icon-sound-on");
+  const iconSoundOff = document.getElementById("icon-sound-off");
+  const explicacionRespuestaDiv = document.getElementById("explicacion-respuesta");
+
+  // --- Helper Functions ---
+
+  /**
+   * Plays a sound if sound is activated.
+   * @param {HTMLAudioElement} audio A reference to the audio element.
+   */
+  function reproducirSonido(audio) {
+    if (sonidoActivado) {
+      audio.currentTime = 0; // Rewind to start
+      audio.play();
+    }
+  }
+
+  /**
+   * Creates and displays a custom modal.
+   * @param {string} titulo The modal title.
+   * @param {string} mensaje The main modal message.
+   * @param {Array<Object>} botonesConfig Array of objects to configure buttons.
+   * Ej: [{ texto: 'OK', clase: 'boton-confirmacion', callback: () => {} }]
+   */
+  function crearModalPersonalizado(titulo, mensaje, botonesConfig) {
+    const modalExistente = document.querySelector('.custom-js-modal');
+    if (modalExistente) {
+        document.body.removeChild(modalExistente); // Remove previous modal if exists
+    }
+
+    const modal = document.createElement('div');
+    modal.className = 'custom-js-modal';
+    modal.setAttribute('role', 'alertdialog'); // More specific than 'dialog' for messages
+    modal.setAttribute('aria-modal', 'true');
+
+    const modalTitulo = document.createElement('h3');
+    modalTitulo.textContent = titulo;
+    modal.appendChild(modalTitulo);
+    // Assign ID to title for aria-labelledby
+    const tituloId = 'custom-modal-titulo-' + Date.now();
+    modalTitulo.id = tituloId;
+    modal.setAttribute('aria-labelledby', tituloId);
+
+
+    const modalMensaje = document.createElement('p');
+    modalMensaje.innerHTML = mensaje; // Use innerHTML if message can have simple HTML like <strong>
+    modal.appendChild(modalMensaje);
+
+    const botonesDiv = document.createElement('div');
+    botonesDiv.className = 'modal-botones';
+
+    botonesConfig.forEach(btnConfig => {
+      const button = document.createElement('button');
+      button.textContent = btnConfig.texto;
+      if (btnConfig.clase) {
+        button.classList.add(...btnConfig.clase.split(' ')); // Allows multiple classes
+      }
+      button.addEventListener('click', () => {
+        if (btnConfig.callback) {
+          btnConfig.callback();
+        }
+        document.body.removeChild(modal);
+      });
+      botonesDiv.appendChild(button);
+    });
+
+    modal.appendChild(botonesDiv);
+    document.body.appendChild(modal);
+    // Focus the first button of the modal for accessibility
+    if (botonesDiv.firstChild && typeof botonesDiv.firstChild.focus === 'function') {
+        botonesDiv.firstChild.focus();
+    }
+  }
+
+  function obtenerPreguntas() {
+    return preguntasData[edadSeleccionada] || [];
+  }
+
+  // --- Main Game Logic ---
+
+  function seleccionarEdad(rango) {
+    edadSeleccionada = rango;
+    
+    ventanaBienvenida.classList.remove("mostrar");
+    iniciarMapa();
+    ventanaInstrucciones.classList.add("mostrar");
+    // Focus the start button in instructions
+    document.getElementById("boton-comenzar-instrucciones").focus();
+  }
+
+  function cerrarVentanaInstrucciones() {
+    ventanaInstrucciones.classList.remove("mostrar");
+    if (!ubicacionWatchId) {
+        iniciarSeguimientoUbicacion();
+    }
+  }
+
+  function iniciarMapa() {
+    const primerasPreguntas = obtenerPreguntas();
+    if (primerasPreguntas.length === 0) {
+        crearModalPersonalizado("Error", "No hay preguntas para el rango de edad seleccionado.", [{texto: "Cerrar"}]);
+        return;
+    }
+    mapa = L.map('map').setView(primerasPreguntas[0].coords, 15);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(mapa);
+
+    // Clear previous markers if map is restarted
+    preguntaMarkers.forEach(marker => marker.remove());
+    preguntaMarkers.length = 0; // Empty array
+
+    primerasPreguntas.forEach((p, index) => {
+      const marker = L.marker(p.coords, { opacity: 0.5, interactive: false });
+      p.marker = marker;
+      preguntaMarkers.push(marker);
+    });
+    
+    actualizarPanelProgreso();
+    botonesFijos.style.display = "flex"; /* Use flex for fixed buttons */
+    panelProgreso.style.display = "block";
+  }
+  
+  function actualizarVisibilidadMarcadorActual() {
+    if (progreso.actual < obtenerPreguntas().length) {
+        const preguntaActual = obtenerPreguntas()[progreso.actual];
+        if (preguntaActual.marker && !mapa.hasLayer(preguntaActual.marker)) {
+            preguntaActual.marker.setOpacity(1).addTo(mapa);
+        }
+        // Update radius circle for the current question
+        if (currentQuestionRadiusCircle) {
+            mapa.removeLayer(currentQuestionRadiusCircle);
+        }
+        currentQuestionRadiusCircle = L.circle(L.latLng(preguntaActual.coords), {
+            color: 'blue', fillColor: '#0000ff', fillOpacity: 0.2, radius: ACTIVATION_RADIUS
+        }).addTo(mapa);
+    } else if (currentQuestionRadiusCircle) { // If no more questions, remove the circle
+        mapa.removeLayer(currentQuestionRadiusCircle);
+        currentQuestionRadiusCircle = null;
+    }
+  }
+
+
+  function mostrarPregunta(index) {
+    if (index !== progreso.actual) return;
+
+    const p = obtenerPreguntas()[index];
+    const preguntaId = `pregunta_${index}`;
+    progreso.intentos[preguntaId] = progreso.intentos[preguntaId] || 0;
+
+    document.getElementById("texto-pregunta").textContent = p.texto;
+    const opcionesDiv = document.getElementById("opciones");
+    opcionesDiv.innerHTML = "";
+    explicacionRespuestaDiv.innerHTML = ""; // Clear previous explanation
+    explicacionRespuestaDiv.classList.remove('mostrar'); // Hide explanation
+
+    p.opciones.forEach((opcion, i) => {
+      const btn = document.createElement("button");
+      btn.textContent = opcion;
+      btn.addEventListener('click', () => {
+        if (i === p.correcta) {
+          reproducirSonido(sonidoCorrecto);
+          const puntosGanados = Math.max(0, 3 - progreso.intentos[preguntaId]);
+          progreso.puntaje += puntosGanados;
+          
+          // Show explanation for correct answer
+          explicacionRespuestaDiv.innerHTML = `<strong>¡Correcto!</strong> ${p.explicacion}`;
+          explicacionRespuestaDiv.classList.add('mostrar');
+
+          // Add a small delay before proceeding to allow reading explanation
+          setTimeout(() => {
+            ventanaPregunta.classList.remove("mostrar");
+            p.marker.setOpacity(0.4); // Answered marker
+            p.marker.options.interactive = false; // No longer interactive
+
+            if (currentQuestionRadiusCircle) { // Remove answered question circle
+              mapa.removeLayer(currentQuestionRadiusCircle);
+              currentQuestionRadiusCircle = null;
+            }
+
+            progreso.actual++;
+            actualizarPanelProgreso();
+            actualizarVisibilidadMarcadorActual(); // Show the next marker and its circle
+
+            if (progreso.actual >= obtenerPreguntas().length) {
+              mostrarVentanaFinal();
+            }
+          }, 2000); // 2 second delay
+          
+        } else {
+          reproducirSonido(sonidoIncorrecto);
+          progreso.intentos[preguntaId]++;
+          explicacionRespuestaDiv.innerHTML = `<strong>¡Incorrecto!</strong> ${p.explicacion}`;
+          explicacionRespuestaDiv.classList.add('mostrar');
+
+          crearModalPersonalizado(
+            "Respuesta Incorrecta", 
+            "¡Ups! Esa no es la respuesta. Intentá de nuevo.",
+            [{ texto: "Entendido", clase: "boton-negacion", callback: () => {
+                explicacionRespuestaDiv.classList.remove('mostrar'); // Hide explanation when modal closes
+            } }]
+          );
+        }
+      });
+      opcionesDiv.appendChild(btn);
+    });
+    ventanaPregunta.classList.add("mostrar");
+    // Focus the first answer option
+    if (opcionesDiv.firstChild && typeof opcionesDiv.firstChild.focus === 'function') {
+        opcionesDiv.firstChild.focus();
+    }
+  }
+
+  function iniciarSeguimientoUbicacion() {
+    if (!navigator.geolocation) {
+      crearModalPersonalizado("Error de Geolocalización", "La geolocalización no está soportada por tu navegador.", [{texto: "Cerrar"}]);
+      return;
+    }
+
+    // If already tracking, do not start another.
+    if (ubicacionWatchId !== null) {
+        if (marcadorUbicacion) mapa.setView(marcadorUbicacion.getLatLng(), 17);
+        return;
+    }
+
+    ubicacionWatchId = navigator.geolocation.watchPosition(
+      (pos) => {
+        const userLocation = L.latLng(pos.coords.latitude, pos.coords.longitude);
+
+        if (marcadorUbicacion) {
+          marcadorUbicacion.setLatLng(userLocation);
+        } else {
+          marcadorUbicacion = L.marker(userLocation, {
+            icon: L.divIcon({className: 'leaflet-div-icon', html: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#E53935"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>', iconSize: [30,30], iconAnchor: [15,30]}) // Custom SVG for user location
+          }).addTo(mapa).bindPopup("¡Estás aquí!");
+          mapa.setView(userLocation, 17); // Center on first detection
+        }
+        
+        // Question activation logic
+        if (progreso.actual < obtenerPreguntas().length) {
+          const preguntaActual = obtenerPreguntas()[progreso.actual];
+          const preguntaLocation = L.latLng(preguntaActual.coords);
+          const distance = userLocation.distanceTo(preguntaLocation);
+
+          // Show and activate the current question marker if not already
+          if (preguntaActual.marker && !mapa.hasLayer(preguntaActual.marker)) {
+              preguntaActual.marker.setOpacity(1).addTo(mapa);
+          }
+          // Update or create radius circle for the current question
+          actualizarVisibilidadMarcadorActual();
+
+
+          if (distance <= ACTIVATION_RADIUS) {
+            if (!preguntaActual.marker.options.interactive) {
+              preguntaActual.marker.options.interactive = true;
+              preguntaActual.marker.setOpacity(1); // Ensure full opacity
+              preguntaActual.marker.off('click').on('click', () => mostrarPregunta(progreso.actual));
+              // You could add a tooltip or a visual pulse to the marker here
+              preguntaActual.marker.bindTooltip("¡Pregunta disponible! Haz clic aquí.", {permanent: false, direction: 'top'}).openTooltip();
+            }
+          } else {
+            if (preguntaActual.marker.options.interactive) {
+              preguntaActual.marker.options.interactive = false;
+              preguntaActual.marker.closeTooltip(); // Close tooltip if open
+            }
+          }
+        }
+      },
+      (err) => {
+        console.error(`ERROR(${err.code}): ${err.message}`);
+        crearModalPersonalizado(
+            "Error de Geolocalización", 
+            `No se pudo obtener tu ubicación: ${err.message}. Verifica los permisos.`,
+            [{texto: "Cerrar"}]
+        );
+        if (ubicacionWatchId !== null) {
+          navigator.geolocation.clearWatch(ubicacionWatchId);
+          ubicacionWatchId = null;
+        }
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+    );
+    // Once watch is started, show the first marker and circle
+    actualizarVisibilidadMarcadorActual();
+  }
+
+
+  function actualizarPanelProgreso() {
+    const totalPreguntas = obtenerPreguntas().length;
+    const porcentaje = totalPreguntas > 0 ? Math.round((progreso.actual / totalPreguntas) * 100) : 0;
+    document.getElementById("progreso-porcentaje").style.width = porcentaje + "%";
+    document.getElementById("progreso-texto").textContent = 
+        `${progreso.actual} / ${totalPreguntas} preguntas respondidas - Puntaje: ${progreso.puntaje} / ${totalPreguntas * 3}`;
+  }
+
+  function reiniciarTrivia() {
+    crearModalPersonalizado(
+      "Reiniciar Trivia",
+      "¿Estás seguro que querés reiniciar tu progreso? Se perderá todo.",
+      [
+        { texto: "Sí, reiniciar", clase: "boton-negacion", callback: () => location.reload() },
+        { texto: "No, continuar", clase: "boton-confirmacion" }
+      ]
+    );
+  }
+
+  function mostrarVentanaFinal() {
+    const totalPreguntas = obtenerPreguntas().length;
+    document.getElementById("puntaje-final").textContent = `${progreso.puntaje} / ${totalPreguntas * 3}`;
+    const porcentajeScore = totalPreguntas > 0 ? progreso.puntaje / (totalPreguntas * 3) : 0;
+    let mensaje = "";
+    if (porcentajeScore < 0.4) mensaje = "Debes estudiar más de la fauna y flora de nuestro parque. ¡Vuelve a intentarlo!";
+    else if (porcentajeScore <= 0.6) mensaje = "Tienes conocimientos básicos de nuestra flora y fauna. ¡Puedes esforzarte un poco más!";
+    else if (porcentajeScore <= 0.89) mensaje = "Tienes muy buenos conocimientos del parque. ¡Un poco más de estudio y lo aprenderás todo!";
+    else mensaje = "¡Eres un experto conocedor del Parque Francisco Tau!";
+    
+    document.getElementById("mensaje-final").textContent = mensaje;
+    ventanaFinal.classList.add("mostrar");
+    document.getElementById("boton-cerrar-final").focus(); // Focus close button
+
+    if (ubicacionWatchId !== null) {
+      navigator.geolocation.clearWatch(ubicacionWatchId);
+      ubicacionWatchId = null;
+    }
+    if (currentQuestionRadiusCircle) {
+      mapa.removeLayer(currentQuestionRadiusCircle);
+      currentQuestionRadiusCircle = null;
+    }
+  }
+
+  function cerrarVentanaFinal() {
+    ventanaFinal.classList.remove("mostrar");
+    // Optional: Redirect or show welcome again for another round
+    // ventanaBienvenida.classList.add("mostrar");
+    // progreso = { actual: 0, puntaje: 0, intentos: {} }; // Reset progress if you want to play again without reloading
+    // actualizarPanelProgreso();
+  }
+
+  function accionMostrarUbicacion() {
+    if (marcadorUbicacion && mapa.hasLayer(marcadorUbicacion)) {
+      mapa.setView(marcadorUbicacion.getLatLng(), 17); // Center on known location
+      marcadorUbicacion.openPopup();
+    } else if (!ubicacionWatchId) {
+      iniciarSeguimientoUbicacion();
+       crearModalPersonalizado("Ubicación", "Iniciando seguimiento de ubicación para mostrarte en el mapa.", [{texto:"OK"}]);
+    } else {
+      crearModalPersonalizado("Ubicación", "Esperando señal de GPS para mostrar tu ubicación...", [{texto:"OK"}]);
+    }
+  }
+
+  function toggleSonido() {
+    sonidoActivado = !sonidoActivado;
+    if (sonidoActivado) {
+      iconSoundOn.style.display = 'inline-block';
+      iconSoundOff.style.display = 'none';
+    } else {
+      iconSoundOn.style.display = 'none';
+      iconSoundOff.style.display = 'inline-block';
+    }
+    crearModalPersonalizado("Sonido", `Sonido ${sonidoActivado ? 'activado' : 'desactivado'}.`, [{texto: "OK"}]);
+  }
+
+  // --- Initialization and Event Listeners ---
+  document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM Content Loaded. Initializing app.');
+    // Assign events to age buttons
+    document.querySelectorAll('#botones-edad button').forEach(button => {
+      button.addEventListener('click', function() {
+        seleccionarEdad(this.dataset.edad);
+      });
+    });
+
+    // Events for other main buttons
+    document.getElementById('boton-comenzar-instrucciones').addEventListener('click', cerrarVentanaInstrucciones);
+    document.getElementById('boton-reiniciar').addEventListener('click', reiniciarTrivia);
+    document.getElementById('boton-mostrar-ubicacion').addEventListener('click', accionMostrarUbicacion);
+    document.getElementById('boton-cerrar-final').addEventListener('click', cerrarVentanaFinal);
+    botonToggleSonido.addEventListener('click', toggleSonido);
+    
+    // Show welcome window on load
+    console.log('Attempting to show welcome window.');
+    if (ventanaBienvenida) {
+        ventanaBienvenida.classList.add("mostrar");
+        console.log('Welcome window display style after adding class:', window.getComputedStyle(ventanaBienvenida).display);
+    } else {
+        console.error('Error: Element with ID "ventana-bienvenida" not found.');
+    }
+    
+    // Focus the first age button
+    const primerBotonEdad = document.querySelector('#botones-edad button');
+    if (primerBotonEdad) {
+        primerBotonEdad.focus();
+    }
+  });
+
+</script>
+
+</body>
+</html>
