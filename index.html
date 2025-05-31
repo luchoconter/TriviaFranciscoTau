@@ -429,7 +429,7 @@
   };
 
   let edadSeleccionada = null;
-  let progreso = { actual: 0, puntaje: 0, intentos: {} };
+  let progreso = { actual: 0, puntaje: 0, intentos: {} }; // `intentos` ahora también se usa para marcar si una pregunta ha sido activada
   let mapa;
   let marcadorUbicacion;
   let ubicacionWatchId = null;
@@ -551,6 +551,7 @@
         crearModalPersonalizado("Error", "No hay preguntas para el rango de edad seleccionado.", [{texto: "Cerrar"}]);
         return;
     }
+    // Inicializa el mapa centrado en la primera pregunta
     mapa = L.map('map').setView(primerasPreguntas[0].coords, 15);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap contributors'
@@ -561,6 +562,8 @@
     preguntaMarkers.length = 0; // Empty array
 
     primerasPreguntas.forEach((p, index) => {
+      // Los marcadores de preguntas se añaden inicialmente con opacidad baja y no interactivos
+      // Se harán visibles y se activarán automáticamente al entrar en el radio
       const marker = L.marker(p.coords, { opacity: 0.5, interactive: false });
       p.marker = marker;
       preguntaMarkers.push(marker);
@@ -574,17 +577,18 @@
   function actualizarVisibilidadMarcadorActual() {
     if (progreso.actual < obtenerPreguntas().length) {
         const preguntaActual = obtenerPreguntas()[progreso.actual];
+        // Asegura que el marcador de la pregunta actual sea visible y con opacidad completa
         if (preguntaActual.marker && !mapa.hasLayer(preguntaActual.marker)) {
             preguntaActual.marker.setOpacity(1).addTo(mapa);
         }
-        // Update radius circle for the current question
+        // Actualiza o crea el círculo de radio para la pregunta actual
         if (currentQuestionRadiusCircle) {
             mapa.removeLayer(currentQuestionRadiusCircle);
         }
         currentQuestionRadiusCircle = L.circle(L.latLng(preguntaActual.coords), {
             color: 'blue', fillColor: '#0000ff', fillOpacity: 0.2, radius: ACTIVATION_RADIUS
         }).addTo(mapa);
-    } else if (currentQuestionRadiusCircle) { // If no more questions, remove the circle
+    } else if (currentQuestionRadiusCircle) { // Si no hay más preguntas, remueve el círculo
         mapa.removeLayer(currentQuestionRadiusCircle);
         currentQuestionRadiusCircle = null;
     }
@@ -592,10 +596,14 @@
 
 
   function mostrarPregunta(index) {
-    if (index !== progreso.actual) return;
+    // Solo muestra la pregunta si es la actual y la ventana no está ya abierta
+    if (index !== progreso.actual || ventanaPregunta.classList.contains('mostrar')) {
+      return;
+    }
 
     const p = obtenerPreguntas()[index];
     const preguntaId = `pregunta_${index}`;
+    // Inicializa los intentos si la pregunta se activa por primera vez
     progreso.intentos[preguntaId] = progreso.intentos[preguntaId] || 0;
 
     document.getElementById("texto-pregunta").textContent = p.texto;
@@ -620,7 +628,8 @@
           // Add a small delay before proceeding to allow reading explanation
           setTimeout(() => {
             ventanaPregunta.classList.remove("mostrar");
-            p.marker.setOpacity(0.4); // Answered marker
+            // Marca el marcador como respondido (opacidad reducida)
+            p.marker.setOpacity(0.4); 
             p.marker.options.interactive = false; // No longer interactive
 
             if (currentQuestionRadiusCircle) { // Remove answered question circle
@@ -655,7 +664,7 @@
       opcionesDiv.appendChild(btn);
     });
     ventanaPregunta.classList.add("mostrar");
-    // Focus the first answer option
+    // Focus the first answer option for accessibility
     if (opcionesDiv.firstChild && typeof opcionesDiv.firstChild.focus === 'function') {
         opcionesDiv.firstChild.focus();
     }
@@ -667,7 +676,7 @@
       return;
     }
 
-    // If already tracking, do not start another.
+    // Si ya estamos rastreando la ubicación, no iniciar otro seguimiento.
     if (ubicacionWatchId !== null) {
         if (marcadorUbicacion) mapa.setView(marcadorUbicacion.getLatLng(), 17);
         return;
@@ -686,32 +695,54 @@
           mapa.setView(userLocation, 17); // Center on first detection
         }
         
-        // Question activation logic
+        // Lógica de activación de la pregunta
         if (progreso.actual < obtenerPreguntas().length) {
           const preguntaActual = obtenerPreguntas()[progreso.actual];
+          const preguntaId = `pregunta_${progreso.actual}`; // ID único para la pregunta actual
           const preguntaLocation = L.latLng(preguntaActual.coords);
           const distance = userLocation.distanceTo(preguntaLocation);
 
-          // Show and activate the current question marker if not already
+          // Asegurar que el marcador de la pregunta actual sea visible
           if (preguntaActual.marker && !mapa.hasLayer(preguntaActual.marker)) {
               preguntaActual.marker.setOpacity(1).addTo(mapa);
           }
-          // Update or create radius circle for the current question
+          // Actualizar o crear el círculo de radio para la pregunta actual
           actualizarVisibilidadMarcadorActual();
 
+          // Verificar si la pregunta ya ha sido activada/respondida en este intento
+          // Usamos `progreso.intentos[preguntaId] !== undefined` para saber si ya se ha "tocado" esta pregunta.
+          const preguntaYaActivada = (progreso.intentos[preguntaId] !== undefined); 
 
-          if (distance <= ACTIVATION_RADIUS) {
-            if (!preguntaActual.marker.options.interactive) {
-              preguntaActual.marker.options.interactive = true;
-              preguntaActual.marker.setOpacity(1); // Ensure full opacity
-              preguntaActual.marker.off('click').on('click', () => mostrarPregunta(progreso.actual));
-              // You could add a tooltip or a visual pulse to the marker here
-              preguntaActual.marker.bindTooltip("¡Pregunta disponible! Haz clic aquí.", {permanent: false, direction: 'top'}).openTooltip();
+          // Si la distancia es menor o igual al radio de activación
+          // Y la ventana de la pregunta NO está visible actualmente (para evitar re-abrirla)
+          // Y la pregunta aún NO ha sido activada automáticamente
+          if (distance <= ACTIVATION_RADIUS && !ventanaPregunta.classList.contains('mostrar') && !preguntaYaActivada) {
+            
+            // Marca la pregunta como "activada" para evitar activaciones múltiples
+            progreso.intentos[preguntaId] = 0; // Inicializa los intentos a 0 para esta pregunta
+
+            // Si el marcador estaba interactivo (por un clic manual previo, aunque ahora es automático),
+            // asegura que no lo sea más y cierra cualquier tooltip.
+            if (preguntaActual.marker.options.interactive) {
+                preguntaActual.marker.closeTooltip(); 
+                preguntaActual.marker.options.interactive = false; 
             }
-          } else {
+            
+            // Centra el mapa en la pregunta activada (mejora la UX)
+            mapa.setView(preguntaLocation, 17);
+
+            // Muestra la pregunta automáticamente
+            mostrarPregunta(progreso.actual);
+            
+            // Notificar al usuario que una pregunta se ha activado automáticamente
+            crearModalPersonalizado("¡Pregunta Activa!", "Estás en el lugar de la próxima pregunta. ¡Responde!", [{texto: "OK"}]);
+
+          } else if (distance > ACTIVATION_RADIUS) {
+            // Si el usuario se aleja del radio, asegúrate de que el marcador no sea interactivo
+            // y cierra el tooltip si estaba abierto.
             if (preguntaActual.marker.options.interactive) {
               preguntaActual.marker.options.interactive = false;
-              preguntaActual.marker.closeTooltip(); // Close tooltip if open
+              preguntaActual.marker.closeTooltip(); 
             }
           }
         }
@@ -730,7 +761,7 @@
       },
       { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
     );
-    // Once watch is started, show the first marker and circle
+    // Una vez que se inicia el seguimiento, muestra el primer marcador y su círculo de radio.
     actualizarVisibilidadMarcadorActual();
   }
 
@@ -768,6 +799,7 @@
     ventanaFinal.classList.add("mostrar");
     document.getElementById("boton-cerrar-final").focus(); // Focus close button
 
+    // Detiene el seguimiento de ubicación y remueve el círculo de radio al finalizar la trivia
     if (ubicacionWatchId !== null) {
       navigator.geolocation.clearWatch(ubicacionWatchId);
       ubicacionWatchId = null;
@@ -791,9 +823,11 @@
       mapa.setView(marcadorUbicacion.getLatLng(), 17); // Center on known location
       marcadorUbicacion.openPopup();
     } else if (!ubicacionWatchId) {
+      // Si no se ha iniciado el seguimiento, lo inicia
       iniciarSeguimientoUbicacion();
        crearModalPersonalizado("Ubicación", "Iniciando seguimiento de ubicación para mostrarte en el mapa.", [{texto:"OK"}]);
     } else {
+      // Si el seguimiento está activo pero no hay ubicación aún
       crearModalPersonalizado("Ubicación", "Esperando señal de GPS para mostrar tu ubicación...", [{texto:"OK"}]);
     }
   }
