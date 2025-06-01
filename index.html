@@ -346,6 +346,7 @@
         }
 
         .custom-js-modal h3 {
+            /* Title for JS modal */
             font-size: 1.5em;
             color: var(--color-texto-oscuro);
             margin-bottom: 15px;
@@ -353,16 +354,19 @@
         }
 
         .custom-js-modal p {
+            /* Message for JS modal */
             font-size: 1.1em;
             margin-bottom: 25px;
             line-height: 1.5;
             text-shadow: none;
+            /* No shadow for better readability on white background */
             font-weight: normal;
         }
 
         .custom-js-modal .modal-botones button {
             margin: 8px;
             padding: 10px 20px;
+            /* Specific padding */
         }
 
         /* Specific confirmation/error buttons for JS modal */
@@ -380,6 +384,7 @@
 
         .custom-js-modal .boton-negacion:hover {
             background: linear-gradient(135deg, var(--color-error-rojo) 0%, #d32f2f 100%);
+            /* Darker red */
         }
 
         /* Style for the explanation text after answering a question */
@@ -393,8 +398,8 @@
             color: var(--color-texto-oscuro);
             box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
             display: none;
-            animation: fadeIn 0.5s ease-out;
-            touch-action: pan-x pan-y;
+            /* Hidden by default */
+            touch-action: pan-x pan-y; /* Prevent zoom on explanation */
             -webkit-user-select: none;
             -moz-user-select: none;
             -ms-user-select: none;
@@ -403,6 +408,7 @@
 
         #explicacion-respuesta.mostrar {
             display: block;
+            animation: fadeIn 0.5s ease-out;
         }
 
         /* Styles for the correct answer celebration modal */
@@ -412,17 +418,20 @@
             left: 50%;
             transform: translate(-50%, -50%);
             background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            /* Soft green background */
             padding: var(--padding-modal-grande);
             border-radius: var(--radio-borde-modal-grande);
             box-shadow: var(--sombra-modal);
             z-index: 10006;
+            /* Higher than other modals */
             text-align: center;
             max-width: 500px;
+            /* Wider to accommodate image */
             width: 90vw;
             color: var(--color-texto-oscuro);
             display: none;
             animation: fadeIn 0.5s ease-out;
-            touch-action: pan-x pan-y;
+            touch-action: pan-x pan-y; /* Prevent zoom on celebration modal */
             -webkit-user-select: none;
             -moz-user-select: none;
             -ms-user-select: none;
@@ -452,14 +461,11 @@
             line-height: 1.6;
             margin-bottom: 20px;
             text-shadow: none;
+            /* No text shadow on light background */
             font-weight: normal;
         }
 
-        /* Removed audio element from felicitacion modal */
-        /* #ventana-felicitacion audio {
-            width: 100%;
-            margin-bottom: 20px;
-        } */
+        /* ELIMINADO: #ventana-felicitacion audio { ... } */
 
         #ventana-felicitacion button {
             background: linear-gradient(135deg, var(--color-secundario-azul-claro) 0%, var(--color-secundario-azul) 100%);
@@ -471,7 +477,7 @@
 
         #opciones {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* Responsive grid for options */
             gap: 10px;
             margin-top: 20px;
         }
@@ -518,6 +524,7 @@
         }
 
         @keyframes aparecerVentana {
+            /* Maintained in case it's used specifically */
             0% {
                 opacity: 0;
                 transform: translate(-50%, -60%);
@@ -531,22 +538,22 @@
 
         /* Custom Leaflet DivIcon for user location */
         .leaflet-div-icon {
-            background: none;
-            border: none;
+            background: none; /* Ensure no white square background */
+            border: none; /* Remove any default border */
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 30px !important;
-            height: 30px !important;
-            transform-origin: bottom center;
+            width: 30px !important; /* Override default size */
+            height: 30px !important; /* Override default size */
+            transform-origin: bottom center; /* For animations */
         }
 
         .leaflet-div-icon svg {
             width: 100%;
             height: 100%;
             display: block;
-            filter: drop-shadow(0 2px 3px rgba(0,0,0,0.4));
-            animation: pulse 1.5s infinite ease-in-out;
+            filter: drop-shadow(0 2px 3px rgba(0,0,0,0.4)); /* Subtle shadow */
+            animation: pulse 1.5s infinite ease-in-out; /* Pulsing animation */
         }
 
         @keyframes pulse {
@@ -562,6 +569,7 @@
             .custom-js-modal,
             #ventana-felicitacion {
                 width: 95vw;
+                /* Wider modals on small screens */
                 max-width: 95vw;
             }
 
@@ -579,9 +587,13 @@
 
             #ventana-felicitacion h3 {
                 font-size: 1.5em;
+                /* Smaller title for felicitacion */
             }
 
             #panel-progreso {
+                /* width is already handled by calc(100% - 20px) */
+                /* left is already handled by 10px */
+                /* transform: translateX(0) is not needed if left is 10px and width is calc(100% - 20px) */
                 font-size: 13px;
             }
 
@@ -590,18 +602,23 @@
                 right: 10px;
                 display: flex;
                 flex-direction: column;
+                /* Stacked vertically */
                 gap: 6px;
+                /* Space between buttons */
                 align-items: flex-end;
+                /* Align to the right */
             }
 
             #botones-fijos button {
                 margin-bottom: 0;
+                /* Remove bottom margin if there's a gap */
                 padding: 8px 12px;
                 font-size: 14px;
             }
 
             #botones-fijos button span {
                 display: inline;
+                /* Show text on small screens */
             }
         }
 
@@ -609,6 +626,7 @@
         @media (min-width: 601px) {
             #botones-fijos button span {
                 display: inline;
+                /* Show text on larger screens */
             }
         }
     </style>
@@ -993,7 +1011,7 @@
             botonesDiv.className = 'modal-botones';
 
             botonesConfig.forEach(btnConfig => {
-                const button = document.createElement('button');
+                const button = document.createElement("button");
                 button.textContent = btnConfig.texto;
                 if (btnConfig.clase) {
                     button.classList.add(...btnConfig.clase.split(' ')); // Allows multiple classes
@@ -1119,10 +1137,6 @@
 
             document.getElementById("felicitacion-explicacion").textContent = pregunta.explicacion;
 
-            // Se elimina la asignación de audioUrl aquí ya que se eliminó del preguntasData
-            // const audioExplicacion = document.getElementById("felicitacion-audio");
-            // audioExplicacion.src = pregunta.audioUrl;
-
             ventanaFelicitacion.classList.add("mostrar");
 
             // Reproducir el audio si el sonido está activado
@@ -1147,7 +1161,6 @@
             }
 
             const newListener = () => {
-                // audioExplicacion.pause(); // Detener el audio al cerrar la ventana, ya no es necesario si no hay audioUrl
                 if ('speechSynthesis' in window) { // Detener la síntesis de voz al cerrar
                     window.speechSynthesis.cancel();
                 }
