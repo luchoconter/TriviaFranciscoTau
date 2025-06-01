@@ -1,0 +1,1505 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Trivia Francisco Tau - Mejorada para Celulares</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        /* Global CSS Variables */
+        :root {
+            --color-primario-verde: #4CAF50;
+            --color-primario-verde-claro: #66bb6a;
+            --color-primario-verde-oscuro: #388E3C;
+            --color-secundario-azul: #2196f3;
+            --color-secundario-azul-claro: #42a5f5;
+            --color-secundario-azul-oscuro: #1976D2;
+            --color-error-rojo: #e53935;
+            --color-error-rojo-claro: #ef5350;
+            --color-texto-oscuro: #333;
+            --color-texto-blanco: #fff;
+            --color-fondo-overlay: rgba(255, 255, 255, 0.85);
+            /* Slightly increased opacity for better contrast */
+
+            --radio-borde-general: 8px;
+            --radio-borde-modal: 12px;
+            --radio-borde-modal-grande: 15px;
+
+            --padding-boton: 12px 25px;
+            --padding-modal: 30px;
+            --padding-modal-grande: 35px 30px;
+
+            --sombra-elemento: 0 4px 10px rgba(0, 0, 0, 0.15), 0 2px 5px rgba(0, 0, 0, 0.1);
+            --sombra-elemento-hover: 0 6px 12px rgba(0, 0, 0, 0.2);
+            --sombra-modal: 0 15px 40px rgba(0, 0, 0, 0.2), 0 6px 20px rgba(0, 0, 0, 0.15);
+            --sombra-modal-hover: 0 8px 20px rgba(0, 0, 0, 0.25);
+
+            --fuente-principal: Arial, sans-serif;
+            --tamano-fuente-normal: 16px;
+            --tamano-fuente-boton: 17px;
+            --tamano-fuente-titulo-modal: 1.8em;
+            /* Adjusted for h2 in modals */
+        }
+
+        /* General styles for the page body */
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: var(--fuente-principal);
+            font-size: var(--tamano-fuente-normal);
+            background-image: url('imagenes/fondo.jpg');
+            /* Placeholder for background image */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            /* Disable zoom on non-map elements */
+            touch-action: pan-x pan-y; /* Allows scrolling but prevents pinch-zoom on the body */
+            -webkit-user-select: none; /* Safari */
+            -moz-user-select: none; /* Firefox */
+            -ms-user-select: none; /* IE 10+ */
+            user-select: none; /* Standard */
+        }
+
+        #map {
+            height: 100vh;
+            width: 100%;
+            /* Allow all touch actions including zoom on the map */
+            touch-action: manipulation;
+            -webkit-user-select: auto; /* Allow selection inside map if needed */
+            -moz-user-select: auto;
+            -ms-user-select: auto;
+            user-select: auto;
+        }
+
+        /* Base styles for all modal windows */
+        .modal-base {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: var(--padding-modal);
+            border-radius: var(--radio-borde-modal);
+            z-index: 1000;
+            width: 90vw;
+            max-width: 450px;
+            text-align: center;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            /* Subtle border */
+            box-shadow: var(--sombra-modal);
+            display: none;
+            /* Hidden by default */
+            animation: fadeIn 0.5s ease-out;
+
+            /* Background with image and overlay for readability */
+            background: linear-gradient(var(--color-fondo-overlay), var(--color-fondo-overlay)), url('imagenes/fondoventanas.jpg');
+            /* Placeholder for window background image */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            /* Ensure modals also prevent zoom */
+            touch-action: pan-x pan-y;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        .modal-base.mostrar {
+            display: block;
+        }
+
+        .modal-base h2 {
+            font-size: var(--tamano-fuente-titulo-modal);
+            color: var(--color-texto-oscuro);
+            margin-bottom: 20px;
+            font-weight: bold;
+            text-shadow: 0 0 8px var(--color-texto-blanco);
+        }
+
+        .modal-base p {
+            color: var(--color-texto-oscuro);
+            text-shadow: 0 0 8px var(--color-texto-blanco);
+            font-weight: bold;
+            /* Maintained from original style */
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        /* Styles for general buttons */
+        button,
+        .button-style {
+            /* .button-style for elements that are not buttons but should look like one */
+            margin: 10px 5px;
+            /* Margin adjustment */
+            padding: var(--padding-boton);
+            font-size: var(--tamano-fuente-boton);
+            border-radius: var(--radio-borde-general);
+            border: 1px solid rgba(0, 0, 0, 0.2);
+            /* More subtle border */
+            background: linear-gradient(135deg, var(--color-primario-verde-claro) 0%, var(--color-primario-verde) 100%);
+            color: var(--color-texto-blanco);
+            cursor: pointer;
+            box-shadow: var(--sombra-elemento);
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
+            /* Added opacity transition */
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-decoration: none;
+            /* For .button-style if it's an <a> */
+            display: inline-block;
+            /* For .button-style if it's an <a> */
+            outline: none;
+            /* Remove default outline */
+            min-height: 44px; /* Minimum touch target size */
+            min-width: 44px; /* Minimum touch target size */
+            box-sizing: border-box; /* Include padding and border in the element's total width and height */
+            /* Prevent zoom on buttons */
+            touch-action: manipulation; /* Allows tap, double-tap, pan, but not pinch-zoom */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        button:hover,
+        .button-style:hover {
+            background: linear-gradient(135deg, var(--color-primario-verde) 0%, var(--color-primario-verde-oscuro) 100%);
+            transform: translateY(-2px);
+            box-shadow: var(--sombra-elemento-hover);
+        }
+
+        /* Styles for focus and active states (keyboard navigation/click feedback) */
+        button:focus-visible,
+        button:focus,
+        .button-style:focus-visible,
+        .button-style:focus {
+            transform: translateY(0);
+            border: 3px solid var(--color-secundario-azul-claro);
+            /* Thicker blue border */
+            box-shadow: 0 0 0 2px var(--color-secundario-azul-claro),
+                /* Blue outline effect (slightly smaller to complement border) */
+                0 3px 8px rgba(0, 0, 0, 0.25);
+            /* Original shadow */
+        }
+
+        button:active,
+        .button-style:active {
+            transform: scale(0.95);
+            /* Slightly shrink on click */
+            opacity: 0.8;
+            /* Fade a bit */
+            box-shadow: var(--sombra-elemento); /* Reset shadow to normal on active */
+        }
+
+
+        /* Style for buttons that should always have the blue border */
+        .age-selection-button {
+            /* New class for age selection buttons */
+            border: 3px solid var(--color-secundario-azul-claro) !important;
+            /* Force blue border */
+            box-shadow: 0 0 0 2px var(--color-secundario-azul-claro),
+                /* Blue outline effect */
+                var(--sombra-elemento) !important;
+            /* Keep original shadow */
+        }
+
+        /* Fixed buttons */
+        #botones-fijos {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 999; /* Adjusted z-index to be behind modals */
+            display: flex;
+            /* Use flexbox for layout */
+            flex-direction: column;
+            /* Stack vertically */
+            gap: 5px;
+            /* Space between buttons */
+            touch-action: pan-x pan-y; /* Prevent zoom on fixed buttons */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        #botones-fijos button {
+            display: flex;
+            /* Align icon and text */
+            align-items: center;
+            justify-content: center;
+            padding: 10px 15px;
+            /* Adjust padding for icons */
+        }
+
+        #botones-fijos button svg {
+            width: 20px;
+            /* Icon size */
+            height: 20px;
+            margin-right: 8px;
+            /* Space between icon and text */
+            fill: var(--color-texto-blanco);
+            /* Icon color */
+        }
+
+        #botones-fijos button span {
+            display: none;
+            /* Hide text by default on small screens */
+        }
+
+        /* Progress panel */
+        #panel-progreso {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            width: calc(100% - 20px); /* Always occupy full width minus 10px padding on each side */
+            max-width: 350px; /* Limit max width for larger screens */
+            background: var(--color-fondo-overlay);
+            border: 1px solid rgba(0, 0, 0, 0.2);
+            border-radius: var(--radio-borde-general);
+            padding: 10px;
+            z-index: 999; /* Adjusted z-index to be behind modals */
+            box-shadow: var(--sombra-elemento);
+            font-size: 14px;
+            color: var(--color-texto-oscuro);
+            touch-action: pan-x pan-y; /* Prevent zoom on progress panel */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        #barra-progreso {
+            width: 100%;
+            height: 20px;
+            background-color: #e0e0e0;
+            border-radius: var(--radio-borde-general);
+            overflow: hidden;
+            margin-bottom: 5px;
+        }
+
+        #progreso-porcentaje {
+            height: 100%;
+            width: 0%;
+            background-color: var(--color-primario-verde);
+            transition: width 0.5s ease;
+        }
+
+        /* Specific Final Window */
+        #ventana-final {
+            /* Inherits from .modal-base but with adjustments */
+            max-width: 480px;
+            padding: var(--padding-modal-grande);
+            border-radius: var(--radio-borde-modal-grande);
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            /* Specific soft green */
+            z-index: 10001;
+            /* Above other modals */
+            touch-action: pan-x pan-y; /* Prevent zoom on final window */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        #ventana-final h2 {
+            color: var(--color-primario-verde-oscuro);
+            /* Specific color for final title */
+        }
+
+        #ventana-final button {
+            /* Specific close final button */
+            background: linear-gradient(135deg, var(--color-secundario-azul-claro) 0%, var(--color-secundario-azul) 100%);
+        }
+
+        #ventana-final button:hover {
+            background: linear-gradient(135deg, var(--color-secundario-azul) 0%, var(--color-secundario-azul-oscuro) 100%);
+        }
+
+        /* Styles for the custom modal created by JS */
+        .custom-js-modal {
+            position: fixed;
+            /* Use fixed so it's always visible in viewport */
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--color-texto-blanco);
+            /* Solid white background */
+            padding: var(--padding-modal);
+            border-radius: var(--radio-borde-modal);
+            box-shadow: var(--sombra-modal);
+            z-index: 10005;
+            /* High priority */
+            text-align: center;
+            max-width: 380px;
+            /* Adjusted width */
+            width: 85vw;
+            color: var(--color-texto-oscuro);
+            touch-action: pan-x pan-y; /* Prevent zoom on custom JS modals */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        .custom-js-modal h3 {
+            font-size: 1.5em;
+            color: var(--color-texto-oscuro);
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .custom-js-modal p {
+            font-size: 1.1em;
+            margin-bottom: 25px;
+            line-height: 1.5;
+            text-shadow: none;
+            font-weight: normal;
+        }
+
+        .custom-js-modal .modal-botones button {
+            margin: 8px;
+            padding: 10px 20px;
+        }
+
+        /* Specific confirmation/error buttons for JS modal */
+        .custom-js-modal .boton-confirmacion {
+            background: linear-gradient(135deg, var(--color-primario-verde-claro) 0%, var(--color-primario-verde) 100%);
+        }
+
+        .custom-js-modal .boton-confirmacion:hover {
+            background: linear-gradient(135deg, var(--color-primario-verde) 0%, var(--color-primario-verde-oscuro) 100%);
+        }
+
+        .custom-js-modal .boton-negacion {
+            background: linear-gradient(135deg, var(--color-error-rojo-claro) 0%, var(--color-error-rojo) 100%);
+        }
+
+        .custom-js-modal .boton-negacion:hover {
+            background: linear-gradient(135deg, var(--color-error-rojo) 0%, #d32f2f 100%);
+        }
+
+        /* Style for the explanation text after answering a question */
+        #explicacion-respuesta {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: rgba(240, 240, 240, 0.9);
+            border-radius: var(--radio-borde-general);
+            text-align: left;
+            font-size: 0.95em;
+            color: var(--color-texto-oscuro);
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+            touch-action: pan-x pan-y;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        #explicacion-respuesta.mostrar {
+            display: block;
+        }
+
+        /* Styles for the correct answer celebration modal */
+        #ventana-felicitacion {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            padding: var(--padding-modal-grande);
+            border-radius: var(--radio-borde-modal-grande);
+            box-shadow: var(--sombra-modal);
+            z-index: 10006;
+            text-align: center;
+            max-width: 500px;
+            width: 90vw;
+            color: var(--color-texto-oscuro);
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+            touch-action: pan-x pan-y;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        #ventana-felicitacion.mostrar {
+            display: block;
+        }
+
+        #ventana-felicitacion h3 {
+            font-size: 2em;
+            color: var(--color-primario-verde-oscuro);
+            margin-bottom: 20px;
+        }
+
+        #ventana-felicitacion img {
+            max-width: 100%;
+            height: auto;
+            border-radius: var(--radio-borde-general);
+            margin-bottom: 20px;
+            box-shadow: var(--sombra-elemento);
+        }
+
+        #ventana-felicitacion p {
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            text-shadow: none;
+            font-weight: normal;
+        }
+
+        /* Removed audio element from felicitacion modal */
+        /* #ventana-felicitacion audio {
+            width: 100%;
+            margin-bottom: 20px;
+        } */
+
+        #ventana-felicitacion button {
+            background: linear-gradient(135deg, var(--color-secundario-azul-claro) 0%, var(--color-secundario-azul) 100%);
+        }
+
+        #ventana-felicitacion button:hover {
+            background: linear-gradient(135deg, var(--color-secundario-azul) 0%, var(--color-secundario-azul-oscuro) 100%);
+        }
+
+        #opciones {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        #opciones button {
+            padding: 15px;
+            font-size: 1.1em;
+            cursor: pointer;
+            border: none;
+            border-radius: var(--radio-borde-general);
+            background-color: var(--color-secundario-azul-claro);
+            color: var(--color-texto-blanco);
+            box-shadow: var(--sombra-elemento);
+            transition: background-color 0.3s ease, transform 0.1s ease, box-shadow 0.1s ease;
+            font-weight: bold;
+            text-align: center;
+            white-space: normal;
+            min-height: 44px;
+            line-height: 1.4;
+        }
+
+        #opciones button:hover {
+            background-color: var(--color-secundario-azul);
+            box-shadow: var(--sombra-elemento-hover);
+        }
+
+        #opciones button:active {
+            transform: scale(0.95);
+            opacity: 0.8;
+        }
+
+
+        /* Animaciones */
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -55%);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
+        }
+
+        @keyframes aparecerVentana {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -60%);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
+        }
+
+        /* Custom Leaflet DivIcon for user location */
+        .leaflet-div-icon {
+            background: none;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px !important;
+            height: 30px !important;
+            transform-origin: bottom center;
+        }
+
+        .leaflet-div-icon svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+            filter: drop-shadow(0 2px 3px rgba(0,0,0,0.4));
+            animation: pulse 1.5s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Media queries for responsive design */
+        @media (max-width: 600px) {
+            .modal-base,
+            #ventana-final,
+            .custom-js-modal,
+            #ventana-felicitacion {
+                width: 95vw;
+                max-width: 95vw;
+            }
+
+            .modal-base h2 {
+                font-size: 1.5em;
+            }
+
+            .custom-js-modal h3 {
+                font-size: 1.3em;
+            }
+
+            .custom-js-modal p {
+                font-size: 1em;
+            }
+
+            #ventana-felicitacion h3 {
+                font-size: 1.5em;
+            }
+
+            #panel-progreso {
+                font-size: 13px;
+            }
+
+            #botones-fijos {
+                top: 10px;
+                right: 10px;
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+                align-items: flex-end;
+            }
+
+            #botones-fijos button {
+                margin-bottom: 0;
+                padding: 8px 12px;
+                font-size: 14px;
+            }
+
+            #botones-fijos button span {
+                display: inline;
+            }
+        }
+
+        /* Media query for larger screens to show text next to icons */
+        @media (min-width: 601px) {
+            #botones-fijos button span {
+                display: inline;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="map"></div>
+
+    <div id="ventana-bienvenida" class="modal-base" role="dialog" aria-modal="true" aria-labelledby="titulo-bienvenida">
+        <h2 id="titulo-bienvenida">¡Bienvenido a la trivia del "Parque Natural Francisco Tau"!</h2>
+        <p>¿En qué rango de edad te encontrás?</p>
+        <div id="botones-edad">
+            <button data-edad="menor10" class="age-selection-button">Menor a 10 años</button>
+            <button data-edad="10a15" class="age-selection-button">Entre 10 y 15 años</button>
+            <button data-edad="mayor15" class="age-selection-button">Mayor a 15 años</button>
+        </div>
+    </div>
+
+    <div id="ventana-instrucciones" class="modal-base" role="dialog" aria-modal="true"
+        aria-labelledby="titulo-instrucciones">
+        <h2 id="titulo-instrucciones">¡Bienvenido a la trivia del Parque Natural Francisco Tau!</h2>
+        <p>En esta trivia aprenderemos diferentes aspectos naturales, culturales y sociales de nuestro parque natural.</p>
+        <p>Para poder realizar la experiencia de la forma más óptima debemos realizar dos cosas:</p>
+        <p>En primer lugar, activar la ubicación y en segundo, activar el sonido.</p>
+        <p>¡Esperamos que disfrutes este viaje por el parque!</p>
+        <button id="boton-comenzar-instrucciones">¡Comencemos!</button>
+    </div>
+
+    <div id="pregunta" class="modal-base" role="dialog" aria-modal="true" aria-labelledby="texto-pregunta">
+        <p id="texto-pregunta"></p>
+        <div id="opciones"></div>
+        <div id="explicacion-respuesta"></div>
+    </div>
+
+    <div id="ventana-felicitacion" role="dialog" aria-modal="true" aria-labelledby="titulo-felicitacion">
+        <h3 id="titulo-felicitacion">¡Respuesta Correcta!</h3>
+        <img id="felicitacion-imagen"
+            data-src="https://placehold.co/400x250/FFA500/FFFFFF?text=Algarrobo"
+            data-srcset="https://placehold.co/200x125/FFA500/FFFFFF?text=Algarrobo-small 200w, https://placehold.co/400x250/FFA500/FFFFFF?text=Algarrobo-medium 400w, https://placehold.co/800x500/FFA500/FFFFFF?text=Algarrobo-large 800w"
+            sizes="(max-width: 400px) 100vw, (max-width: 800px) 50vw, 33vw"
+            src="https://placehold.co/400x250/FFA500/FFFFFF?text=Algarrobo-placeholder"
+            alt="Imagen del lugar">
+        <p id="felicitacion-explicacion"></p>
+        <button id="boton-continuar-felicitacion">Continuar</button>
+    </div>
+
+    <div id="botones-fijos" style="display: none;">
+        <button id="boton-reiniciar" aria-label="Reiniciar Trivia">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path
+                    d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z" />
+            </svg>
+            <span>Reiniciar</span>
+        </button>
+        <button id="boton-mostrar-ubicacion" aria-label="Mostrar mi ubicación">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path
+                    d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+            </svg>
+            <span>Mi ubicación</span>
+        </button>
+        <button id="boton-toggle-sonido" aria-label="Activar/Desactivar Sonido">
+            <svg id="icon-sound-on" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path
+                    d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" />
+            </svg>
+            <svg id="icon-sound-off" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="display:none;">
+                <path
+                    d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .9-.23 1.74-.63 2.5L20.5 17c.92-1.23 1.5-2.77 1.5-4.5 0-4.01-2.99-7.11-7-8.77v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71zM4.27 3L3 4.27l9 9V19c0 1.38-1.12 2.5-2.5 2.5S6 20.38 6 19v-1H2v1c0 2.21 1.79 4 4 4s4-1.79 4-4V7.27L1.27 0 0 1.27l3 3zm7.53 10.73L7.27 9H3v6h3.73l4.5 4.5c.66.33 1.41.5 2.22.5 2.05 0 3.8-.96 4.99-2.4l-2.72-2.72z" />
+            </svg>
+            <span>Sonido</span>
+        </button>
+    </div>
+
+    <div id="panel-progreso" style="display: none;">
+        <div id="barra-progreso">
+            <div id="progreso-porcentaje"></div>
+        </div>
+        <div id="progreso-texto">0 / 0 preguntas respondidas - Puntaje: 0 / 0</div>
+    </div>
+
+    <div id="ventana-final" class="modal-base" role="dialog" aria-modal="true" aria-labelledby="titulo-final">
+        <h2 id="titulo-final">🎉 ¡Felicitaciones!</h2>
+        <p>Has finalizado la trivia del <strong>Parque Natural Francisco Tau</strong>.</p>
+        <p id="mensaje-final"></p>
+        <p>Tu puntaje final es: <span id="puntaje-final"></span></p>
+        <button id="boton-cerrar-final">Cerrar</button>
+    </div>
+
+    <audio id="sonido-correcto" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg"
+        preload="auto"></audio>
+    <audio id="sonido-incorrecto" src="https://actions.google.com/sounds/v1/cartoon/boing.ogg"
+        preload="auto"></audio>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        // --- Global Variables and Configuration ---
+        // Questions data loaded from a simulated JSON structure
+        const preguntasData = {
+            "menor10": [
+                {
+                    "coords": [-34.72316, -58.39786],
+                    "texto": "¿Qué árbol muy antiguo del parque da sombra y tiene tronco grueso, con más de 400 años?",
+                    "opciones": ["Eucalipto", "Pino", "Algarrobo blanco"],
+                    "correcta": 2,
+                    "explicacion": "Es un árbol nativo típico de la región chaqueña y pampeana, muy resistente a la sequía. En el Parque Francisco Tau, el algarrobo blanco aporta sombra y alimento a la fauna local con sus vainas dulces. Además, su madera es dura y se utiliza tradicionalmente para carpintería y artesanía. Es una especie clave para mantener el equilibrio ecológico del área.",
+                    "fotoUrl": "https://placehold.co/400x250/FFA500/FFFFFF?text=Algarrobo"
+                },
+                {
+                    "coords": [-34.70273, -58.29226],
+                    "texto": "¿Cómo se llama el río que pasa por el parque y tiene playas como El Diquecito?",
+                    "opciones": ["Río Ctalamochita", "Río Primero", "Río Segundo"],
+                    "correcta": 0,
+                    "explicacion": "El Río Ctalamochita, también llamado Río Tercero, atraviesa el Parque Francisco Tau y es fundamental para su ecosistema. Sus aguas forman balnearios naturales como El Diquecito y Paso de la Arena, y brindan hábitat a aves acuáticas, peces y mamíferos como el coipo. Además de su valor natural y recreativo, funciona como un corredor biológico, conectando distintos ambientes y favoreciendo la biodiversidad del parque.",
+                    "fotoUrl": "https://placehold.co/400x250/2196f3/FFFFFF?text=Estatua+Gaucho"
+                },
+                {
+                    "coords": [-34.70198, -58.29264],
+                    "texto": "¿Cómo se llama el tipo de bosque con árboles como algarrobos y espinillos que se cuida en el parque?",
+                    "opciones": ["Selva de Yungas", "Chaco Húmedo", "Espinal"],
+                    "correcta": 2,
+                    "explicacion": "El Parque Francisco Tau conserva un relicto del bioma del Espinal, un tipo de bosque nativo de la llanura cordobesa. Se caracteriza por especies resistentes a la sequía como el algarrobo blanco, el tala, el chañar y el espinillo. Este ecosistema, hoy muy reducido por la expansión agrícola, es único en un centro urbano en Córdoba. Su preservación es fundamental para conservar la biodiversidad autóctona, estudiar el ambiente original de la región y mantener un pulmón verde para la ciudad.",
+                    "fotoUrl": "https://placehold.co/400x250/4CAF50/FFFFFF?text=Aves"
+                },
+                {
+                    "coords": [-34.70172, -58.29371],
+                    "texto": "¿Cuántas clases de pájaros hay en el parque, más o menos?",
+                    "opciones": ["5", "125", "75"],
+                    "correcta": 1,
+                    "explicacion": "El Parque Francisco Tau alberga una gran diversidad de aves, con al menos 125 especies registradas, lo que lo convierte en un sitio ideal para la observación de aves. Se encuentran 					especies comunes y vistosas como el hornero, el benteveo, el cardenal común y el chingolo, así como aves acuáticas como el biguá, la gallareta y el martín pescador chico. También se 					observan aves rapaces como el carancho y la lechucita de las vizcacheras.\n\t\t\t\t\tLa variedad de hábitats del parque (bosque, ribera, pastizal) favorece esta riqueza avifaunística, que es clave para el equilibrio ecológico y un gran recurso para la educación 					ambiental.",
+                    "fotoUrl": "https://placehold.co/400x250/8BC34A/FFFFFF?text=Reforestacion"
+                },
+                {
+                    "coords": [-34.70141, -58.29481],
+                    "texto": "¿Qué animal del parque vive cerca del río y parece un castor?",
+                    "opciones": ["Coipo", "Zorro", "Armadillo"],
+                    "correcta": 0,
+                    "explicacion": "El coipo, también llamado nutria criolla, es un mamífero roedor semiacuático que vive en zonas cercanas al agua, como las orillas del Río Ctalamochita, dentro del Parque Francisco Tau. 					Tiene un cuerpo robusto, pelaje denso e impermeable, y una cola larga y redondeada. Sus patas traseras palmeadas le permiten nadar con gran agilidad. Se alimenta principalmente de vegetación 						acuática y raíces, y suele construir madrigueras en barrancas o entre la vegetación ribereña. Es una especie nativa de América del Sur y cumple un rol ecológico importante en el ecosistema 						acuático, ayudando a controlar el crecimiento de plantas en lagunas y ríos. Su presencia en el parque indica una buena calidad ambiental en los ambientes ribereños y la existencia de refugio 						adecuado para fauna nativa.",
+                    "fotoUrl": "https://placehold.co/400x250/FFC107/FFFFFF?text=Centro+Interpretacion"
+                }
+            ],
+            "10a15": [
+                {
+                    "coords": [-34.72316, -58.39786],
+                    "texto": "¿Cuál es la especie de árbol nativo más antigua del Parque Francisco Tau, considerada un monumento natural viviente?",
+                    "opciones": ["Algarrobo blanco", "Pino", "Eucalipto"],
+                    "correcta": 0,
+                    "explicacion": "Es un árbol nativo típico de la región chaqueña y pampeana, muy resistente a la sequía. En el Parque Francisco Tau, el algarrobo blanco aporta sombra y alimento a la fauna local con sus vainas dulces. Además, su madera es dura y se utiliza tradicionalmente para carpintería y artesanía. Es una especie clave para mantener el equilibrio ecológico del área.",
+                    "fotoUrl": "https://placehold.co/400x250/FFA500/FFFFFF?text=Algarrobo"
+                },
+                {
+                    "coords": [-34.70273, -58.29226],
+                    "texto": "¿Qué río atraviesa el Parque Francisco Tau y forma parte importante de su paisaje natural?",
+                    "opciones": ["Río Segundo", "Río Primero", "Río Ctalamochita"],
+                    "correcta": 2,
+                    "explicacion": "El Río Ctalamochita, también llamado Río Tercero, atraviesa el Parque Francisco Tau y es fundamental para su ecosistema. Sus aguas forman balnearios naturales como El Diquecito y Paso de la Arena, y brindan hábitat a aves acuáticas, peces y mamíferos como el coipo. Además de su valor natural y recreativo, funciona como un corredor biológico, conectando distintos ambientes y favoreciendo la biodiversidad del parque.",
+                    "fotoUrl": "https://placehold.co/400x250/2196f3/FFFFFF?text=Estatua+Gaucho"
+                },
+                {
+                    "coords": [-34.70198, -58.29264],
+                    "texto": "¿A qué bioma pertenece el monte nativo que protege el Parque Francisco Tau?",
+                    "opciones": ["Chaco Húmedo", "Espinal", "Selva de Yungas"],
+                    "correcta": 1,
+                    "explicacion": "El Parque Francisco Tau conserva un relicto del bioma del Espinal, un tipo de bosque nativo de la llanura cordobesa. Se caracteriza por especies resistentes a la sequía como el algarrobo blanco, el tala, el chañar y el espinillo. Este ecosistema, hoy muy reducido por la expansión agrícola, es único en un centro urbano en Córdoba. Su preservación es fundamental para conservar la biodiversidad autóctona, estudiar el ambiente original de la región y mantener un pulmón verde para la ciudad.",
+                    "fotoUrl": "https://placehold.co/400x250/4CAF50/FFFFFF?text=Aves"
+                },
+                {
+                    "coords": [-34.70172, -58.29371],
+                    "texto": "¿Cuántas especies de aves, aproximadamente, han sido identificadas en el Parque Francisco Tau?",
+                    "opciones": ["100", "135", "125"],
+                    "correcta": 2,
+                    "explicacion": "El Parque Francisco Tau alberga una gran diversidad de aves, con al menos 125 especies registradas, lo que lo convierte en un sitio ideal para la observación de aves. Se encuentran 					especies comunes y vistosas como el hornero, el benteveo, el cardenal común y el chingolo, así como aves acuáticas como el biguá, la gallareta y el martín pescador chico. También se 					observan aves rapaces como el carancho y la lechucita de las vizcacheras.\n\t\t\t\t\tLa variedad de hábitats del parque (bosque, ribera, pastizal) favorece esta riqueza avifaunística, que es clave para el equilibrio ecológico y un gran recurso para la educación 					ambiental.",
+                    "fotoUrl": "https://placehold.co/400x250/8BC34A/FFFFFF?text=Reforestacion"
+                },
+                {
+                    "coords": [-34.70141, -58.29481],
+                    "texto": "¿Qué roedor semiacuático, parecido a una nutria, habita en las orillas del Río Ctalamochita dentro del parque?",
+                    "opciones": ["Comadreja overa", "Coipo", "Cuis"],
+                    "correcta": 1,
+                    "explicacion": "El coipo, también llamado nutria criolla, es un mamífero roedor semiacuático que vive en zonas cercanas al agua, como las orillas del Río Ctalamochita, dentro del Parque Francisco Tau. 					Tiene un cuerpo robusto, pelaje denso e impermeable, y una cola larga y redondeada. Sus patas traseras palmeadas le permiten nadar con gran agilidad. Se alimenta principalmente de vegetación 						acuática y raíces, y suele construir madrigueras en barrancas o entre la vegetación ribereña. Es una especie nativa de América del Sur y cumple un rol ecológico importante en el ecosistema 						acuático, ayudando a controlar el crecimiento de plantas en lagunas y ríos. Su presencia en el parque indica una buena calidad ambiental en los ambientes ribereños y la existencia de refugio 						adecuado para fauna nativa.",
+                    "fotoUrl": "https://placehold.co/400x250/FFC107/FFFFFF?text=Centro+Interpretacion"
+                }
+            ],
+            "mayor15": [
+                {
+                    "coords": [-34.72316, -58.39786],
+                    "texto": "¿Qué especie arbórea autóctona, propia del Espinal y con un ejemplar de más de cuatro siglos en el parque, representa un testimonio ecológico e histórico de la región?",
+                    "opciones": ["Algarrobo blanco", "Pino", "Eucalipto"],
+                    "correcta": 0,
+                    "explicacion": "Es un árbol nativo típico de la región chaqueña y pampeana, muy resistente a la sequía. En el Parque Francisco Tau, el algarrobo blanco aporta sombra y alimento a la fauna local con sus vainas dulces. Además, su madera es dura y se utiliza tradicionalmente para carpintería y artesanía. Es una especie clave para mantener el equilibrio ecológico del área.",
+                    "fotoUrl": "https://placehold.co/400x250/FFA500/FFFFFF?text=Algarrobo"
+                },
+                {
+                    "coords": [-34.70273, -58.29226],
+                    "texto": "¿Cuál es el curso fluvial que recorre el parque, funcionando como corredor biológico y aportando ambientes acuáticos y ribereños?",
+                    "opciones": ["Río Primero", "Río Ctalamochita", "Río Segundo"],
+                    "correcta": 1,
+                    "explicacion": "El Río Ctalamochita, también llamado Río Tercero, atraviesa el Parque Francisco Tau y es fundamental para su ecosistema. Sus aguas forman balnearios naturales como El Diquecito y Paso de la Arena, y brindan hábitat a aves acuáticas, peces y mamíferos como el coipo. Además de su valor natural y recreativo, funciona como un corredor biológico, conectando distintos ambientes y favoreciendo la biodiversidad del parque.",
+                    "fotoUrl": "https://placehold.co/400x250/2196f3/FFFFFF?text=Estatua+Gaucho"
+                },
+                {
+                    "coords": [-34.70198, -58.29264],
+                    "texto": "¿Cuál es el nombre de la ecorregión fitogeográfica representada por el relicto conservado en el Parque Francisco Tau?",
+                    "opciones": ["Selva de Yungas", "Chaco Húmedo", "Espinal"],
+                    "correcta": 0,
+                    "explicacion": "El Parque Francisco Tau conserva un relicto del bioma del Espinal, un tipo de bosque nativo de la llanura cordobesa. Se caracteriza por especies resistentes a la sequía como el algarrobo blanco, el tala, el chañar y el espinillo. Este ecosistema, hoy muy reducido por la expansión agrícola, es único en un centro urbano en Córdoba. Su preservación es fundamental para conservar la biodiversidad autóctona, estudiar el ambiente original de la región y mantener un pulmón verde para la ciudad.",
+                    "fotoUrl": "https://placehold.co/400x250/4CAF50/FFFFFF?text=Aves"
+                },
+                {
+                    "coords": [-34.70172, -58.29371],
+                    "texto": "Según relevamientos recientes, ¿cuántas especies avifaunísticas habitan actualmente el Parque Francisco Tau?",
+                    "opciones": ["125", "135", "115"],
+                    "correcta": 0,
+                    "explicacion": "El Parque Francisco Tau alberga una gran diversidad de aves, con al menos 125 especies registradas, lo que lo convierte en un sitio ideal para la observación de aves. Se encuentran 					especies comunes y vistosas como el hornero, el benteveo, el cardenal común y el chingolo, así como aves acuáticas como el biguá, la gallareta y el martín pescador chico. También se 					observan aves rapaces como el carancho y la lechucita de las vizcacheras.\n\t\t\t\t\tLa variedad de hábitats del parque (bosque, ribera, pastizal) favorece esta riqueza avifaunística, que es clave para el equilibrio ecológico y un gran recurso para la educación 					ambiental.",
+                    "fotoUrl": "https://placehold.co/400x250/8BC34A/FFFFFF?text=Reforestacion"
+                },
+                {
+                    "coords": [-34.70141, -58.29481],
+                    "texto": "¿Cuál es el mamífero nativo de hábitos ribereños, identificado como Myocastor coypus, registrado en el Parque Francisco Tau?",
+                    "opciones": ["Comadreja overa", "Cuis", "Coipo"],
+                    "correcta": 2,
+                    "explicacion": "El coipo, también llamado nutria criolla, es un mamífero roedor semiacuático que vive en zonas cercanas al agua, como las orillas del Río Ctalamochita, dentro del Parque Francisco Tau. 					Tiene un cuerpo robusto, pelaje denso e impermeable, y una cola larga y redondeada. Sus patas traseras palmeadas le permiten nadar con gran agilidad. Se alimenta principalmente de vegetación 						acuática y raíces, y suele construir madrigueras en barrancas o entre la vegetación ribereña. Es una especie nativa de América del Sur y cumple un rol ecológico importante en el ecosistema 						acuático, ayudando a controlar el crecimiento de plantas en lagunas y ríos. Su presencia en el parque indica una buena calidad ambiental en los ambientes ribereños y la existencia de refugio 						adecuado para fauna nativa.",
+                    "fotoUrl": "https://placehold.co/400x250/FFC107/FFFFFF?text=Centro+Interpretacion"
+                }
+            ]
+        };
+
+        let edadSeleccionada = null;
+        let progreso = {
+            actual: 0,
+            puntaje: 0,
+            intentos: {}
+        }; // `intentos` ahora también se usa para marcar si una pregunta ha sido activada
+        let mapa;
+        let marcadorUbicacion;
+        let ubicacionWatchId = null;
+        const ACTIVATION_RADIUS = 30; // Meters
+        const preguntaMarkers = [];
+        let currentQuestionRadiusCircle = null;
+        let sonidoActivado = true; // New variable for sound control
+        let supportsWebP = false; // Flag to check WebP support
+
+        // DOM Elements (cache)
+        const ventanaBienvenida = document.getElementById("ventana-bienvenida");
+        const ventanaInstrucciones = document.getElementById("ventana-instrucciones");
+        const ventanaPregunta = document.getElementById("pregunta");
+        const ventanaFinal = document.getElementById("ventana-final");
+        const ventanaFelicitacion = document.getElementById("ventana-felicitacion"); // Nueva ventana de felicitación
+        const panelProgreso = document.getElementById("panel-progreso");
+        const botonesFijos = document.getElementById("botones-fijos");
+        const sonidoCorrecto = document.getElementById("sonido-correcto");
+        const sonidoIncorrecto = document.getElementById("sonido-incorrecto");
+        const botonToggleSonido = document.getElementById("boton-toggle-sonido");
+        const iconSoundOn = document.getElementById("icon-sound-on");
+        const iconSoundOff = document.getElementById("icon-sound-off");
+        // const explicacionRespuestaDiv = document.getElementById("explicacion-respuesta"); // Ya no se usa directamente para la explicación de correctas
+
+        // --- Helper Functions ---
+
+        /**
+         * Checks if the browser supports WebP image format.
+         * @returns {Promise<boolean>} A promise that resolves to true if WebP is supported, false otherwise.
+         */
+        function checkWebPSupport() {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.onload = function () {
+                    resolve(img.width > 0 && img.height > 0);
+                };
+                img.onerror = function () {
+                    resolve(false);
+                };
+                img.src = 'data:image/webp;base64,UklGRhoAAABXRUJQVlA4TA0AAAAvAAAAEAcQERGIiP4HAA==';
+            });
+        }
+
+        /**
+         * Loads an image, prioritizing WebP if supported, and handling srcset for responsiveness.
+         * @param {HTMLImageElement} imgElement The <img> element to load.
+         */
+        function loadImage(imgElement) {
+            const originalSrc = imgElement.getAttribute('data-src');
+            const originalSrcset = imgElement.getAttribute('data-srcset');
+
+            if (supportsWebP && originalSrc) {
+                // Try to use WebP version if supported and original src exists
+                imgElement.src = originalSrc.replace(/\.(jpe?g|png)$/i, '.webp');
+            } else if (originalSrc) {
+                // Fallback to original src if WebP not supported
+                imgElement.src = originalSrc;
+            }
+
+            if (supportsWebP && originalSrcset) {
+                // Try to use WebP srcset if supported and original srcset exists
+                imgElement.srcset = originalSrcset.replace(/\.(jpe?g|png)/gi, '.webp');
+            } else if (originalSrcset) {
+                // Fallback to original srcset if WebP not supported
+                imgElement.srcset = originalSrcset;
+            }
+
+            // Remove data attributes after attempting to load
+            imgElement.removeAttribute('data-src');
+            imgElement.removeAttribute('data-srcset');
+        }
+
+
+        /**
+         * Plays a sound if sound is activated.
+         * @param {HTMLAudioElement} audio A reference to the audio element.
+         */
+        function reproducirSonido(audio) {
+            if (sonidoActivado) {
+                audio.currentTime = 0; // Rewind to start
+                audio.play();
+            }
+        }
+
+        /**
+         * Triggers haptic feedback (vibration) on supported devices.
+         * @param {number|Array<number>} pattern The vibration pattern in milliseconds.
+         */
+        function feedbackHaptico(pattern = 50) {
+            if ('vibrate' in navigator) {
+                navigator.vibrate(pattern);
+            }
+        }
+
+        /**
+         * Reproduce un texto dado usando la API de síntesis de voz del navegador.
+         * @param {string} text El texto a reproducir.
+         */
+        function reproducirTexto(text) {
+            if ('speechSynthesis' in window && sonidoActivado) { // Agregada la condición sonidoActivado
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'es-ES'; // Establece el idioma a español
+                utterance.volume = 1; // Volumen (0 a 1)
+                utterance.rate = 1; // Velocidad (0.1 a 10)
+                utterance.pitch = 1; // Tono (0 a 2)
+
+                // Detener cualquier reproducción anterior para evitar solapamientos
+                window.speechSynthesis.cancel();
+                window.speechSynthesis.speak(utterance);
+            } else if (!('speechSynthesis' in window)) {
+                console.warn("La API de síntesis de voz no está soportada en este navegador.");
+            }
+            // No hace nada si sonidoActivado es falso.
+        }
+
+        /**
+         * Creates and displays a custom modal.
+         * @param {string} titulo The modal title.
+         * @param {string} mensaje The main modal message.
+         * @param {Array<Object>} botonesConfig Array of objects to configure buttons.
+         * Ej: [{ texto: 'OK', clase: 'boton-confirmacion', callback: () => {} }]
+         */
+        function crearModalPersonalizado(titulo, mensaje, botonesConfig) {
+            const modalExistente = document.querySelector('.custom-js-modal');
+            if (modalExistente) {
+                document.body.removeChild(modalExistente); // Remove previous modal if exists
+            }
+
+            const modal = document.createElement('div');
+            modal.className = 'custom-js-modal';
+            modal.setAttribute('role', 'alertdialog'); // More specific than 'dialog' for messages
+            modal.setAttribute('aria-modal', 'true');
+
+            const modalTitulo = document.createElement('h3');
+            modalTitulo.textContent = titulo;
+            modal.appendChild(modalTitulo);
+            // Assign ID to title for aria-labelledby
+            const tituloId = 'custom-modal-titulo-' + Date.now();
+            modalTitulo.id = tituloId;
+            modal.setAttribute('aria-labelledby', tituloId);
+
+
+            const modalMensaje = document.createElement('p');
+            modalMensaje.innerHTML = mensaje; // Use innerHTML if message can have simple HTML like <strong>
+            modal.appendChild(modalMensaje);
+
+            const botonesDiv = document.createElement('div');
+            botonesDiv.className = 'modal-botones';
+
+            botonesConfig.forEach(btnConfig => {
+                const button = document.createElement('button');
+                button.textContent = btnConfig.texto;
+                if (btnConfig.clase) {
+                    button.classList.add(...btnConfig.clase.split(' ')); // Allows multiple classes
+                }
+                button.addEventListener('click', () => {
+                    if (btnConfig.callback) {
+                        btnConfig.callback();
+                    }
+                    document.body.removeChild(modal);
+                });
+                botonesDiv.appendChild(button);
+            });
+
+            modal.appendChild(botonesDiv);
+            document.body.appendChild(modal);
+            // Focus the first button of the modal for accessibility
+            if (botonesDiv.firstChild && typeof botonesDiv.firstChild.focus === 'function') {
+                botonesDiv.firstChild.focus();
+            }
+        }
+
+        function obtenerPreguntas() {
+            return preguntasData[edadSeleccionada] || [];
+        }
+
+        // --- Main Game Logic ---
+
+        function seleccionarEdad(rango) {
+            edadSeleccionada = rango;
+
+            ventanaBienvenida.classList.remove("mostrar");
+            iniciarMapa();
+            ventanaInstrucciones.classList.add("mostrar");
+            // Focus the start button in instructions
+            document.getElementById("boton-comenzar-instrucciones").focus();
+
+            // Añadir reproducción de audio al mostrar la ventana de instrucciones
+            const textoInstrucciones = document.getElementById("titulo-instrucciones").textContent + " " +
+                Array.from(document.querySelectorAll("#ventana-instrucciones p")).map(p => p.textContent).join(" ");
+            reproducirTexto(textoInstrucciones);
+        }
+
+        function cerrarVentanaInstrucciones() {
+            ventanaInstrucciones.classList.remove("mostrar");
+            // Al cerrar las instrucciones, cancela cualquier audio de voz en curso.
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+            }
+            if (!ubicacionWatchId) {
+                iniciarSeguimientoUbicacion();
+            }
+        }
+
+        function iniciarMapa() {
+            const primerasPreguntas = obtenerPreguntas();
+            if (primerasPreguntas.length === 0) {
+                crearModalPersonalizado("Error", "No hay preguntas para el rango de edad seleccionado.", [{
+                    texto: "Cerrar"
+                }]);
+                return;
+            }
+            // Inicializa el mapa centrado en la primera pregunta
+            mapa = L.map('map').setView(primerasPreguntas[0].coords, 15);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(mapa);
+
+            // Clear previous markers if map is restarted
+            preguntaMarkers.forEach(marker => marker.remove());
+            preguntaMarkers.length = 0; // Empty array
+
+            primerasPreguntas.forEach((p, index) => {
+                // Los marcadores de preguntas se añaden inicialmente con opacidad baja y no interactivos
+                // Se harán visibles y se activarán automáticamente al entrar en el radio
+                const marker = L.marker(p.coords, {
+                    opacity: 0.5,
+                    interactive: false
+                });
+                p.marker = marker;
+                preguntaMarkers.push(marker);
+            });
+
+            actualizarPanelProgreso();
+            botonesFijos.style.display = "flex"; /* Use flex for fixed buttons */
+            panelProgreso.style.display = "block";
+        }
+
+        function actualizarVisibilidadMarcadorActual() {
+            if (progreso.actual < obtenerPreguntas().length) {
+                const preguntaActual = obtenerPreguntas()[progreso.actual];
+                // Asegura que el marcador de la pregunta actual sea visible y con opacidad completa
+                if (preguntaActual.marker && !mapa.hasLayer(preguntaActual.marker)) {
+                    preguntaActual.marker.setOpacity(1).addTo(mapa);
+                }
+                // Actualiza o crea el círculo de radio para la pregunta actual
+                if (currentQuestionRadiusCircle) {
+                    mapa.removeLayer(currentQuestionRadiusCircle);
+                }
+                currentQuestionRadiusCircle = L.circle(L.latLng(preguntaActual.coords), {
+                    color: 'blue',
+                    fillColor: '#0000ff',
+                    fillOpacity: 0.2,
+                    radius: ACTIVATION_RADIUS
+                }).addTo(mapa);
+            } else if (currentQuestionRadiusCircle) { // Si no hay más preguntas, remueve el círculo
+                mapa.removeLayer(currentQuestionRadiusCircle);
+                currentQuestionRadiusCircle = null;
+            }
+        }
+
+        /**
+         * Muestra la ventana de felicitación con la explicación de la respuesta correcta,
+         * una imagen del lugar y un audio.
+         * @param {Object} pregunta El objeto de la pregunta actual.
+         */
+        function mostrarFelicitacionCorrecta(pregunta) {
+            const felicitacionImagen = document.getElementById("felicitacion-imagen");
+            felicitacionImagen.setAttribute('data-src', pregunta.fotoUrl);
+            // Example of how you might set a srcset if your data had different image sizes
+            // felicitacionImagen.setAttribute('data-srcset', 'path/to/small.webp 200w, path/to/medium.webp 400w, path/to/large.webp 800w');
+            loadImage(felicitacionImagen); // Call the new loadImage function
+            felicitacionImagen.alt = `Imagen del lugar de la pregunta: ${pregunta.texto}`;
+
+            document.getElementById("felicitacion-explicacion").textContent = pregunta.explicacion;
+
+            // Se elimina la asignación de audioUrl aquí ya que se eliminó del preguntasData
+            // const audioExplicacion = document.getElementById("felicitacion-audio");
+            // audioExplicacion.src = pregunta.audioUrl;
+
+            ventanaFelicitacion.classList.add("mostrar");
+
+            // Reproducir el audio si el sonido está activado
+            if (sonidoActivado) {
+                sonidoCorrecto.currentTime = 0;
+                sonidoCorrecto.play();
+            }
+            feedbackHaptico(100); // Short vibration for correct answer
+
+            // Reproducir el texto de la explicación de la felicitación
+            reproducirTexto(pregunta.explicacion);
+
+            // Centrar el foco en el botón de continuar para accesibilidad
+            document.getElementById("boton-continuar-felicitacion").focus();
+
+            // Listener para el botón "Continuar" de la ventana de felicitación
+            const botonContinuar = document.getElementById("boton-continuar-felicitacion");
+            // Remover listener previo para evitar múltiples ejecuciones
+            const oldListener = botonContinuar._currentListener;
+            if (oldListener) {
+                botonContinuar.removeEventListener('click', oldListener);
+            }
+
+            const newListener = () => {
+                // audioExplicacion.pause(); // Detener el audio al cerrar la ventana, ya no es necesario si no hay audioUrl
+                if ('speechSynthesis' in window) { // Detener la síntesis de voz al cerrar
+                    window.speechSynthesis.cancel();
+                }
+                ventanaFelicitacion.classList.remove("mostrar");
+
+                // Continuar con la lógica del juego después de la felicitación
+                pregunta.marker.setOpacity(0.4);
+                pregunta.marker.options.interactive = false;
+
+                if (currentQuestionRadiusCircle) {
+                    mapa.removeLayer(currentQuestionRadiusCircle);
+                    currentQuestionRadiusCircle = null;
+                }
+
+                progreso.actual++;
+                actualizarPanelProgreso();
+                actualizarVisibilidadMarcadorActual();
+
+                if (progreso.actual >= obtenerPreguntas().length) {
+                    mostrarVentanaFinal();
+                }
+                ventanaPregunta.classList.remove("mostrar"); // Cierra la ventana de la pregunta
+            };
+            botonContinuar.addEventListener('click', newListener);
+            botonContinuar._currentListener = newListener; // Guarda el listener para poder removerlo
+        }
+
+        function mostrarPregunta(index) {
+            // console.log(`[mostrarPregunta] Intentando mostrar pregunta ${index}. Progreso actual: ${progreso.actual}. Ventana visible: ${ventanaPregunta.classList.contains('mostrar')}`);
+            // Solo muestra la pregunta si es la actual y la ventana no está ya abierta
+            if (index !== progreso.actual || ventanaPregunta.classList.contains('mostrar')) {
+                // console.log(`[mostrarPregunta] Retornando: index !== progreso.actual (${index !== progreso.actual}) o ventana ya visible (${ventanaPregunta.classList.contains('mostrar')})`);
+                return;
+            }
+
+            const p = obtenerPreguntas()[index];
+            const preguntaId = `pregunta_${index}`;
+            // Inicializa los intentos si la pregunta se activa por primera vez
+            progreso.intentos[preguntaId] = progreso.intentos[preguntaId] || 0;
+
+            document.getElementById("texto-pregunta").textContent = p.texto;
+            const opcionesDiv = document.getElementById("opciones");
+            opcionesDiv.innerHTML = "";
+            // explicacionRespuestaDiv.innerHTML = ""; // Ya no es necesario aquí para respuestas correctas
+            // explicacionRespuestaDiv.classList.remove('mostrar'); // Ya no es necesario aquí para respuestas correctas
+
+            // Use DocumentFragment for efficient DOM manipulation
+            const fragment = document.createDocumentFragment();
+
+            p.opciones.forEach((opcion, i) => {
+                const btn = document.createElement("button");
+                btn.textContent = opcion;
+                btn.addEventListener('click', () => {
+                    if (i === p.correcta) {
+                        reproducirSonido(sonidoCorrecto);
+                        feedbackHaptico(100); // Short vibration for correct answer
+                        const puntosGanados = Math.max(0, 3 - progreso.intentos[preguntaId]);
+                        progreso.puntaje += puntosGanados;
+
+                        // MOSTRAR LA NUEVA VENTANA DE FELICITACIÓN
+                        mostrarFelicitacionCorrecta(p);
+
+                    } else {
+                        reproducirSonido(sonidoIncorrecto);
+                        feedbackHaptico([200, 100, 200]); // Pattern vibration for incorrect answer
+                        progreso.intentos[preguntaId]++;
+                        // Para respuestas incorrectas, todavía se puede usar la explicación original si se desea.
+                        // Pero para el alcance de este pedido, se enfoca en la correcta.
+                        // Si quieres una explicación para incorrectas, puedes volver a habilitar el div.
+                        crearModalPersonalizado(
+                            "Respuesta Incorrecta",
+                            "¡Ups! Esa no es la respuesta. Intentá de nuevo.",
+                            [{
+                                texto: "Entendido",
+                                clase: "boton-negacion"
+                            }] // No es necesario callback para ocultar explicación aquí
+                        );
+                    }
+                });
+                fragment.appendChild(btn);
+            });
+            opcionesDiv.appendChild(fragment); // Append all buttons at once
+            ventanaPregunta.classList.add("mostrar");
+            // console.log(`[mostrarPregunta] Ventana de pregunta mostrada. Display style: ${window.getComputedStyle(ventanaPregunta).display}`);
+            // Focus the first answer option for accessibility
+            if (opcionesDiv.firstChild && typeof opcionesDiv.firstChild.focus === 'function') {
+                opcionesDiv.firstChild.focus();
+            }
+        }
+
+        function iniciarSeguimientoUbicacion() {
+            // console.log("[iniciarSeguimientoUbicacion] Iniciando seguimiento de ubicación.");
+            if (!navigator.geolocation) {
+                crearModalPersonalizado("Error de Geolocalización", "La geolocalización no está soportada por tu navegador.", [{
+                    texto: "Cerrar"
+                }]);
+                console.error("[iniciarSeguimientoUbicacion] Geolocalización no soportada.");
+                return;
+            }
+
+            // Si ya estamos rastreando la ubicación, no iniciar otro seguimiento.
+            if (ubicacionWatchId !== null) {
+                // console.log("[iniciarSeguimientoUbicacion] Seguimiento ya activo. Centrando mapa si hay marcador.");
+                if (marcadorUbicacion) mapa.setView(marcadorUbicacion.getLatLng(), 17);
+                return;
+            }
+
+            ubicacionWatchId = navigator.geolocation.watchPosition(
+                (pos) => {
+                    const userLocation = L.latLng(pos.coords.latitude, pos.coords.longitude);
+                    // console.log(`[iniciarSeguimientoUbicacion] Ubicación actual: Lat ${userLocation.lat}, Lng ${userLocation.lng}`);
+
+                    if (marcadorUbicacion) {
+                        marcadorUbicacion.setLatLng(userLocation);
+                    } else {
+                        marcadorUbicacion = L.marker(userLocation, {
+                            icon: L.divIcon({
+                                className: 'leaflet-div-icon',
+                                html: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#E53935"><path d="M12 2c-4.418 0-8 3.582-8 8 0 7 8 12 8 12s8-5 8-12c0-4.418-3.582-8-8-8zm0 11c-1.657 0-3-1.343-3-3s1.343-3 3-3 3 1.343 3 3-1.343 3-3 3z"/></svg>',
+                                iconSize: [30, 30],
+                                iconAnchor: [15, 30]
+                            }) // Custom SVG for user location
+                        }).addTo(mapa).bindPopup("¡Estás aquí!");
+                        mapa.setView(userLocation, 17); // Center on first detection
+                    }
+
+                    // Lógica de activación de la pregunta
+                    if (progreso.actual < obtenerPreguntas().length) {
+                        const preguntaActual = obtenerPreguntas()[progreso.actual];
+                        const preguntaId = `pregunta_${progreso.actual}`; // ID único para la pregunta actual
+                        const preguntaLocation = L.latLng(preguntaActual.coords);
+                        const distance = userLocation.distanceTo(preguntaLocation);
+                        // console.log(`[iniciarSeguimientoUbicacion] Pregunta actual: ${progreso.actual}. Distancia a la pregunta: ${distance.toFixed(2)}m. Radio de activación: ${ACTIVATION_RADIUS}m.`);
+
+                        // Asegurar que el marcador de la pregunta actual sea visible
+                        if (preguntaActual.marker && !mapa.hasLayer(preguntaActual.marker)) {
+                            preguntaActual.marker.setOpacity(1).addTo(mapa);
+                            // console.log(`[iniciarSeguimientoUbicacion] Marcador de pregunta ${progreso.actual} añadido/visible.`);
+                        }
+                        // Actualizar o crear el círculo de radio para la pregunta actual
+                        actualizarVisibilidadMarcadorActual();
+
+                        // Verificar si la pregunta ya ha sido activada/respondida en este intento
+                        // Usamos `progreso.intentos[preguntaId] !== undefined` para saber si ya se ha "tocado" esta pregunta.
+                        const preguntaYaActivada = (progreso.intentos[preguntaId] !== undefined);
+                        // console.log(`[iniciarSeguimientoUbicacion] Pregunta ${preguntaId} ya activada (progreso.intentos): ${preguntaYaActivada}`);
+
+                        // Si la distancia es menor o igual al radio de activación
+                        // Y la ventana de la pregunta NO está visible actualmente (para evitar re-abrirla)
+                        // Y la pregunta aún NO ha sido activada automáticamente
+                        if (distance <= ACTIVATION_RADIUS && !ventanaPregunta.classList.contains('mostrar') && !preguntaYaActivada && !ventanaFelicitacion.classList.contains('mostrar')) { // Añadida condición para la ventana de felicitación
+                            // console.log(`[iniciarSeguimientoUbicacion] Condición de activación cumplida para pregunta ${progreso.actual}.`);
+
+                            // Marca la pregunta como "activada" para evitar activaciones múltiples
+                            progreso.intentos[preguntaId] = 0; // Inicializa los intentos a 0 para esta pregunta
+                            // console.log(`[iniciarSeguimientoUbicacion] Marcando pregunta ${preguntaId} como activada.`);
+
+                            // Si el marcador estaba interactivo (por un clic manual previo, aunque ahora es automático),
+                            // asegura que no lo sea más y cierra cualquier tooltip.
+                            if (preguntaActual.marker.options.interactive) {
+                                preguntaActual.marker.closeTooltip();
+                                preguntaActual.marker.options.interactive = false;
+                                // console.log(`[iniciarSeguimientoUbicacion] Desactivando interactividad del marcador.`);
+                            }
+
+                            // Centra el mapa en la pregunta activada (mejora la UX)
+                            mapa.setView(preguntaLocation, 17);
+                            // console.log(`[iniciarSeguimientoUbicacion] Mapa centrado en la pregunta.`);
+
+                            // Muestra la pregunta automáticamente
+                            mostrarPregunta(progreso.actual);
+
+                            // Notificar al usuario que una pregunta se ha activado automáticamente
+                            crearModalPersonalizado("¡Pregunta Activa!", "Estás en el lugar de la próxima pregunta. ¡Responde!", [{
+                                texto: "OK"
+                            }]);
+                            // console.log(`[iniciarSeguimientoUbicacion] Modal de 'Pregunta Activa' mostrado.`);
+
+                        } else if (distance > ACTIVATION_RADIUS) {
+                            // Si el usuario se aleja del radio, asegúrate de que el marcador no sea interactivo
+                            // y cierra el tooltip si estaba abierto.
+                            if (preguntaActual.marker.options.interactive) {
+                                preguntaActual.marker.options.interactive = false;
+                                preguntaActual.marker.closeTooltip();
+                                // console.log(`[iniciarSeguimientoUbicacion] Usuario fuera de radio, marcador deshabilitado.`);
+                            }
+                        }
+                    } else {
+                        // console.log("[iniciarSeguimientoUbicacion] No hay más preguntas o progreso.actual fuera de rango.");
+                    }
+                },
+                (err) => {
+                    console.error(`ERROR(${err.code}): ${err.message}`);
+                    crearModalPersonalizado(
+                        "Error de Geolocalización",
+                        `No se pudo obtener tu ubicación: ${err.message}. Verifica los permisos.`,
+                        [{
+                            texto: "Cerrar"
+                        }]
+                    );
+                    if (ubicacionWatchId !== null) {
+                        navigator.geolocation.clearWatch(ubicacionWatchId);
+                        ubicacionWatchId = null;
+                    }
+                }, {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 0
+                }
+            );
+            // Una vez que se inicia el seguimiento, muestra el primer marcador y su círculo de radio.
+            actualizarVisibilidadMarcadorActual();
+        }
+
+
+        function actualizarPanelProgreso() {
+            const totalPreguntas = obtenerPreguntas().length;
+            const porcentaje = totalPreguntas > 0 ? Math.round((progreso.actual / totalPreguntas) * 100) : 0;
+            document.getElementById("progreso-porcentaje").style.width = porcentaje + "%";
+            document.getElementById("progreso-texto").textContent =
+                `${progreso.actual} / ${totalPreguntas} preguntas respondidas - Puntaje: ${progreso.puntaje} / ${totalPreguntas * 3}`;
+        }
+
+        function reiniciarTrivia() {
+            crearModalPersonalizado(
+                "Reiniciar Trivia",
+                "¿Estás seguro que querés reiniciar tu progreso? Se perderá todo.",
+                [{
+                    texto: "Sí, reiniciar",
+                    clase: "boton-negacion",
+                    callback: () => location.reload()
+                },
+                {
+                    texto: "No, continuar",
+                    clase: "boton-confirmacion"
+                }
+                ]
+            );
+        }
+
+        function mostrarVentanaFinal() {
+            const totalPreguntas = obtenerPreguntas().length;
+            document.getElementById("puntaje-final").textContent = `${progreso.puntaje} / ${totalPreguntas * 3}`;
+            const porcentajeScore = totalPreguntas > 0 ? progreso.puntaje / (totalPreguntas * 3) : 0;
+            let mensaje = "";
+            if (porcentajeScore < 0.4) mensaje = "Debes estudiar más de la fauna y flora de nuestro parque. ¡Vuelve a intentarlo!";
+            else if (porcentajeScore <= 0.6) mensaje = "Tienes conocimientos básicos de nuestra flora y fauna. ¡Puedes esforzarte un poco más!";
+            else if (porcentajeScore <= 0.89) mensaje = "Tienes muy buenos conocimientos del parque. ¡Un poco más de estudio y lo aprenderás todo!";
+            else mensaje = "¡Eres un experto conocedor del Parque Francisco Tau!";
+
+            document.getElementById("mensaje-final").textContent = mensaje;
+            ventanaFinal.classList.add("mostrar");
+            document.getElementById("boton-cerrar-final").focus(); // Focus close button
+
+            // Detiene el seguimiento de ubicación y remueve el círculo de radio al finalizar la trivia
+            if (ubicacionWatchId !== null) {
+                navigator.geolocation.clearWatch(ubicacionWatchId);
+                ubicacionWatchId = null;
+            }
+            if (currentQuestionRadiusCircle) {
+                mapa.removeLayer(currentQuestionRadiusCircle);
+                currentQuestionRadiusCircle = null;
+            }
+            // También detén cualquier síntesis de voz en curso al finalizar la trivia.
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+            }
+        }
+
+        function cerrarVentanaFinal() {
+            ventanaFinal.classList.remove("mostrar");
+            // Optional: Redirect or show welcome again for another round
+            // ventanaBienvenida.classList.add("mostrar");
+            // progreso = { actual: 0, puntaje: 0, intentos: {} }; // Reset progress if you want to play again without reloading
+            // actualizarPanelProgreso();
+        }
+
+        function accionMostrarUbicacion() {
+            if (marcadorUbicacion && mapa.hasLayer(marcadorUbicacion)) {
+                mapa.setView(marcadorUbicacion.getLatLng(), 17); // Center on known location
+                marcadorUbicacion.openPopup();
+            } else if (!ubicacionWatchId) {
+                // Si no se ha iniciado el seguimiento, lo inicia
+                iniciarSeguimientoUbicacion();
+                crearModalPersonalizado("Ubicación", "Iniciando seguimiento de ubicación para mostrarte en el mapa.", [{
+                    texto: "OK"
+                }]);
+            } else {
+                // Si el seguimiento está activo pero no hay ubicación aún
+                crearModalPersonalizado("Ubicación", "Esperando señal de GPS para mostrar tu ubicación...", [{
+                    texto: "OK"
+                }]);
+            }
+        }
+
+        function toggleSonido() {
+            sonidoActivado = !sonidoActivado;
+            if (sonidoActivado) {
+                iconSoundOn.style.display = 'inline-block';
+                iconSoundOff.style.display = 'none';
+            } else {
+                iconSoundOn.style.display = 'none';
+                iconSoundOff.style.display = 'inline-block';
+                if ('speechSynthesis' in window) { // Si el sonido se desactiva, cancela cualquier voz en curso.
+                    window.speechSynthesis.cancel();
+                }
+            }
+            crearModalPersonalizado("Sonido", `Sonido ${sonidoActivado ? 'activado' : 'desactivado'}.`, [{
+                texto: "OK"
+            }]);
+        }
+
+        // --- Initialization and Event Listeners ---
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Check for WebP support once on load
+            supportsWebP = await checkWebPSupport();
+
+            // console.log('DOM Content Loaded. Initializing app.');
+            // Assign events to age buttons
+            document.querySelectorAll('#botones-edad button').forEach(button => {
+                button.addEventListener('click', function () {
+                    seleccionarEdad(this.dataset.edad);
+                });
+            });
+
+            // Events for other main buttons
+            document.getElementById('boton-comenzar-instrucciones').addEventListener('click', cerrarVentanaInstrucciones);
+            document.getElementById('boton-reiniciar').addEventListener('click', reiniciarTrivia);
+            document.getElementById('boton-mostrar-ubicacion').addEventListener('click', accionMostrarUbicacion);
+            document.getElementById('boton-cerrar-final').addEventListener('click', cerrarVentanaFinal);
+            botonToggleSonido.addEventListener('click', toggleSonido);
+
+            // Show welcome window on load
+            // console.log('Attempting to show welcome window.');
+            if (ventanaBienvenida) {
+                ventanaBienvenida.classList.add("mostrar");
+                // Añadir reproducción de audio al mostrar la ventana de bienvenida
+                const tituloBienvenida = document.getElementById("titulo-bienvenida").textContent;
+                const parrafoBienvenida = document.querySelector("#ventana-bienvenida p").textContent;
+                reproducirTexto(tituloBienvenida + " " + parrafoBienvenida);
+            } else {
+                console.error('Error: Element with ID "ventana-bienvenida" not found.');
+            }
+
+            // Focus the first age button
+            const primerBotonEdad = document.querySelector('#botones-edad button');
+            if (primerBotonEdad) {
+                primerBotonEdad.focus();
+            }
+        });
+    </script>
+
+</body>
+
+</html>
