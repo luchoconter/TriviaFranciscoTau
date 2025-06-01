@@ -51,7 +51,7 @@
             font-family: var(--fuente-principal);
             font-size: var(--tamano-fuente-normal);
             background-image: url('fondo.jpg');
-            /* Placeholder for background image */
+            /* Placeholder for background image - assuming it's in the root */
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -96,7 +96,7 @@
 
             /* Background with image and overlay for readability */
             background: linear-gradient(var(--color-fondo-overlay), var(--color-fondo-overlay)), url('fondoventanas.jpg');
-            /* Placeholder for window background image */
+            /* Placeholder for window background image - assuming it's in the root */
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -663,12 +663,7 @@
 
     <div id="ventana-felicitacion" role="dialog" aria-modal="true" aria-labelledby="titulo-felicitacion">
         <h3 id="titulo-felicitacion">¡Respuesta Correcta!</h3>
-        <img id="felicitacion-imagen"
-            data-src="imagenes/algarrobo.jpg" 
-            data-srcset="imagenes/algarrobo-small.jpg 200w, imagenes/algarrobo-medium.jpg 400w, imagenes/algarrobo-large.jpg 800w"
-            sizes="(max-width: 400px) 100vw, (max-width: 800px) 50vw, 33vw"
-            src="imagenes/algarrobo-placeholder.jpg"
-            alt="Imagen del lugar">
+        <img id="felicitacion-imagen" src="algarrobo.jpg" alt="Imagen del lugar">
         <p id="felicitacion-explicacion"></p>
         <button id="boton-continuar-felicitacion">Continuar</button>
     </div>
@@ -733,7 +728,7 @@
                     "opciones": ["Eucalipto", "Pino", "Algarrobo blanco"],
                     "correcta": 2,
                     "explicacion": "Es un árbol nativo típico de la región chaqueña y pampeana, muy resistente a la sequía. En el Parque Francisco Tau, el algarrobo blanco aporta sombra y alimento a la fauna local con sus vainas dulces. Además, su madera es dura y se utiliza tradicionalmente para carpintería y artesanía. Es una especie clave para mantener el equilibrio ecológico del área.",
-                    "fotoUrl": "algarrobo.jpg"
+                    "fotoUrl": "algarrobo.jpg" // Ruta directa
                 },
                 {
                     "coords": [-34.70273, -58.29226],
@@ -741,7 +736,7 @@
                     "opciones": ["Río Ctalamochita", "Río Primero", "Río Segundo"],
                     "correcta": 0,
                     "explicacion": "El Río Ctalamochita, también llamado Río Tercero, atraviesa el Parque Francisco Tau y es fundamental para su ecosistema. Sus aguas forman balnearios naturales como El Diquecito y Paso de la Arena, y brindan hábitat a aves acuáticas, peces y mamíferos como el coipo. Además de su valor natural y recreativo, funciona como un corredor biológico, conectando distintos ambientes y favoreciendo la biodiversidad del parque.",
-                    "fotoUrl": "rio.jpg"
+                    "fotoUrl": "rio.jpg" // Ruta directa
                 },
                 {
                     "coords": [-34.70198, -58.29264],
@@ -749,7 +744,7 @@
                     "opciones": ["Selva de Yungas", "Chaco Húmedo", "Espinal"],
                     "correcta": 2,
                     "explicacion": "El Parque Francisco Tau conserva un relicto del bioma del Espinal, un tipo de bosque nativo de la llanura cordobesa. Se caracteriza por especies resistentes a la sequía como el algarrobo blanco, el tala, el chañar y el espinillo. Este ecosistema, hoy muy reducido por la expansión agrícola, es único en un centro urbano en Córdoba. Su preservación es fundamental para conservar la biodiversidad autóctona, estudiar el ambiente original de la región y mantener un pulmón verde para la ciudad.",
-                    "fotoUrl": "espinal.jpg"
+                    "fotoUrl": "espinal.jpg" // Ruta directa
                 },
                 {
                     "coords": [-34.70172, -58.29371],
@@ -757,7 +752,7 @@
                     "opciones": ["5", "125", "75"],
                     "correcta": 1,
                     "explicacion": "El Parque Francisco Tau alberga una gran diversidad de aves, con al menos 125 especies registradas, lo que lo convierte en un sitio ideal para la observación de aves. Se encuentran 					especies comunes y vistosas como el hornero, el benteveo, el cardenal común y el chingolo, así como aves acuáticas como el biguá, la gallareta y el martín pescador chico. También se 					observan aves rapaces como el carancho y la lechucita de las vizcacheras.\n\t\t\t\t\tLa variedad de hábitats del parque (bosque, ribera, pastizal) favorece esta riqueza avifaunística, que es clave para el equilibrio ecológico y un gran recurso para la educación 					ambiental.",
-                    "fotoUrl": "ave.jpg"
+                    "fotoUrl": "ave.jpg" // Ruta directa
                 },
                 {
                     "coords": [-34.70141, -58.29481],
@@ -765,7 +760,7 @@
                     "opciones": ["Coipo", "Zorro", "Armadillo"],
                     "correcta": 0,
                     "explicacion": "El coipo, también llamado nutria criolla, es un mamífero roedor semiacuático que vive en zonas cercanas al agua, como las orillas del Río Ctalamochita, dentro del Parque Francisco Tau. 					Tiene un cuerpo robusto, pelaje denso e impermeable, y una cola larga y redondeada. Sus patas traseras palmeadas le permiten nadar con gran agilidad. Se alimenta principalmente de vegetación 						acuática y raíces, y suele construir madrigueras en barrancas o entre la vegetación ribereña. Es una especie nativa de América del Sur y cumple un rol ecológico importante en el ecosistema 						acuático, ayudando a controlar el crecimiento de plantas en lagunas y ríos. Su presencia en el parque indica una buena calidad ambiental en los ambientes ribereños y la existencia de refugio 						adecuado para fauna nativa.",
-                    "fotoUrl": "coipo.jpg"
+                    "fotoUrl": "coipo.jpg" // Ruta directa
                 }
             ],
             "10a15": [
@@ -775,7 +770,7 @@
                     "opciones": ["Algarrobo blanco", "Pino", "Eucalipto"],
                     "correcta": 0,
                     "explicacion": "Es un árbol nativo típico de la región chaqueña y pampeana, muy resistente a la sequía. En el Parque Francisco Tau, el algarrobo blanco aporta sombra y alimento a la fauna local con sus vainas dulces. Además, su madera es dura y se utiliza tradicionalmente para carpintería y artesanía. Es una especie clave para mantener el equilibrio ecológico del área.",
-                    "fotoUrl": "algarrobo.jpg"
+                    "fotoUrl": "algarrobo.jpg" // Ruta directa
                 },
                 {
                     "coords": [-34.70273, -58.29226],
@@ -783,7 +778,7 @@
                     "opciones": ["Río Segundo", "Río Primero", "Río Ctalamochita"],
                     "correcta": 2,
                     "explicacion": "El Río Ctalamochita, también llamado Río Tercero, atraviesa el Parque Francisco Tau y es fundamental para su ecosistema. Sus aguas forman balnearios naturales como El Diquecito y Paso de la Arena, y brindan hábitat a aves acuáticas, peces y mamíferos como el coipo. Además de su valor natural y recreativo, funciona como un corredor biológico, conectando distintos ambientes y favoreciendo la biodiversidad del parque.",
-                    "fotoUrl": "rio.jpg"
+                    "fotoUrl": "rio.jpg" // Ruta directa
                 },
                 {
                     "coords": [-34.70198, -58.29264],
@@ -791,7 +786,7 @@
                     "opciones": ["Chaco Húmedo", "Espinal", "Selva de Yungas"],
                     "correcta": 1,
                     "explicacion": "El Parque Francisco Tau conserva un relicto del bioma del Espinal, un tipo de bosque nativo de la llanura cordobesa. Se caracteriza por especies resistentes a la sequía como el algarrobo blanco, el tala, el chañar y el espinillo. Este ecosistema, hoy muy reducido por la expansión agrícola, es único en un centro urbano en Córdoba. Su preservación es fundamental para conservar la biodiversidad autóctona, estudiar el ambiente original de la región y mantener un pulmón verde para la ciudad.",
-                    "fotoUrl": "espinal.jpg"
+                    "fotoUrl": "espinal.jpg" // Ruta directa
                 },
                 {
                     "coords": [-34.70172, -58.29371],
@@ -799,7 +794,7 @@
                     "opciones": ["100", "135", "125"],
                     "correcta": 2,
                     "explicacion": "El Parque Francisco Tau alberga una gran diversidad de aves, con al menos 125 especies registradas, lo que lo convierte en un sitio ideal para la observación de aves. Se encuentran 					especies comunes y vistosas como el hornero, el benteveo, el cardenal común y el chingolo, así como aves acuáticas como el biguá, la gallareta y el martín pescador chico. También se 					observan aves rapaces como el carancho y la lechucita de las vizcacheras.\n\t\t\t\t\tLa variedad de hábitats del parque (bosque, ribera, pastizal) favorece esta riqueza avifaunística, que es clave para el equilibrio ecológico y un gran recurso para la educación 					ambiental.",
-                    "fotoUrl": "ave.jpg"
+                    "fotoUrl": "ave.jpg" // Ruta directa
                 },
                 {
                     "coords": [-34.70141, -58.29481],
@@ -807,7 +802,7 @@
                     "opciones": ["Comadreja overa", "Coipo", "Cuis"],
                     "correcta": 1,
                     "explicacion": "El coipo, también llamado nutria criolla, es un mamífero roedor semiacuático que vive en zonas cercanas al agua, como las orillas del Río Ctalamochita, dentro del Parque Francisco Tau. 					Tiene un cuerpo robusto, pelaje denso e impermeable, y una cola larga y redondeada. Sus patas traseras palmeadas le permiten nadar con gran agilidad. Se alimenta principalmente de vegetación 						acuática y raíces, y suele construir madrigueras en barrancas o entre la vegetación ribereña. Es una especie nativa de América del Sur y cumple un rol ecológico importante en el ecosistema 						acuático, ayudando a controlar el crecimiento de plantas en lagunas y ríos. Su presencia en el parque indica una buena calidad ambiental en los ambientes ribereños y la existencia de refugio 						adecuado para fauna nativa.",
-                    "fotoUrl": "coipo.jpg"
+                    "fotoUrl": "coipo.jpg" // Ruta directa
                 }
             ],
             "mayor15": [
@@ -817,7 +812,7 @@
                     "opciones": ["Algarrobo blanco", "Pino", "Eucalipto"],
                     "correcta": 0,
                     "explicacion": "Es un árbol nativo típico de la región chaqueña y pampeana, muy resistente a la sequía. En el Parque Francisco Tau, el algarrobo blanco aporta sombra y alimento a la fauna local con sus vainas dulces. Además, su madera es dura y se utiliza tradicionalmente para carpintería y artesanía. Es una especie clave para mantener el equilibrio ecológico del área.",
-                    "fotoUrl": "algarrobo.jpg"
+                    "fotoUrl": "algarrobo.jpg" // Ruta directa
                 },
                 {
                     "coords": [-34.70273, -58.29226],
@@ -825,7 +820,7 @@
                     "opciones": ["Río Primero", "Río Ctalamochita", "Río Segundo"],
                     "correcta": 1,
                     "explicacion": "El Río Ctalamochita, también llamado Río Tercero, atraviesa el Parque Francisco Tau y es fundamental para su ecosistema. Sus aguas forman balnearios naturales como El Diquecito y Paso de la Arena, y brindan hábitat a aves acuáticas, peces y mamíferos como el coipo. Además de su valor natural y recreativo, funciona como un corredor biológico, conectando distintos ambientes y favoreciendo la biodiversidad del parque.",
-                    "fotoUrl": "rio.jpg"
+                    "fotoUrl": "rio.jpg" // Ruta directa
                 },
                 {
                     "coords": [-34.70198, -58.29264],
@@ -833,7 +828,7 @@
                     "opciones": ["Selva de Yungas", "Chaco Húmedo", "Espinal"],
                     "correcta": 0,
                     "explicacion": "El Parque Francisco Tau conserva un relicto del bioma del Espinal, un tipo de bosque nativo de la llanura cordobesa. Se caracteriza por especies resistentes a la sequía como el algarrobo blanco, el tala, el chañar y el espinillo. Este ecosistema, hoy muy reducido por la expansión agrícola, es único en un centro urbano en Córdoba. Su preservación es fundamental para conservar la biodiversidad autóctona, estudiar el ambiente original de la región y mantener un pulmón verde para la ciudad.",
-                    "fotoUrl": "espinal.jpg"
+                    "fotoUrl": "espinal.jpg" // Ruta directa
                 },
                 {
                     "coords": [-34.70172, -58.29371],
@@ -841,7 +836,7 @@
                     "opciones": ["125", "135", "115"],
                     "correcta": 0,
                     "explicacion": "El Parque Francisco Tau alberga una gran diversidad de aves, con al menos 125 especies registradas, lo que lo convierte en un sitio ideal para la observación de aves. Se encuentran 					especies comunes y vistosas como el hornero, el benteveo, el cardenal común y el chingolo, así como aves acuáticas como el biguá, la gallareta y el martín pescador chico. También se 					observan aves rapaces como el carancho y la lechucita de las vizcacheras.\n\t\t\t\t\tLa variedad de hábitats del parque (bosque, ribera, pastizal) favorece esta riqueza avifaunística, que es clave para el equilibrio ecológico y un gran recurso para la educación 					ambiental.",
-                    "fotoUrl": "ave.jpg"
+                    "fotoUrl": "ave.jpg" // Ruta directa
                 },
                 {
                     "coords": [-34.70141, -58.29481],
@@ -849,7 +844,7 @@
                     "opciones": ["Comadreja overa", "Cuis", "Coipo"],
                     "correcta": 2,
                     "explicacion": "El coipo (Myocastor coypus) es un roedor semiacuático nativo, clave en los ecosistemas ribereños del parque, contribuyendo al control de la vegetación acuática.",
-                    "fotoUrl": "coipo.jpg"
+                    "fotoUrl": "coipo.jpg" // Ruta directa
                 }
             ]
         };
@@ -904,32 +899,13 @@
         }
 
         /**
-         * Loads an image, prioritizing WebP if supported, and handling srcset for responsiveness.
+         * Loads an image directly without srcset or WebP conversion, as per user's request.
          * @param {HTMLImageElement} imgElement The <img> element to load.
          */
         function loadImage(imgElement) {
-            const originalSrc = imgElement.getAttribute('data-src');
-            const originalSrcset = imgElement.getAttribute('data-srcset');
-
-            if (supportsWebP && originalSrc) {
-                // Try to use WebP version if supported and original src exists
-                imgElement.src = originalSrc.replace(/\.(jpe?g|png)$/i, '.webp');
-            } else if (originalSrc) {
-                // Fallback to original src if WebP not supported
-                imgElement.src = originalSrc;
-            }
-
-            if (supportsWebP && originalSrcset) {
-                // Try to use WebP srcset if supported and original srcset exists
-                imgElement.srcset = originalSrcset.replace(/\.(jpe?g|png)/gi, '.webp');
-            } else if (originalSrcset) {
-                // Fallback to original srcset if WebP not supported
-                imgElement.srcset = originalSrcset;
-            }
-
-            // Remove data attributes after attempting to load
-            imgElement.removeAttribute('data-src');
-            imgElement.removeAttribute('data-srcset');
+            // Simply set the src attribute. The fotoUrl from preguntasData will be directly assigned.
+            // No data-src or data-srcset needed here as the src will be updated directly.
+            // No WebP conversion as per user's direct image names.
         }
 
 
@@ -1128,20 +1104,12 @@
          */
         function mostrarFelicitacionCorrecta(pregunta) {
             const felicitacionImagen = document.getElementById("felicitacion-imagen");
-            // Aquí es donde se establece la fuente de la imagen dinámicamente
-            felicitacionImagen.setAttribute('data-src', pregunta.fotoUrl);
-            // Actualiza también el srcset si tienes diferentes tamaños de imagen para cada foto real
-            // Por ahora, lo dejo con la misma lógica que el data-src, asumiendo que tus imágenes reales
-            // también tendrán versiones small/medium/large si usas srcset.
-            // Si no usas srcset con tus imágenes reales, puedes eliminar el data-srcset y sizes
-            // y solo usar felicitacionImagen.src = pregunta.fotoUrl;
-            felicitacionImagen.setAttribute('data-srcset', 
-                pregunta.fotoUrl.replace(/\.(jpe?g|png|webp)$/i, '-small.$1 200w') + ', ' +
-                pregunta.fotoUrl.replace(/\.(jpe?g|png|webp)$/i, '-medium.$1 400w') + ', ' +
-                pregunta.fotoUrl.replace(/\.(jpe?g|png|webp)$/i, '-large.$1 800w')
-            );
-
-            loadImage(felicitacionImagen); // Call the new loadImage function
+            // Se asigna directamente la fotoUrl de la pregunta al src de la imagen
+            felicitacionImagen.src = pregunta.fotoUrl;
+            // Se limpian los atributos data-src y data-srcset ya que no se usarán más
+            felicitacionImagen.removeAttribute('data-src');
+            felicitacionImagen.removeAttribute('data-srcset');
+            felicitacionImagen.removeAttribute('sizes'); // También remover sizes si no se usa srcset
             felicitacionImagen.alt = `Imagen relacionada con la pregunta: ${pregunta.texto}`; // Mejorar el alt
 
             document.getElementById("felicitacion-explicacion").textContent = pregunta.explicacion;
@@ -1525,6 +1493,7 @@
 </body>
 
 </html>
+
 
 
 
