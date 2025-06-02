@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8" />
-    <title>Trivia Francisco Tau - Mejorada para Celulares</title>
+    <title>Trivia Francisco Tau</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <style>
@@ -636,7 +636,7 @@
     <div id="map"></div>
 
     <div id="ventana-bienvenida" class="modal-base" role="dialog" aria-modal="true" aria-labelledby="titulo-bienvenida">
-        <h2 id="titulo-bienvenida">¡Bienvenido a la trivia del "Parque Natural Francisco Tau"!</h2>
+        <h2 id="titulo-bienvenida">¡Bienvenido a la trivia del "Reserva Natural Francisco Tau"!</h2>
         <p>¿En qué rango de edad te encontrás?</p>
         <div id="botones-edad">
             <button data-edad="menor10" class="age-selection-button">Menor a 10 años</button>
@@ -647,11 +647,11 @@
 
     <div id="ventana-instrucciones" class="modal-base" role="dialog" aria-modal="true"
         aria-labelledby="titulo-instrucciones">
-        <h2 id="titulo-instrucciones">¡Bienvenido a la trivia del Parque Natural Francisco Tau!</h2>
-        <p>En esta trivia aprenderemos diferentes aspectos naturales, culturales y sociales de nuestro parque natural.</p>
+        <h2 id="titulo-instrucciones">¡Bienvenido a la trivia del Reserva Natural Francisco Tau!</h2>
+        <p>En esta trivia aprenderemos diferentes aspectos naturales, culturales y sociales de nuestra reserva natural.</p>
         <p>Para poder realizar la experiencia de la forma más óptima debemos realizar dos cosas:</p>
         <p>En primer lugar, activar la ubicación y en segundo, activar el sonido.</p>
-        <p>¡Esperamos que disfrutes este viaje por el parque!</p>
+        <p>¡Esperamos que disfrutes este viaje por la reserva!</p>
         <button id="boton-comenzar-instrucciones">¡Comencemos!</button>
     </div>
 
@@ -723,7 +723,7 @@
         const preguntasData = {
             "menor10": [
                 {
-                    "coords": [-32.79100, -60.72252],
+                    "coords": [-32.62763, -62.70419],
                     "texto": "¿Qué árbol muy antiguo del parque da sombra y tiene tronco grueso, con más de 400 años?",
                     "opciones": ["Eucalipto", "Pino", "Algarrobo blanco"],
                     "correcta": 2,
@@ -731,7 +731,7 @@
                     "fotoUrl": "algarrobo.jpg" // Ruta directa
                 },
                 {
-                    "coords": [-32.79106, -60.72193],
+                    "coords": [-32.62742, -62.70511],
                     "texto": "¿Cómo se llama el río que pasa por el parque y tiene playas como El Diquecito?",
                     "opciones": ["Río Ctalamochita", "Río Primero", "Río Segundo"],
                     "correcta": 0,
@@ -739,7 +739,7 @@
                     "fotoUrl": "rio.jpg" // Ruta directa
                 },
                 {
-                    "coords": [-32.79050, -60.72163],
+                    "coords": [-32.62655, -62.70584],
                     "texto": "¿Cómo se llama el tipo de bosque con árboles como algarrobos y espinillos que se cuida en el parque?",
                     "opciones": ["Selva de Yungas", "Chaco Húmedo", "Espinal"],
                     "correcta": 2,
@@ -747,7 +747,7 @@
                     "fotoUrl": "espinal.jpg" // Ruta directa
                 },
                 {
-                    "coords": [-32.79065,-60.72069],
+                    "coords": [-32.62550, -62.70573],
                     "texto": "¿Cuántas clases de pájaros hay en el parque, más o menos?",
                     "opciones": ["5", "125", "75"],
                     "correcta": 1,
@@ -755,7 +755,7 @@
                     "fotoUrl": "ave.jpg" // Ruta directa
                 },
                 {
-                    "coords": [-32.79130, -60.72080],
+                    "coords": [-32.62451,-62.70495],
                     "texto": "¿Qué animal del parque vive cerca del río y parece un castor?",
                     "opciones": ["Coipo", "Zorro", "Armadillo"],
                     "correcta": 0,
@@ -765,7 +765,7 @@
             ],
             "10a15": [
                 {
-                    "coords": [-32.79100, -60.72252],
+                    "coords": [-32.62763, -62.70419],
                     "texto": "¿Cuál es la especie de árbol nativo más antigua del Parque Francisco Tau, considerada un monumento natural viviente?",
                     "opciones": ["Algarrobo blanco", "Pino", "Eucalipto"],
                     "correcta": 0,
@@ -773,7 +773,7 @@
                     "fotoUrl": "algarrobo.jpg" // Ruta directa
                 },
                 {
-                    "coords": [-32.79106, -60.72193],
+                    "coords": [-32.62742, -62.70511],
                     "texto": "¿Qué río atraviesa el Parque Francisco Tau y forma parte importante de su paisaje natural?",
                     "opciones": ["Río Segundo", "Río Primero", "Río Ctalamochita"],
                     "correcta": 2,
@@ -781,7 +781,7 @@
                     "fotoUrl": "rio.jpg" // Ruta directa
                 },
                 {
-                    "coords": [-32.79050, -60.72163],
+                    "coords": [-32.62655, -62.70584],
                     "texto": "¿A qué bioma pertenece el monte nativo que protege el Parque Francisco Tau?",
                     "opciones": ["Chaco Húmedo", "Espinal", "Selva de Yungas"],
                     "correcta": 1,
@@ -789,7 +789,7 @@
                     "fotoUrl": "espinal.jpg" // Ruta directa
                 },
                 {
-                    "coords": [-32.79065, -60.72069],
+                    "coords": [-32.62550, -62.70573],
                     "texto": "¿Cuántas especies de aves, aproximadamente, han sido identificadas en el Parque Francisco Tau?",
                     "opciones": ["100", "135", "125"],
                     "correcta": 2,
@@ -797,7 +797,7 @@
                     "fotoUrl": "ave.jpg" // Ruta directa
                 },
                 {
-                    "coords": [-32.79130,-60.72080],
+                    "coords": [-32.62451, -62.70495],
                     "texto": "¿Qué roedor semiacuático, parecido a una nutria, habita en las orillas del Río Ctalamochita dentro del parque?",
                     "opciones": ["Comadreja overa", "Coipo", "Cuis"],
                     "correcta": 1,
@@ -807,7 +807,7 @@
             ],
             "mayor15": [
                 {
-                    "coords": [-32.79100, -60.72252],
+                    "coords": [-32.62763, -62.70419],
                     "texto": "¿Qué especie arbórea autóctona, propia del Espinal y con un ejemplar de más de cuatro siglos en el parque, representa un testimonio ecológico e histórico de la región?",
                     "opciones": ["Algarrobo blanco", "Pino", "Eucalipto"],
                     "correcta": 0,
@@ -815,7 +815,7 @@
                     "fotoUrl": "algarrobo.jpg" // Ruta directa
                 },
                 {
-                    "coords": [-32.79106, -60.72193],
+                    "coords": [-32.62742,-62.70511],
                     "texto": "¿Cuál es el curso fluvial que recorre el parque, funcionando como corredor biológico y aportando ambientes acuáticos y ribereños?",
                     "opciones": ["Río Primero", "Río Ctalamochita", "Río Segundo"],
                     "correcta": 1,
@@ -823,7 +823,7 @@
                     "fotoUrl": "rio.jpg" // Ruta directa
                 },
                 {
-                    "coords": [-32.79050, -60.72163],
+                    "coords": [-32.62655, -62.70584],
                     "texto": "¿Cuál es el nombre de la ecorregión fitogeográfica representada por el relicto conservado en el Parque Francisco Tau?",
                     "opciones": ["Selva de Yungas", "Chaco Húmedo", "Espinal"],
                     "correcta": 0,
@@ -831,7 +831,7 @@
                     "fotoUrl": "espinal.jpg" // Ruta directa
                 },
                 {
-                    "coords": [-32.79065, -60.72069],
+                    "coords": [-32.62550, -62.70573],
                     "texto": "Según relevamientos recientes, ¿cuántas especies avifaunísticas habitan actualmente el Parque Francisco Tau?",
                     "opciones": ["125", "135", "115"],
                     "correcta": 0,
@@ -839,7 +839,7 @@
                     "fotoUrl": "ave.jpg" // Ruta directa
                 },
                 {
-                    "coords": [-32.79130,-60.72080],
+                    "coords": [-32.62451, -62.70495],
                     "texto": "¿Cuál es el mamífero nativo de hábitos ribereños, identificado como Myocastor coypus, registrado en el Parque Francisco Tau?",
                     "opciones": ["Comadreja overa", "Cuis", "Coipo"],
                     "correcta": 2,
