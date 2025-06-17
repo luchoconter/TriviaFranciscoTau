@@ -631,7 +631,6 @@
             border-radius: 50%;
             width: 60px;
             height: 60px;
-            /* Removed font-size as it's an image now */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -647,15 +646,15 @@
             -moz-user-select: none;
             -ms-user-select: none;
             user-select: none;
-            padding: 0; /* Remove padding to make image fill the button */
+            padding: 0;
         }
 
         #chatbot-toggle-button img {
-            width: 100%; /* Make image fill the button */
-            height: 100%; /* Make image fill the button */
-            object-fit: cover; /* Cover the area, cropping if necessary */
-            border-radius: 50%; /* Make image circular */
-            display: block; /* Remove extra space below image */
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            display: block;
         }
 
         #chatbot-toggle-button:hover {
@@ -804,7 +803,7 @@
             display: flex;
             padding: 8px 10px;
             background-color: #f0f2f5;
-            align-items: flex-end;
+            align-items: center; /* ALINEADO AL CENTRO VERTICALMENTE */
             box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.05);
         }
 
@@ -834,7 +833,6 @@
             border-radius: 50%;
             width: 44px;
             height: 44px;
-            font-size: 1.2em;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -848,6 +846,14 @@
             user-select: none;
             flex-shrink: 0;
             margin-left: 0;
+            padding: 0; /* Asegurarse de que no haya padding interno que afecte la imagen */
+        }
+
+        #chat-send-button img {
+            width: 100%; /* La imagen llenará el ancho del botón */
+            height: 100%; /* La imagen llenará la altura del botón */
+            object-fit: contain; /* Ajustar la imagen dentro del botón sin recortar, manteniendo la proporción */
+            border-radius: 50%; /* Asegurar que la imagen también sea circular */
         }
 
         #chat-send-button:hover {
@@ -902,7 +908,6 @@
             #chatbot-toggle-button {
                 width: 50px;
                 height: 50px;
-                /* Adjusted font-size removal for smaller screens */
             }
 
             #chat-header {
@@ -944,9 +949,9 @@
                 margin-left: 0;
             }
 
-            #chat-send-button svg {
-                width: 22px;
-                height: 22px;
+            #chat-send-button img {
+                width: 100%;
+                height: 100%;
             }
         }
     </style>
@@ -1043,7 +1048,6 @@
 
     <div id="chatbot-wrapper">
         <button id="chatbot-toggle-button" aria-label="Abrir/Cerrar Chatbot">
-            <!-- REEMPLAZADO: SVG por la imagen lucia.png -->
             <img src="lucia.png" alt="Icono de Chatbot (Lucia)">
         </button>
         <div id="chatbot-container">
@@ -1063,9 +1067,8 @@
             <div class="chat-input-area">
                 <input type="text" id="chat-user-input" placeholder="Escribe tu mensaje...">
                 <button id="chat-send-button" aria-label="Enviar Mensaje">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
-                    </svg>
+                    <!-- REEMPLAZADO: SVG por la imagen boton.png -->
+                    <img src="boton.png" alt="Icono de Enviar Mensaje">
                 </button>
             </div>
         </div>
@@ -1104,7 +1107,7 @@
                 {
                     "coords": [-34.61042, -58.36870], // Coordenadas de ejemplo
                     "texto": "“Serpenteo con agua fresca junto al bosque del parque. ¿Cómo me llamo?”",
-                    "opciones": ["Río Ctalamochita", "Río Suquía", "Lago San Roque"],
+                    "opciones": ["Río Segundo", "Río Primero", "Río Ctalamochita"],
                     "correcta": 0,
                     "explicacion": "Su nombre indígena significa “lugar de muchos árboles”. Con sus curvas suaves forma playitas donde peces, plantas y personas se refrescan.",
                     "fotoUrl": "rioct.jpg"
@@ -1962,6 +1965,7 @@
 </body>
 
 </html>
+
 
 
 
