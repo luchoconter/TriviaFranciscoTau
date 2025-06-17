@@ -962,7 +962,7 @@
     <div id="map"></div>
 
     <div id="ventana-bienvenida" class="modal-base" role="dialog" aria-modal="true" aria-labelledby="titulo-bienvenida">
-        <h2 id="titulo-bienvenida">¡Bienvenido a la trivia de la "Reserva Natural Francisco Tau"!</h2>
+        <h2 id="titulo-bienvenida">¡Bienvenido a la trivia del "Reserva Natural Francisco Tau"!</h2>
         <p>¿En qué rango de edad te encontrás?</p>
         <div id="botones-edad">
             <button data-edad="menor10" class="age-selection-button">Menor a 10 años</button>
@@ -1261,6 +1261,7 @@
         let currentQuestionRadiusCircle = null;
         let sonidoActivado = true;
         let supportsWebP = false;
+        let chatSessionId = null; // Nuevo: Variable para almacenar el ID de sesión del chatbot
 
         let mediaRecorder;
         let audioChunks = [];
@@ -1811,13 +1812,15 @@
             chatMessages.scrollTop = chatMessages.scrollHeight;
 
             try {
-                let requestBody = {};
+                let requestBody = {
+                    sessionId: chatSessionId // AÑADIDO: Incluir el sessionId
+                };
                 if (text) {
-                    requestBody = { message: text };
+                    requestBody.message = text;
                 } else if (imageData) {
-                    requestBody = { image: imageData };
+                    requestBody.image = imageData;
                 } else if (audioData) {
-                    requestBody = { audio: audioData };
+                    requestBody.audio = audioData;
                 }
 
                 console.log('Enviando al backend:', requestBody); // Debugging: show sent payload
@@ -1904,6 +1907,7 @@
 
         document.addEventListener('DOMContentLoaded', async () => {
             supportsWebP = await checkWebPSupport();
+            chatSessionId = crypto.randomUUID(); // Nuevo: Generar un ID de sesión único al cargar
 
             document.querySelectorAll('#botones-edad button').forEach(button => {
                 button.addEventListener('click', function () {
@@ -1965,6 +1969,7 @@
 </body>
 
 </html>
+
 
 
 
