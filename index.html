@@ -57,11 +57,16 @@
             background-repeat: no-repeat;
             background-attachment: fixed;
             /* Disable zoom on non-map elements */
-            touch-action: pan-x pan-y; /* Allows scrolling but prevents pinch-zoom on the body */
-            -webkit-user-select: none; /* Safari */
-            -moz-user-select: none; /* Firefox */
-            -ms-user-select: none; /* IE 10+ */
-            user-select: none; /* Standard */
+            touch-action: pan-x pan-y;
+            /* Allows scrolling but prevents pinch-zoom on the body */
+            -webkit-user-select: none;
+            /* Safari */
+            -moz-user-select: none;
+            /* Firefox */
+            -ms-user-select: none;
+            /* IE 10+ */
+            user-select: none;
+            /* Standard */
         }
 
         #map {
@@ -69,7 +74,8 @@
             width: 100%;
             /* Allow all touch actions including zoom on the map */
             touch-action: manipulation;
-            -webkit-user-select: auto; /* Allow selection inside map if needed */
+            -webkit-user-select: auto;
+            /* Allow selection inside map if needed */
             -moz-user-select: auto;
             -ms-user-select: auto;
             user-select: auto;
@@ -154,11 +160,15 @@
             /* For .button-style if it's an <a> */
             outline: none;
             /* Remove default outline */
-            min-height: 44px; /* Minimum touch target size */
-            min-width: 44px; /* Minimum touch target size */
-            box-sizing: border-box; /* Include padding and border in the element's total width and height */
+            min-height: 44px;
+            /* Minimum touch target size */
+            min-width: 44px;
+            /* Minimum touch target size */
+            box-sizing: border-box;
+            /* Include padding and border in the element's total width and height */
             /* Prevent zoom on buttons */
-            touch-action: manipulation; /* Allows tap, double-tap, pan, but not pinch-zoom */
+            touch-action: manipulation;
+            /* Allows tap, double-tap, pan, but not pinch-zoom */
             -webkit-user-select: none;
             -moz-user-select: none;
             -ms-user-select: none;
@@ -192,7 +202,8 @@
             /* Slightly shrink on click */
             opacity: 0.8;
             /* Fade a bit */
-            box-shadow: var(--sombra-elemento); /* Reset shadow to normal on active */
+            box-shadow: var(--sombra-elemento);
+            /* Reset shadow to normal on active */
         }
 
 
@@ -212,14 +223,16 @@
             position: absolute;
             top: 10px;
             right: 10px;
-            z-index: 999; /* Adjusted z-index to be behind modals */
+            z-index: 999;
+            /* Adjusted z-index to be behind modals */
             display: flex;
             /* Use flexbox for layout */
             flex-direction: column;
             /* Stack vertically */
             gap: 5px;
             /* Space between buttons */
-            touch-action: pan-x pan-y; /* Prevent zoom on fixed buttons */
+            touch-action: pan-x pan-y;
+            /* Prevent zoom on fixed buttons */
             -webkit-user-select: none;
             -moz-user-select: none;
             -ms-user-select: none;
@@ -255,17 +268,21 @@
             position: absolute;
             bottom: 10px;
             left: 10px;
-            width: calc(100% - 20px); /* Always occupy full width minus 10px padding on each side */
-            max-width: 350px; /* Limit max width for larger screens */
+            width: calc(100% - 20px);
+            /* Always occupy full width minus 10px padding on each side */
+            max-width: 350px;
+            /* Limit max width for larger screens */
             background: var(--color-fondo-overlay);
             border: 1px solid rgba(0, 0, 0, 0.2);
             border-radius: var(--radio-borde-general);
             padding: 10px;
-            z-index: 999; /* Adjusted z-index to be behind modals */
+            z-index: 999;
+            /* Adjusted z-index to be behind modals */
             box-shadow: var(--sombra-elemento);
             font-size: 14px;
             color: var(--color-texto-oscuro);
-            touch-action: pan-x pan-y; /* Prevent zoom on progress panel */
+            touch-action: pan-x pan-y;
+            /* Prevent zoom on progress panel */
             -webkit-user-select: none;
             -moz-user-select: none;
             -ms-user-select: none;
@@ -298,7 +315,7 @@
             /* Specific soft green */
             z-index: 10001;
             /* Above other modals */
-            touch-action: pan-x pan-y; /* Prevent zoom on final window */
+            touch-action: pan-x pan-y;
             -webkit-user-select: none;
             -moz-user-select: none;
             -ms-user-select: none;
@@ -338,7 +355,7 @@
             /* Adjusted width */
             width: 85vw;
             color: var(--color-texto-oscuro);
-            touch-action: pan-x pan-y; /* Prevent zoom on custom JS modals */
+            touch-action: pan-x pan-y;
             -webkit-user-select: none;
             -moz-user-select: none;
             -ms-user-select: none;
@@ -399,7 +416,7 @@
             box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
             display: none;
             /* Hidden by default */
-            touch-action: pan-x pan-y; /* Prevent zoom on explanation */
+            touch-action: pan-x pan-y;
             -webkit-user-select: none;
             -moz-user-select: none;
             -ms-user-select: none;
@@ -431,7 +448,7 @@
             color: var(--color-texto-oscuro);
             display: none;
             animation: fadeIn 0.5s ease-out;
-            touch-action: pan-x pan-y; /* Prevent zoom on celebration modal */
+            touch-action: pan-x pan-y;
             -webkit-user-select: none;
             -moz-user-select: none;
             -ms-user-select: none;
@@ -477,7 +494,8 @@
 
         #opciones {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* Responsive grid for options */
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            /* Responsive grid for options */
             gap: 10px;
             margin-top: 20px;
         }
@@ -538,32 +556,51 @@
 
         /* Custom Leaflet DivIcon for user location */
         .leaflet-div-icon {
-            background: none; /* Ensure no white square background */
-            border: none; /* Remove any default border */
+            background: none;
+            /* Ensure no white square background */
+            border: none;
+            /* Remove any default border */
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 30px !important; /* Override default size */
-            height: 30px !important; /* Override default size */
-            transform-origin: bottom center; /* For animations */
+            width: 30px !important;
+            /* Override default size */
+            height: 30px !important;
+            /* Override default size */
+            transform-origin: bottom center;
+            /* For animations */
         }
 
         .leaflet-div-icon svg {
             width: 100%;
             height: 100%;
             display: block;
-            filter: drop-shadow(0 2px 3px rgba(0,0,0,0.4)); /* Subtle shadow */
-            animation: pulse 1.5s infinite ease-in-out; /* Pulsing animation */
+            filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.4));
+            /* Subtle shadow */
+            animation: pulse 1.5s infinite ease-in-out;
+            /* Pulsing animation */
         }
 
         @keyframes pulse {
-            0% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.05); opacity: 0.8; }
-            100% { transform: scale(1); opacity: 1; }
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.05);
+                opacity: 0.8;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
         }
 
         /* Media queries for responsive design */
         @media (max-width: 600px) {
+
             .modal-base,
             #ventana-final,
             .custom-js-modal,
@@ -628,6 +665,325 @@
                 display: inline;
             }
         }
+
+        /* Styles for the Chatbot Interface (WhatsApp Style) */
+        #chatbot-wrapper {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 10002;
+        }
+
+        #chatbot-toggle-button {
+            background: linear-gradient(135deg, #25D366 0%, #1DA851 100%); /* WhatsApp green gradient */
+            color: var(--color-texto-blanco);
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 1.5em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Stronger shadow for floating button */
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            z-index: 10003;
+            touch-action: manipulation;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        #chatbot-toggle-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        #chatbot-toggle-button:active {
+            transform: scale(0.95);
+        }
+
+        #chatbot-container {
+            width: 320px;
+            height: 400px;
+            background-color: #f8f9fa; /* Light background for chat area */
+            border-radius: 12px; /* Slightly more rounded */
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* More subtle shadow */
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: absolute;
+            bottom: 75px; /* Adjusted to be above the toggle button */
+            right: 0;
+            transform-origin: bottom right;
+            transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+            transform: scale(0);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        #chatbot-container.mostrar {
+            transform: scale(1);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        #chat-header {
+            background-color: #075E54; /* WhatsApp header green */
+            color: #fff;
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        #chat-header-info {
+            display: flex;
+            align-items: center;
+        }
+
+        #chat-header-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background-color: #25D366; /* WhatsApp light green */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            font-weight: bold;
+            font-size: 1.1em;
+            color: #fff;
+        }
+
+        #chat-header h3 {
+            margin: 0;
+            font-size: 1.1em;
+            font-weight: 500;
+        }
+
+        #chat-close-button {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.5em;
+            cursor: pointer;
+            padding: 0 5px;
+            line-height: 1;
+            transition: transform 0.2s ease;
+            touch-action: manipulation;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        #chat-close-button:hover {
+            transform: rotate(90deg);
+        }
+
+        #chat-messages {
+            flex-grow: 1;
+            padding: 10px 15px;
+            overflow-y: auto;
+            background-color: #ECE5DD; /* WhatsApp chat background */
+            background-image: url('https://user-images.githubusercontent.com/15075759/28719142-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); /* WhatsApp pattern */
+            background-repeat: repeat;
+            background-size: 50px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .chat-message {
+            display: flex;
+            margin-bottom: 8px;
+            align-items: flex-end;
+        }
+
+        .chat-message .bubble {
+            padding: 8px 12px;
+            border-radius: 18px; /* Default for most corners */
+            max-width: 80%;
+            word-wrap: break-word;
+            font-size: 0.9em;
+            box-shadow: 0 1px 0.5px rgba(0, 0, 0, 0.13); /* Subtle WhatsApp-like shadow */
+            position: relative; /* For the potential triangle corner */
+        }
+
+        /* User Message Styles (like WhatsApp green) */
+        .user-message {
+            justify-content: flex-end; /* Push to right */
+        }
+
+        .user-message .bubble {
+            background-color: #DCF8C6; /* WhatsApp message green */
+            color: #333;
+            border-bottom-right-radius: 2px; /* Pointed corner */
+            margin-left: auto;
+        }
+
+        /* Chatbot Message Styles (like WhatsApp white/light blue) */
+        .chatbot-message {
+            justify-content: flex-start; /* Push to left */
+        }
+
+        .chatbot-message .bubble {
+            background-color: #FFFFFF; /* WhatsApp message white */
+            color: #333;
+            border-bottom-left-radius: 2px; /* Pointed corner */
+            margin-right: auto;
+        }
+        
+        .chat-input-area {
+            display: flex;
+            padding: 8px 10px;
+            background-color: #f0f2f5; /* Light gray background */
+            align-items: flex-end; /* Align items to the bottom */
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.05); /* Subtle shadow above input */
+        }
+
+        #chat-user-input {
+            flex-grow: 1; /* Allow input to grow and take available space */
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 22px; /* Pill shape */
+            margin-right: 8px; /* Space between input and send button */
+            font-size: 0.9em;
+            outline: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            background-color: #fff;
+            min-height: 40px; /* Ensure good height for touch */
+            box-sizing: border-box; /* Include padding in height */
+        }
+
+        #chat-user-input:focus {
+            border-color: #075E54;
+            box-shadow: 0 0 0 2px rgba(7, 94, 84, 0.2);
+        }
+
+        /* Removed .chat-action-button styles as these buttons are being removed */
+
+        /* Specific style for send button (WhatsApp style) */
+        #chat-send-button {
+            background-color: #075E54; /* WhatsApp green */
+            color: white;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            font-size: 1.2em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.2s ease;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+            touch-action: manipulation;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            flex-shrink: 0; /* Prevent shrinking on smaller screens */
+            margin-left: 0; /* Remove left margin for cleaner look next to input */
+        }
+
+        #chat-send-button:hover {
+            background-color: #044a42; /* Darker green on hover */
+            transform: scale(1.05);
+        }
+
+        #chat-send-button:active {
+            transform: scale(0.95);
+        }
+
+        /* Styles for images in chat */
+        .chat-message img {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 8px; /* Softer corners for images */
+            margin-top: 5px;
+            display: block;
+        }
+
+        /* Styles for audio in chat */
+        .chat-message audio {
+            width: 100%;
+            margin-top: 5px;
+        }
+
+
+        /* Media queries for chatbot */
+        @media (max-width: 600px) {
+            #chatbot-wrapper {
+                bottom: 10px;
+                right: 10px;
+            }
+            #chatbot-container {
+                position: fixed;
+                bottom: 70px;
+                left: 10px;
+                right: 10px;
+                width: auto;
+                height: calc(85vh - 80px); /* Adjust height for fixed position and bottom button */
+                transform: scale(0);
+                transform-origin: bottom center;
+            }
+            #chatbot-toggle-button {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2em;
+            }
+
+            #chat-header {
+                padding: 8px 12px;
+            }
+
+            #chat-header-avatar {
+                width: 30px;
+                height: 30px;
+                font-size: 0.9em;
+            }
+
+            #chat-header h3 {
+                font-size: 1em;
+            }
+
+            .chat-messages {
+                padding: 8px 12px;
+            }
+
+            .chat-message .bubble {
+                font-size: 0.85em;
+                padding: 7px 10px;
+            }
+
+            .chat-input-area {
+                padding: 6px 8px;
+            }
+
+            #chat-user-input {
+                padding: 8px 12px;
+                margin-right: 6px;
+                min-height: 38px;
+            }
+
+            #chat-send-button {
+                width: 40px;
+                height: 40px;
+                margin-left: 0; /* No margin on mobile either */
+            }
+
+            #chat-send-button svg {
+                width: 22px;
+                height: 22px;
+            }
+        }
     </style>
 </head>
 
@@ -679,7 +1035,7 @@
         <button id="boton-mostrar-ubicacion" aria-label="Mostrar mi ubicación">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <path
-                    d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                    d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
             </svg>
             <span>Mi ubicación</span>
         </button>
@@ -720,6 +1076,37 @@
         Tu navegador no soporta el elemento de audio.
     </audio>
 
+    <div id="chatbot-wrapper">
+        <button id="chatbot-toggle-button" aria-label="Abrir/Cerrar Chatbot">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/>
+            </svg>
+        </button>
+        <div id="chatbot-container">
+            <div id="chat-header">
+                <div id="chat-header-info">
+                    <div id="chat-header-avatar">AI</div> <h3>Guarda parque Virtual</h3>
+                </div>
+                <button id="chat-close-button" aria-label="Cerrar Chatbot">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div id="chat-messages">
+                </div>
+            <div class="chat-input-area">
+                <input type="text" id="chat-user-input" placeholder="Escribe tu mensaje...">
+                <button id="chat-send-button" aria-label="Enviar Mensaje">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>
         // --- Global Variables and Configuration ---
@@ -727,44 +1114,84 @@
         const preguntasData = {
             "menor10": [
                 {
-                    "coords": [-32.62775, -62.70334],
-                    "texto": "¿Qué árbol muy antiguo del parque da sombra y tiene tronco grueso, con más de 400 años?",
+                    "coords": [-32.62775, -62.70334], // Coordenadas de ejemplo, ajustar según necesidad real
+                    "texto": "“ Tengo tronco fuerte y vainas dulces; doy mucha sombra en el parque. ¿Quién soy?”",
                     "opciones": ["Eucalipto", "Pino", "Algarrobo blanco"],
                     "correcta": 2,
-                    "explicacion": "Es un árbol nativo típico de la región chaqueña y pampeana, muy resistente a la sequía. En el Parque Francisco Tau, el algarrobo blanco aporta sombra y alimento a la fauna local con sus vainas dulces. Además, su madera es dura y se utiliza tradicionalmente para carpintería y artesanía. Es una especie clave para mantener el equilibrio ecológico del área.",
-                    "fotoUrl": "algarrobo.jpg" // Ruta directa
+                    "explicacion": "¡Este algarrobo vive en el Parque Tau desde hace más de 400 años! Es un “abuelo” del bosque que da sombra fresca y alimento a muchos animalitos.",
+                    "fotoUrl": "algarrobo.jpg"
                 },
                 {
-                    "coords": [-32.62742, -62.70511],
-                    "texto": "¿Cómo se llama el río que pasa por el parque y tiene playas como El Diquecito?",
-                    "opciones": ["Río Ctalamochita", "Río Primero", "Río Segundo"],
-                    "correcta": 0,
-                    "explicacion": "El Río Ctalamochita, también llamado Río Tercero, atraviesa el Parque Francisco Tau y es fundamental para su ecosistema. Sus aguas forman balnearios naturales como El Diquecito y Paso de la Arena, y brindan hábitat a aves acuáticas, peces y mamíferos como el coipo. Además de su valor natural y recreativo, funciona como un corredor biológico, conectando distintos ambientes y favoreciendo la biodiversidad del parque.",
-                    "fotoUrl": "rio.jpg" // Ruta directa
-                },
-                {
-                    "coords": [-32.62655, -62.70584],
-                    "texto": "¿Cómo se llama el tipo de bosque con árboles como algarrobos y espinillos que se cuida en el parque?",
-                    "opciones": ["Selva de Yungas", "Chaco Húmedo", "Espinal"],
-                    "correcta": 2,
-                    "explicacion": "El Parque Francisco Tau conserva un relicto del bioma del Espinal, un tipo de bosque nativo de la llanura cordobesa. Se caracteriza por especies resistentes a la sequía como el algarrobo blanco, el tala, el chañar y el espinillo. Este ecosistema, hoy muy reducido por la expansión agrícola, es único en un centro urbano en Córdoba. Su preservación es fundamental para conservar la biodiversidad autóctona, estudiar el ambiente original de la región y mantener un pulmón verde para la ciudad.",
-                    "fotoUrl": "espinal.jpg" // Ruta directa
-                },
-                {
-                    "coords": [-32.62550, -62.70573],
-                    "texto": "¿Cuántas clases de pájaros hay en el parque, más o menos?",
-                    "opciones": ["5", "125", "75"],
+                    "coords": [-32.62742, -62.70511], // Coordenadas de ejemplo
+                    "texto": "“Toc-toc, pico el barro y hago mi casita redonda. ¿Quién canta así?”",
+                    "opciones": ["Gorrión", "Hornero", "Jilguero"],
                     "correcta": 1,
-                    "explicacion": "El Parque Francisco Tau alberga una gran diversidad de aves, con al menos 125 especies registradas, lo que lo convierte en un sitio ideal para la observación de aves. Se encuentran 					especies comunes y vistosas como el hornero, el benteveo, el cardenal común y el chingolo, así como aves acuáticas como el biguá, la gallareta y el martín pescador chico. También se 					observan aves rapaces como el carancho y la lechucita de las vizcacheras.\n\t\t\t\t\tLa variedad de hábitats del parque (bosque, ribera, pastizal) favorece esta riqueza avifaunística, que es clave para el equilibrio ecológico y un gran recurso para la educación 					ambiental.",
-                    "fotoUrl": "ave.jpg" // Ruta directa
+                    "explicacion": "El hornero es un pajarito constructor: amasa barro como plastilina y levanta un nido redondo que parece un hornito de pan.",
+                    "fotoUrl": "hornero.jpg"
                 },
                 {
-                    "coords": [-32.62451,-62.70495],
-                    "texto": "¿Qué animal del parque vive cerca del río y parece un castor?",
-                    "opciones": ["Coipo", "Zorro", "Armadillo"],
-                    "correcta": 0,
-                    "explicacion": "El coipo, también llamado nutria criolla, es un mamífero roedor semiacuático que vive en zonas cercanas al agua, como las orillas del Río Ctalamochita, dentro del Parque Francisco Tau. 					Tiene un cuerpo robusto, pelaje denso e impermeable, y una cola larga y redondeada. Sus patas traseras palmeadas le permiten nadar con gran agilidad. Se alimenta principalmente de vegetación 						acuática y raíces, y suele construir madrigueras en barrancas o entre la vegetación ribereña. Es una especie nativa de América del Sur y cumple un rol ecológico importante en el ecosistema 						acuático, ayudando a controlar el crecimiento de plantas en lagunas y ríos. Su presencia en el parque indica una buena calidad ambiental en los ambientes ribereños y la existencia de refugio 						adecuado para fauna nativa.",
-                    "fotoUrl": "coipo.jpg" // Ruta directa
+                    "coords": [-32.62655, -62.70584], // Coordenadas de ejemplo
+                    "texto": "“Me abrochas antes de subir al gomón para que flotes seguro. ¿Qué soy?”",
+                    "opciones": ["Casco", "Salvavidas", "Remo"],
+                    "correcta": 1,
+                    "explicacion": "La Fundación tiene ¡cien chalecos! Se cierran con clic-clic y te abrazan para que navegues protegido mientras disfrutas del río.",
+                    "fotoUrl": "chaleco.jpg"
+                },
+                {
+                    "coords": [-32.62550, -62.70573], // Coordenadas de ejemplo
+                    "texto": "“Serpenteo con agua fresca junto al bosque del parque. ¿Cómo me llamo?”",
+                    "opciones": ["Río Suquía", "Río Ctalamochita", "Lago San Roque"],
+                    "correcta": 1,
+                    "explicacion": "Su nombre indígena significa “lugar de muchos árboles”. Con sus curvas suaves forma playitas donde peces, plantas y personas se refrescan.",
+                    "fotoUrl": "rioct.jpg"
+                },
+                {
+                    "coords": [-32.62451,-62.70495], // Coordenadas de ejemplo
+                    "texto": "“Tomo sol quieto, tengo escamas y una lengua larga. ¿Quién soy?”",
+                    "opciones": ["Serpiente", "Lagarto overo", "Tortuga"],
+                    "correcta": 1,
+                    "explicacion": "Este lagarto moteado adora broncearse en los claros del parque. Ayuda a mantener el equilibrio porque se come insectos y pequeños bichitos.",
+                    "fotoUrl": "lagarto.jpg"
+                },
+                {
+                    "coords": [-32.62350, -62.70390], // Coordenadas de ejemplo para las nuevas preguntas
+                    "texto": "“Cuelgo de los árboles como una flor que vive del aire. ¿Cómo me llaman?”",
+                    "opciones": ["Orquídea", "Clavel del aire", "Rosa"],
+                    "correcta": 1,
+                    "explicacion": "No necesita tierra: bebe la humedad del viento y adorna las ramas con sus hojitas plateadas, ¡un colgante natural del bosque!",
+                    "fotoUrl": "clavel.jpg"
+                },
+                {
+                    "coords": [-32.62250, -62.70290], // Coordenadas de ejemplo
+                    "texto": "“Cuido plantas y animales y ayudo a los visitantes. ¿Quién soy?”",
+                    "opciones": ["Científico", "Turista", "Guardaparque"],
+                    "correcta": 2,
+                    "explicacion": "La guardaparque del Tau es la super-heroína verde: vigila senderos, da consejos y protege cada rincón del bosque todos los días.",
+                    "fotoUrl": "guarda.png"
+                },
+                {
+                    "coords": [-32.62150, -62.70190], // Coordenadas de ejemplo
+                    "texto": "“Si tiras basura aquí, ensucias a peces y patos. ¿Qué lugar es?”",
+                    "opciones": ["El lago", "El río", "La calle"],
+                    "correcta": 1,
+                    "explicacion": "Usar los tachos y llevarte tus residuos mantiene el agua clarita y feliz; así el río sigue sano para nadar y remar.",
+                    "fotoUrl": "rio.jpg"
+                },
+                {
+                    "coords": [-32.62050, -62.70090], // Coordenadas de ejemplo
+                    "texto": "“Reciclando papel le salvamos la vida a este gran amigo verde. ¿Quién es?”",
+                    "opciones": ["Pasto", "Flor", "Árbol"],
+                    "correcta": 2,
+                    "explicacion": "Los árboles dan sombra, aire puro y casita a los pájaros. En el parque crecen talas, chañares y un histórico algarrobo blanco que son verdaderos tesoros.",
+                    "fotoUrl": "arbol.jpg"
+                },
+                {
+                    "coords": [-32.61950, -62.69990], // Coordenadas de ejemplo
+                    "texto": "“Llevo gorrita roja y pechito blanco; mi canto suena fuerte. ¿Qué pájaro soy?”",
+                    "opciones": ["Colibrí", "Cardenal común", "Benteveo"],
+                    "correcta": 1,
+                    "explicacion": "Con su “sombrerito” rojo brillante, el cardenal es una de las aves más vistosas del parque y se deja ver entre las ramas cantando con energía.",
+                    "fotoUrl": "cardenal.jpg"
                 }
             ],
             "10a15": [
@@ -862,11 +1289,20 @@
         let mapa;
         let marcadorUbicacion;
         let ubicacionWatchId = null;
-        const ACTIVATION_RADIUS = 30; // Meters
+        const ACTIVATION_RADIUS = 10; // Meters
         const preguntaMarkers = [];
         let currentQuestionRadiusCircle = null;
         let sonidoActivado = true; // New variable for sound control
         let supportsWebP = false; // Flag to check WebP support
+
+        // Variables for Audio Recording (no longer used for direct buttons, but kept in case of future voice input)
+        let mediaRecorder;
+        let audioChunks = [];
+        let isRecording = false;
+
+        // Get computed style for CSS variables
+        const computedStyles = getComputedStyle(document.documentElement);
+        const colorErrorRojo = computedStyles.getPropertyValue('--color-error-rojo').trim();
 
         // DOM Elements (cache)
         const ventanaBienvenida = document.getElementById("ventana-bienvenida");
@@ -881,7 +1317,16 @@
         const botonToggleSonido = document.getElementById("boton-toggle-sonido");
         const iconSoundOn = document.getElementById("icon-sound-on");
         const iconSoundOff = document.getElementById("icon-sound-off");
-        // const explicacionRespuestaDiv = document.getElementById("explicacion-respuesta"); // Ya no se usa directamente para la explicación de correctas
+        // Chatbot DOM Elements
+        const chatbotWrapper = document.getElementById("chatbot-wrapper");
+        const chatbotToggleButton = document.getElementById("chatbot-toggle-button");
+        const chatbotContainer = document.getElementById("chatbot-container");
+        const chatCloseButton = document.getElementById("chat-close-button");
+        const chatMessages = document.getElementById("chat-messages");
+        const chatUserInput = document.getElementById("chat-user-input");
+        const chatSendButton = document.getElementById("chat-send-button");
+        // Removed: chatImageInput, chatImageButton, chatAudioButton
+
 
         // --- Helper Functions ---
 
@@ -1047,6 +1492,11 @@
             ventanaInstrucciones.classList.add("mostrar");
             // Focus the start button in instructions
             document.getElementById("boton-comenzar-instrucciones").focus();
+
+            // Añadir reproducción de audio al mostrar la ventana de bienvenida (se mueve aquí para requerir interacción del usuario)
+            const tituloBienvenida = document.getElementById("titulo-bienvenida").textContent;
+            const parrafoBienvenida = document.querySelector("#ventana-bienvenida p").textContent;
+            reproducirTexto(tituloBienvenida + " " + parrafoBienvenida);
 
             // Añadir reproducción de audio al mostrar la ventana de instrucciones
             const textoInstrucciones = document.getElementById("titulo-instrucciones").textContent + " " +
@@ -1478,12 +1928,177 @@
             }]);
         }
 
+        // --- Chatbot Logic ---
+
+        /**
+         * Toggles the visibility of the chatbot container.
+         */
+        function toggleChatbotVisibility() {
+            chatbotContainer.classList.toggle('mostrar');
+            // Log for debugging visibility
+            console.log('Chatbot container toggled. Has "mostrar" class:', chatbotContainer.classList.contains('mostrar'));
+            if (chatbotContainer.classList.contains('mostrar')) {
+                chatUserInput.focus(); // Focus input when chat opens
+                chatMessages.scrollTop = chatMessages.scrollHeight; // Scroll to bottom
+            }
+        }
+
+        /**
+         * Adds a message to the chat display.
+         * @param {string} sender 'user' or 'chatbot'.
+         * @param {string} text The text message to display (optional).
+         * @param {string} imageUrl URL of the image to display (optional).
+         * @param {string} audioUrl URL of the audio to display (optional).
+         */
+        function addChatMessage(sender, text = null, imageUrl = null, audioUrl = null) {
+            const messageWrapper = document.createElement('div');
+            messageWrapper.classList.add('chat-message', `${sender}-message`);
+
+            const bubble = document.createElement('div');
+            bubble.classList.add('bubble');
+
+            if (text) {
+                bubble.textContent = text;
+            }
+            if (imageUrl) {
+                const img = document.createElement('img');
+                img.src = imageUrl;
+                img.alt = `Imagen de ${sender}`;
+                bubble.appendChild(img);
+            }
+            if (audioUrl) {
+                const audio = document.createElement('audio');
+                audio.controls = true;
+                audio.src = audioUrl;
+                bubble.appendChild(audio);
+            }
+
+            messageWrapper.appendChild(bubble);
+            chatMessages.appendChild(messageWrapper);
+            chatMessages.scrollTop = chatMessages.scrollHeight; // Scroll to bottom
+        }
+
+        /**
+         * Simulates sending a message (text, audio, or image) to the chatbot backend
+         * and receiving a response.
+         * In a real application, this would be a fetch call to your backend server.
+         * @param {Object} payload Object containing message data.
+         * @param {string} payload.text The text message (optional).
+         * @param {string} payload.audioData Base64 encoded audio data (optional).
+         * @param {string} payload.imageData Base64 encoded image data (optional).
+         */
+        async function simulateChatbotResponse(payload) {
+            const { text, audioData, imageData } = payload;
+
+            // Display user's input (text, image, or audio)
+            if (text) {
+                addChatMessage('user', text);
+            } else if (imageData) {
+                addChatMessage('user', null, imageData);
+            } else if (audioData) {
+                addChatMessage('user', null, null, audioData);
+            }
+            chatUserInput.value = ''; // Clear text input
+
+            // Simulate typing/processing indicator
+            const typingIndicator = document.createElement('div');
+            typingIndicator.classList.add('chat-message', 'chatbot-message');
+            typingIndicator.innerHTML = '<div class="bubble">Escribiendo...</div>'; // Simple typing indicator
+            chatMessages.appendChild(typingIndicator);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            try {
+                // --- ESTA ES LA PARTE DONDE SE LLAMARÍA A TU API DE BACKEND ---
+                // Se hará una llamada al LLM utilizando el Gemini API.
+                // Asegúrate de que el 'prompt' sea lo suficientemente descriptivo para el LLM.
+                let chatHistory = [];
+                // Se podría construir el historial de chat para el LLM si se quiere un contexto conversacional más largo.
+                // Por ahora, solo se envía el mensaje actual del usuario como prompt.
+                let prompt = text || "Necesito una respuesta general ya que el mensaje fue de tipo no-texto.";
+
+                chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                const payloadLLM = { contents: chatHistory };
+                const apiKey = ""; // La API key será provista por el entorno de Canvas.
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payloadLLM)
+                });
+                const result = await response.json(); // Esperar la resolución de la promesa JSON
+
+                let chatbotReply = 'Lo siento, no pude generar una respuesta en este momento.';
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    chatbotReply = result.candidates[0].content.parts[0].text;
+                } else {
+                    console.error('Estructura de respuesta inesperada del LLM:', result);
+                }
+                
+                // Remove typing indicator
+                if (typingIndicator.parentNode) {
+                    typingIndicator.parentNode.removeChild(typingIndicator);
+                }
+
+                addChatMessage('chatbot', chatbotReply); // Mostrar la respuesta del LLM
+
+            } catch (error) {
+                console.error('Error al simular la respuesta del chatbot:', error);
+                if (typingIndicator.parentNode) { // Ensure typing indicator is removed on error
+                    typingIndicator.parentNode.removeChild(typingIndicator);
+                }
+                addChatMessage('chatbot', 'Lo siento, hubo un error al comunicarme contigo. Por favor, intenta de nuevo más tarde.');
+            }
+        }
+
+        // --- Audio Recording Functions (kept for potential future use, though buttons are removed) ---
+        // These functions will not be called unless a new way to trigger them is added.
+        async function startRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+                mediaRecorder.ondataavailable = event => {
+                    audioChunks.push(event.data);
+                };
+                mediaRecorder.onstop = () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                        const base64Audio = reader.result; // Base64 string
+                        simulateChatbotResponse({ audioData: base64Audio });
+                    };
+                    reader.readAsDataURL(audioBlob);
+                    stream.getTracks().forEach(track => track.stop());
+                };
+                mediaRecorder.start();
+                isRecording = true;
+                // Removed: chatAudioButton.classList.add('recording');
+                // Removed: chatAudioButton.innerHTML = ...
+                crearModalPersonalizado("Grabando Audio", "Habla ahora. Toca el micrófono para terminar.", [{ texto: "OK", clase: "boton-confirmacion" }]);
+            } catch (err) {
+                console.error('Error al acceder al micrófono:', err);
+                crearModalPersonalizado("Error de Micrófono", "No se pudo acceder al micrófono. Por favor, asegúrate de haber dado permiso.", [{ texto: "Entendido", clase: "boton-negacion" }]);
+            }
+        }
+
+        function stopRecording() {
+            if (mediaRecorder && isRecording) {
+                mediaRecorder.stop();
+                isRecording = false;
+                // Removed: chatAudioButton.classList.remove('recording');
+                // Removed: chatAudioButton.innerHTML = ...
+            }
+        }
+
+
         // --- Initialization and Event Listeners ---
         document.addEventListener('DOMContentLoaded', async () => {
             // Check for WebP support once on load
             supportsWebP = await checkWebPSupport();
 
-            // console.log('DOM Content Loaded. Initializing app.');
             // Assign events to age buttons
             document.querySelectorAll('#botones-edad button').forEach(button => {
                 button.addEventListener('click', function () {
@@ -1498,14 +2113,34 @@
             document.getElementById('boton-cerrar-final').addEventListener('click', cerrarVentanaFinal);
             botonToggleSonido.addEventListener('click', toggleSonido);
 
-            // Show welcome window on load
-            // console.log('Attempting to show welcome window.');
+            // Chatbot event listeners
+            chatbotToggleButton.addEventListener('click', toggleChatbotVisibility);
+            chatCloseButton.addEventListener('click', toggleChatbotVisibility);
+
+            // Handle text message sending
+            chatSendButton.addEventListener('click', () => {
+                const message = chatUserInput.value.trim();
+                if (message) {
+                    simulateChatbotResponse({ text: message });
+                }
+            });
+            chatUserInput.addEventListener('keypress', (event) => {
+                if (event.key === 'Enter') {
+                    const message = chatUserInput.value.trim();
+                    if (message) {
+                        simulateChatbotResponse({ text: message });
+                    }
+                }
+            });
+
+            // Removed: Image upload event listeners
+            // Removed: Audio recording event listeners
+
+
+            // Show welcome window on load (no audio playback here directly)
             if (ventanaBienvenida) {
                 ventanaBienvenida.classList.add("mostrar");
-                // Añadir reproducción de audio al mostrar la ventana de bienvenida
-                const tituloBienvenida = document.getElementById("titulo-bienvenida").textContent;
-                const parrafoBienvenida = document.querySelector("#ventana-bienvenida p").textContent;
-                reproducirTexto(tituloBienvenida + " " + parrafoBienvenida);
+                // The audio for this welcome message will now be triggered by selecting an age.
             } else {
                 console.error('Error: Element with ID "ventana-bienvenida" not found.');
             }
@@ -1515,12 +2150,16 @@
             if (primerBotonEdad) {
                 primerBotonEdad.focus();
             }
+
+            // Initial chatbot message
+            addChatMessage('chatbot', '¡Hola! Soy tu Guarda parque Virtual. Escribe tu mensaje en la barra de abajo.');
         });
     </script>
 
 </body>
 
 </html>
+
 
 
 
