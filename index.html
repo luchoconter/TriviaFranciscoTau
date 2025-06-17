@@ -631,7 +631,7 @@
             border-radius: 50%;
             width: 60px;
             height: 60px;
-            font-size: 1.5em;
+            /* Removed font-size as it's an image now */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -647,6 +647,15 @@
             -moz-user-select: none;
             -ms-user-select: none;
             user-select: none;
+            padding: 0; /* Remove padding to make image fill the button */
+        }
+
+        #chatbot-toggle-button img {
+            width: 100%; /* Make image fill the button */
+            height: 100%; /* Make image fill the button */
+            object-fit: cover; /* Cover the area, cropping if necessary */
+            border-radius: 50%; /* Make image circular */
+            display: block; /* Remove extra space below image */
         }
 
         #chatbot-toggle-button:hover {
@@ -893,7 +902,7 @@
             #chatbot-toggle-button {
                 width: 50px;
                 height: 50px;
-                font-size: 1.2em;
+                /* Adjusted font-size removal for smaller screens */
             }
 
             #chat-header {
@@ -1034,9 +1043,8 @@
 
     <div id="chatbot-wrapper">
         <button id="chatbot-toggle-button" aria-label="Abrir/Cerrar Chatbot">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/>
-            </svg>
+            <!-- REEMPLAZADO: SVG por la imagen lucia.png -->
+            <img src="lucia.png" alt="Icono de Chatbot (Lucia)">
         </button>
         <div id="chatbot-container">
             <div id="chat-header">
@@ -1590,7 +1598,7 @@
                         marcadorUbicacion = L.marker(userLocation, {
                             icon: L.divIcon({
                                 className: 'leaflet-div-icon',
-                                html: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#E53935"><path d="M12 2c-4.418 0-8 3.582-8 8 0 7 8 12 8 12s8-5 8-12c0-4.418-3.582-8-8-8zm0 11c-1.657 0-3-1.343-3-3s1.343-3 3-3 3 1.343 3 3-1.343 3-3 3z"/></svg>',
+                                html: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#E53935"><path d="M12 2c-4.418 0-8 3.582-8 8 0 7 8 12 8 12s8-5 8-12c0-3.87-3.13-7-7-7zm0 11c-1.657 0-3-1.343-3-3s1.343-3 3-3 3 1.343 3 3-1.343 3-3 3z"/></svg>',
                                 iconSize: [30, 30],
                                 iconAnchor: [15, 30]
                             })
@@ -1954,6 +1962,7 @@
 </body>
 
 </html>
+
 
 
 
