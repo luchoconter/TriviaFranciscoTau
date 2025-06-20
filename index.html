@@ -645,7 +645,7 @@
         <div id="barra-progreso">
             <div id="progreso-porcentaje"></div>
         </div>
-        <div id="progreso-texto">0 / 0 preguntas respondidas - Puntaje: 0 / 0</div>
+        <div id="progreso-texto">0 / 0 preguntas respondidas - Correctas: 0</div>
     </div>
 
     <!-- Ventana de felicitaciones final (Reemplaza la antigua ventana final) -->
@@ -680,7 +680,7 @@
         const preguntasData = {
             "menor6": [
                 {
-                    "coords": [-34.72313, -58.39789],
+                    "coords": [-34.72321, -58.39778],
                     "texto": "“ Tengo tronco fuerte y vainas dulces; doy mucha sombra en el parque. ¿Quién soy?”",
                     "opciones": ["Eucalipto", "Pino", "Algarrobo blanco"],
                     "correcta": 2,
@@ -688,7 +688,7 @@
                     "fotoUrl": "algarrobo.jpg"
                 },
                 {
-                    "coords": [-34.72316, -58.397701],
+                    "coords": [-34.61018, -58.36851],
                     "texto": "“Toc-toc, pico el barro y hago mi casita redonda. ¿Quién canta así?”",
                     "opciones": ["Gorrión", "Hornero", "Jilguero"],
                     "correcta": 1,
@@ -696,7 +696,7 @@
                     "fotoUrl": "hornero.jpg"
                 },
                 {
-                    "coords": [-34.72319, -58.39752],
+                    "coords": [-34.61026, -58.36866],
                     "texto": "“Me abrochas antes de subir al gomón para que flotes seguro. ¿Qué soy?”",
                     "opciones": ["Casco", "Salvavidas", "Remo"],
                     "correcta": 1,
@@ -704,7 +704,7 @@
                     "fotoUrl": "chaleco.jpg"
                 },
                 {
-                    "coords": [-34.72322, -58.39734],
+                    "coords": [-34.61042, -58.36870],
                     "texto": "“Serpenteo con agua fresca junto al bosque del parque. ¿Cómo me llamo?”",
                     "opciones": ["Río Segundo", "Río Primero", "Río Ctalamochita"],
                     "correcta": 2,
@@ -712,7 +712,7 @@
                     "fotoUrl": "rioct.jpg"
                 },
                 {
-                    "coords": [-34.72330, -58.39725],
+                    "coords": [-34.61063, -58.36858],
                     "texto": "“Tomo sol quieto, tengo escamas y una lengua larga. ¿Quién soy?”",
                     "opciones": ["Serpiente", "Tortuga", "Lagarto overo"],
                     "correcta": 2,
@@ -720,7 +720,7 @@
                     "fotoUrl": "lagarto.jpg"
                 },
                 {
-                    "coords": [-34.72344, -58.39728],
+                    "coords": [-34.61082, -58.36855],
                     "texto": "“Cuelgo de los árboles como una flor que vive del aire. ¿Cómo me llaman?”",
                     "opciones": ["Orquídea", "Clavel del aire", "Rosa"],
                     "correcta": 1,
@@ -728,7 +728,7 @@
                     "fotoUrl": "clavel.jpg"
                 },
                 {
-                    "coords": [-34.72367, -58.39734],
+                    "coords": [-34.61100, -58.36843],
                     "texto": "“Cuido plantas y animales y ayudo a los visitantes. ¿Quién soy?”",
                     "opciones": ["Científico", "Rurista", "Guardaparque"],
                     "correcta": 2,
@@ -736,7 +736,7 @@
                     "fotoUrl": "guarda.png"
                 },
                 {
-                    "coords": [-34.72389, -58.39738],
+                    "coords": [-34.61097, -58.36814],
                     "texto": "“Si tiras basura aquí, ensucias a peces y patos. ¿Qué lugar es?”",
                     "opciones": ["El río", "El lago", "La calle"],
                     "correcta": 0,
@@ -744,7 +744,7 @@
                     "fotoUrl": "rio.jpg"
                 },
                 {
-                    "coords": [-34.72412, -58.39743],
+                    "coords": [-34.61095, -58.36787],
                     "texto": "“Reciclando papel le salvamos la vida a este gran amigo verde. ¿Quién es?”",
                     "opciones": ["Pasto", "Flor", "Árbol"],
                     "correcta": 2,
@@ -752,7 +752,7 @@
                     "fotoUrl": "arbol.jpg"
                 },
                 {
-                    "coords": [-34.72426, -58.39747],
+                    "coords": [-34.61091,-58.36750],
                     "texto": "“Llevo gorrita roja y pechito blanco; mi canto suena fuerte. ¿Qué pájaro soy?”",
                     "opciones": ["Colibrí", "Cardenal común", "Benteveo"],
                     "correcta": 1,
@@ -850,8 +850,7 @@
         let edadSeleccionada = null;
         let progreso = {
             actual: 0,
-            puntaje: 0, // Puntos acumulados (1 punto por respuesta correcta)
-            preguntasCorrectas: 0, // Nuevo: Cuenta las preguntas correctas
+            preguntasCorrectas: 0, // Cuenta las preguntas correctas
             intentos: {} // Guarda el número de intentos por pregunta
         };
         let mapa;
@@ -869,7 +868,6 @@
         const ventanaInstrucciones = document.getElementById("ventana-instrucciones");
         const ventanaPregunta = document.getElementById("pregunta");
         const ventanaFelicitacion = document.getElementById("ventana-felicitacion");
-        // Nuevo: Referencia a la ventana de felicitación final
         const ventanaFelicitacionFinal = document.getElementById("ventana-felicitacion-final");
         const panelProgreso = document.getElementById("panel-progreso");
         const botonesFijos = document.getElementById("botones-fijos");
@@ -1153,37 +1151,50 @@
          * @param {Object} pregunta - Objeto de la pregunta respondida correctamente.
          */
         function mostrarFelicitacionCorrecta(pregunta) {
+            console.log("Entrando a mostrarFelicitacionCorrecta para la pregunta:", pregunta); // Debugging
             const felicitacionImagen = document.getElementById("felicitacion-imagen");
-            felicitacionImagen.src = pregunta.fotoUrl; // Carga la imagen de la pregunta
-            felicitacionImagen.alt = `Imagen relacionada con la pregunta: ${pregunta.texto}`; // Texto alternativo
+            // Añade un manejador de error para la imagen y un fallback
+            felicitacionImagen.onerror = () => {
+                console.error("Error al cargar la imagen:", pregunta.fotoUrl);
+                felicitacionImagen.src = "https://placehold.co/150x100/CCCCCC/000000?text=Imagen+no+cargada"; // Imagen de fallback
+            };
+            felicitacionImagen.src = pregunta.fotoUrl || "https://placehold.co/150x100/CCCCCC/000000?text=Imagen+no+disponible"; // Fallback si fotoUrl falta
+            felicitacionImagen.alt = `Imagen relacionada con la pregunta: ${pregunta.texto || 'sin texto'}`; // Texto alternativo fallback
 
-            document.getElementById("felicitacion-explicacion").textContent = pregunta.explicacion;
+            document.getElementById("felicitacion-explicacion").textContent = pregunta.explicacion || 'No hay explicación disponible.'; // Texto de explicación fallback
 
             ventanaFelicitacion.classList.add("mostrar"); // Muestra la ventana de felicitación
             globalOverlay.style.display = "block"; // Muestra el overlay
 
             reproducirSonido(sonidoCorrecto); // Sonido de respuesta correcta
             feedbackHaptico(100); // Vibración
-            reproducirTexto(pregunta.explicacion); // Lee la explicación
+            reproducirTexto(pregunta.explicacion || 'Respuesta correcta.'); // Lee la explicación, con fallback
 
-            document.getElementById("boton-continuar-felicitacion").focus(); // Enfoca el botón de continuar
+            // Asegura que el botón sea visible y enfocable
+            const botonContinuar = document.getElementById("boton-continuar-felicitacion");
+            botonContinuar.style.display = 'inline-block'; // Asegura que no esté oculto por alguna regla anterior
+            botonContinuar.focus(); // Enfoca el botón de continuar
+            console.log("Intento de enfocar el botón:", botonContinuar); // Debugging
 
             // Maneja el listener del botón "Continuar" para evitar múltiples bindings
-            const botonContinuar = document.getElementById("boton-continuar-felicitacion");
             const oldListener = botonContinuar._currentListener;
             if (oldListener) {
                 botonContinuar.removeEventListener('click', oldListener);
+                console.log("Eliminado listener anterior del botón Continuar."); // Debugging
             }
 
             const newListener = () => {
+                console.log("Botón Continuar clickeado."); // Debugging
                 if ('speechSynthesis' in window) {
-                    window.speechSynthesis.cancel(); // Cancela habla si sigue reproduciendo
+                    window.speechSynthesis.cancel(); // Cancela el habla si sigue reproduciendo
                 }
                 ventanaFelicitacion.classList.remove("mostrar");
                 globalOverlay.style.display = "none"; // Oculta ventana y overlay
 
-                pregunta.marker.setOpacity(0.4); // Baja la opacidad del marcador de la pregunta respondida
-                pregunta.marker.options.interactive = false;
+                if (pregunta.marker) { // Verifica si el marcador existe antes de acceder a sus propiedades
+                    pregunta.marker.setOpacity(0.4); // Baja la opacidad del marcador de la pregunta respondida
+                    pregunta.marker.options.interactive = false;
+                }
 
                 if (currentQuestionRadiusCircle) {
                     mapa.removeLayer(currentQuestionRadiusCircle); // Remueve el círculo de radio
@@ -1195,12 +1206,14 @@
                 actualizarVisibilidadMarcadorActual();
 
                 if (progreso.actual >= obtenerPreguntas().length) {
+                    console.log("Todas las preguntas respondidas, mostrando felicitación final."); // Debugging
                     mostrarFelicitacionFinal(); // Si no hay más preguntas, muestra la nueva ventana final de felicitación
                 }
                 ventanaPregunta.classList.remove("mostrar"); // Oculta la ventana de pregunta
             };
             botonContinuar.addEventListener('click', newListener);
             botonContinuar._currentListener = newListener; // Guarda la referencia al listener actual
+            console.log("Nuevo listener adjuntado al botón Continuar."); // Debugging
         }
 
         /**
@@ -1235,8 +1248,6 @@
                         // Respuesta correcta
                         reproducirSonido(sonidoCorrecto);
                         feedbackHaptico(100);
-                        // Se mantiene la lógica de puntos, pero se añade un contador para preguntas correctas
-                        progreso.puntaje += 1; // Suma 1 punto por respuesta correcta (para porcentaje)
                         progreso.preguntasCorrectas++; // Incrementa contador de preguntas correctas
 
                         mostrarFelicitacionCorrecta(p); // Muestra felicitación y avanza
@@ -1244,7 +1255,7 @@
                         // Respuesta incorrecta
                         reproducirSonido(sonidoIncorrecto);
                         feedbackHaptico([200, 100, 200]);
-                        // progreso.intentos[preguntaId]++; // Ya no se rastrean intentos para puntos, solo para el feedback
+                        progreso.intentos[preguntaId]++; // Incrementa intentos (para feedback visual si se desea)
                         crearModalPersonalizado(
                             "Respuesta Incorrecta",
                             "¡Ups! Esa no es la respuesta. Intentá de nuevo.",
@@ -1300,7 +1311,6 @@
                     // Verifica la proximidad a la pregunta actual
                     if (progreso.actual < obtenerPreguntas().length) {
                         const preguntaActual = obtenerPreguntas()[progreso.actual];
-                        // const preguntaId = `pregunta_${progreso.actual}`; // No se usa directamente aquí
                         const preguntaLocation = L.latLng(preguntaActual.coords);
                         const distance = userLocation.distanceTo(preguntaLocation);
 
@@ -1317,7 +1327,6 @@
                         // Si el usuario está dentro del radio de activación y la pregunta no está activa ni la ventana de felicitación, muestra la pregunta
                         if (distance <= ACTIVATION_RADIUS && !preguntaYaActiva && !felicitacionActiva) {
                             reproducirAlarma(); // Alarma al activar la pregunta
-                            // Se elimina el `progreso.intentos[preguntaId] = 0;` de aquí porque los intentos ahora solo afectan el feedback.
                             // Deshabilita la interactividad del marcador de pregunta para evitar múltiples activaciones
                             if (preguntaActual.marker.options.interactive) {
                                 preguntaActual.marker.closeTooltip();
@@ -1363,7 +1372,7 @@
             const porcentajeRespondidas = totalPreguntas > 0 ? Math.round((progreso.actual / totalPreguntas) * 100) : 0;
             document.getElementById("progreso-porcentaje").style.width = porcentajeRespondidas + "%";
             document.getElementById("progreso-texto").textContent =
-                `${progreso.actual} / ${totalPreguntas} preguntas respondidas - Preguntas Correctas: ${progreso.preguntasCorrectas}`;
+                `${progreso.actual} / ${totalPreguntas} preguntas respondidas - Correctas: ${progreso.preguntasCorrectas}`;
         }
 
         /**
@@ -1526,6 +1535,7 @@
 </body>
 
 </html>
+
 
 
 
