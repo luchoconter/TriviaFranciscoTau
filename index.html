@@ -68,6 +68,12 @@
             -moz-user-select: none;
             -ms-user-select: none;
             user-select: none;
+            /* Evita el scroll del body cuando el overlay está activo */
+            overflow: auto; /* Valor por defecto */
+        }
+
+        body.no-scroll {
+            overflow: hidden;
         }
 
         #map {
@@ -84,7 +90,7 @@
         /* ESTILOS DE MODALES                      */
         /* ==================================================================== */
         .modal-base {
-            position: absolute;
+            position: fixed; /* Cambiado a fixed para asegurar que no se desplace con el scroll */
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
@@ -129,6 +135,63 @@
             font-weight: bold;
             margin-bottom: 15px;
             line-height: 1.6;
+        }
+
+        /* Estilos específicos para la ventana de felicitación de respuesta */
+        #ventana-felicitacion {
+            /* Asegúrate de que herede o tenga las propiedades de modal-base */
+            /* En este caso, ya tiene su propio estilo que duplica modal-base,
+               pero se asegura 'position: fixed' para que no se desplace. */
+            position: fixed; /* Asegura que no se desplace */
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            padding: var(--padding-modal-grande);
+            border-radius: var(--radio-borde-modal-grande);
+            box-shadow: var(--sombra-modal);
+            z-index: 10006; /* Debe ser más alto que el overlay (999) */
+            text-align: center;
+            max-width: 500px;
+            width: 90vw;
+            color: var(--color-texto-oscuro);
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+
+        #ventana-felicitacion.mostrar {
+            display: block;
+        }
+
+        #ventana-felicitacion h3 {
+            font-size: 2em;
+            color: var(--color-primario-verde-oscuro);
+            margin-bottom: 20px;
+        }
+
+        #ventana-felicitacion img {
+            max-width: 100%;
+            height: auto;
+            border-radius: var(--radio-borde-general);
+            margin-bottom: 20px;
+            box-shadow: var(--sombra-elemento);
+        }
+
+        #ventana-felicitacion p {
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            text-shadow: none;
+            font-weight: normal;
+        }
+
+        #ventana-felicitacion button {
+            background: linear-gradient(135deg, var(--color-secundario-azul-claro) 0%, var(--color-secundario-azul) 100%);
+        }
+
+        #ventana-felicitacion button:hover {
+            background: linear-gradient(135deg, var(--color-secundario-azul) 0%, var(--color-secundario-azul-oscuro) 100%);
         }
 
         /* Estilos para el overlay global que bloquea la interacción de fondo */
@@ -680,7 +743,7 @@
         const preguntasData = {
             "menor6": [
                 {
-                    "coords": [-34.72324, -58.39776],
+                    "coords": [-34.72329, -58.39772],
                     "texto": "“ Tengo tronco fuerte y vainas dulces; doy mucha sombra en el parque. ¿Quién soy?”",
                     "opciones": ["Eucalipto", "Pino", "Algarrobo blanco"],
                     "correcta": 2,
@@ -886,6 +949,38 @@
         /* ==================================================================== */
 
         /**
+         * Añade o quita la clase 'no-scroll' al body para controlar el scroll.
+         * @param {boolean} disable - Si es true, añade 'no-scroll'; si es false, la quita.
+         */
+        function toggleBodyScroll(disable) {
+            if (disable) {
+                document.body.classList.add('no-scroll');
+            } else {
+                document.body.classList.remove('no-scroll');
+            }
+        }
+
+        /**
+         * Muestra un modal y el overlay, y deshabilita el scroll del body.
+         * @param {HTMLElement} modalElement - El elemento modal a mostrar.
+         */
+        function mostrarModal(modalElement) {
+            modalElement.classList.add("mostrar");
+            globalOverlay.style.display = "block";
+            toggleBodyScroll(true); // Deshabilita el scroll del body
+        }
+
+        /**
+         * Oculta un modal y el overlay, y habilita el scroll del body.
+         * @param {HTMLElement} modalElement - El elemento modal a ocultar.
+         */
+        function ocultarModal(modalElement) {
+            modalElement.classList.remove("mostrar");
+            globalOverlay.style.display = "none";
+            toggleBodyScroll(false); // Habilita el scroll del body
+        }
+
+        /**
          * Reproduce un elemento de audio si el sonido está activado.
          * @param {HTMLAudioElement} audio - El elemento de audio a reproducir.
          */
@@ -948,6 +1043,7 @@
 
         /**
          * Crea y muestra un modal personalizado con título, mensaje y botones.
+         * Este modal no afecta el scroll del body, se encarga de sí mismo.
          * @param {string} titulo - Título del modal.
          * @param {string} mensaje - Contenido HTML del mensaje.
          * @param {Array<Object>} botonesConfig - Array de objetos {texto: string, clase: string, callback: function}.
@@ -1041,14 +1137,12 @@
          */
         function iniciarAplicacionPorEdad() {
             if (edadSeleccionada) {
-                ventanaBienvenida.classList.remove("mostrar");
-                globalOverlay.style.display = "none"; // Oculta el overlay de la bienvenida
+                ocultarModal(ventanaBienvenida); // Usa la nueva función para ocultar y manejar scroll
                 reproducirAlarma(); // Reproduce la alarma al iniciar la aplicación
 
                 iniciarMapa(); // Inicializa el mapa
 
-                ventanaInstrucciones.classList.add("mostrar"); // Muestra la ventana de instrucciones
-                globalOverlay.style.display = "block"; // Muestra el overlay para las instrucciones
+                mostrarModal(ventanaInstrucciones); // Usa la nueva función para mostrar y manejar scroll
 
                 // Reproduce el texto de las instrucciones
                 const tituloInstrucciones = document.getElementById("titulo-instrucciones").textContent;
@@ -1071,8 +1165,7 @@
          * Cierra la ventana de instrucciones y comienza el seguimiento de la ubicación.
          */
         function cerrarVentanaInstrucciones() {
-            ventanaInstrucciones.classList.remove("mostrar");
-            globalOverlay.style.display = "none"; // Oculta el overlay
+            ocultarModal(ventanaInstrucciones); // Usa la nueva función para ocultar y manejar scroll
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel(); // Cancela cualquier habla en curso (ej. si el usuario hace clic rápido)
             }
@@ -1152,6 +1245,13 @@
          */
         function mostrarFelicitacionCorrecta(pregunta) {
             console.log("Entrando a mostrarFelicitacionCorrecta para la pregunta:", pregunta); // Debugging
+
+            // 1. Ocultar la ventana de pregunta inmediatamente
+            ocultarModal(ventanaPregunta);
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel(); // Cancela cualquier habla en curso (la de la pregunta)
+            }
+
             const felicitacionImagen = document.getElementById("felicitacion-imagen");
             // Añade un manejador de error para la imagen y un fallback
             felicitacionImagen.onerror = () => {
@@ -1163,8 +1263,7 @@
 
             document.getElementById("felicitacion-explicacion").textContent = pregunta.explicacion || 'No hay explicación disponible.'; // Texto de explicación fallback
 
-            ventanaFelicitacion.classList.add("mostrar"); // Muestra la ventana de felicitación
-            globalOverlay.style.display = "block"; // Muestra el overlay
+            mostrarModal(ventanaFelicitacion); // Usa la nueva función para mostrar y manejar scroll
 
             reproducirSonido(sonidoCorrecto); // Sonido de respuesta correcta
             feedbackHaptico(100); // Vibración
@@ -1188,8 +1287,7 @@
                 if ('speechSynthesis' in window) {
                     window.speechSynthesis.cancel(); // Cancela el habla si sigue reproduciendo
                 }
-                ventanaFelicitacion.classList.remove("mostrar");
-                globalOverlay.style.display = "none"; // Oculta ventana y overlay
+                ocultarModal(ventanaFelicitacion); // Usa la nueva función para ocultar y manejar scroll
 
                 if (pregunta.marker) { // Verifica si el marcador existe antes de acceder a sus propiedades
                     pregunta.marker.setOpacity(0.4); // Baja la opacidad del marcador de la pregunta respondida
@@ -1209,7 +1307,7 @@
                     console.log("Todas las preguntas respondidas, mostrando felicitación final."); // Debugging
                     mostrarFelicitacionFinal(); // Si no hay más preguntas, muestra la nueva ventana final de felicitación
                 }
-                ventanaPregunta.classList.remove("mostrar"); // Oculta la ventana de pregunta
+                // Ya no necesitamos ocultar ventanaPregunta aquí, se hizo al inicio de mostrarFelicitacionCorrecta
             };
             botonContinuar.addEventListener('click', newListener);
             botonContinuar._currentListener = newListener; // Guarda la referencia al listener actual
@@ -1266,8 +1364,7 @@
                 fragment.appendChild(btn);
             });
             opcionesDiv.appendChild(fragment);
-            ventanaPregunta.classList.add("mostrar"); // Muestra la ventana de pregunta
-            globalOverlay.style.display = "block"; // Muestra el overlay
+            mostrarModal(ventanaPregunta); // Usa la nueva función para mostrar y manejar scroll
             if (opcionesDiv.firstChild && typeof opcionesDiv.firstChild.focus === 'function') {
                 opcionesDiv.firstChild.focus(); // Enfoca la primera opción para accesibilidad
             }
@@ -1412,8 +1509,7 @@
             document.getElementById("mensaje-felicitacion-final").textContent = mensajeParaNino;
             document.getElementById("puntaje-final").textContent = `${progreso.preguntasCorrectas} de ${totalPreguntas}`;
 
-            ventanaFelicitacionFinal.classList.add("mostrar");
-            globalOverlay.style.display = "block"; // Muestra el overlay
+            mostrarModal(ventanaFelicitacionFinal); // Usa la nueva función para mostrar y manejar scroll
 
             reproducirTexto(`¡Felicidades! ${mensajeParaNino} Tu puntaje final es ${progreso.preguntasCorrectas} de ${totalPreguntas} preguntas correctas.`);
             document.getElementById("boton-reiniciar-final").focus();
@@ -1510,14 +1606,12 @@
             document.getElementById('boton-comenzar-instrucciones').addEventListener('click', cerrarVentanaInstrucciones);
             document.getElementById('boton-reiniciar').addEventListener('click', reiniciarTrivia);
             document.getElementById('boton-mostrar-ubicacion').addEventListener('click', accionMostrarUbicacion);
-            // Nuevo: Listener para el botón de reiniciar de la ventana final
             document.getElementById('boton-reiniciar-final').addEventListener('click', reiniciarTrivia);
             botonToggleSonido.addEventListener('click', toggleSonido);
 
             // Muestra la ventana de bienvenida al cargar la página
             if (ventanaBienvenida) {
-                ventanaBienvenida.classList.add("mostrar");
-                globalOverlay.style.display = "block"; // Muestra el overlay
+                mostrarModal(ventanaBienvenida); // Usa la nueva función para mostrar y manejar scroll
 
                 // Reproduce el texto de bienvenida si aún no se ha leído (considerando políticas de autoplay)
                 if (!bienvenidaLeida) {
@@ -1535,6 +1629,7 @@
 </body>
 
 </html>
+
 
 
 
