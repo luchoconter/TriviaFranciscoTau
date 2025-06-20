@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Puntos Acumulados</title>
+    <!-- Estilos CSS integrados -->
+    <style>
+        /* Importar la fuente Inter de Google Fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+
+        /* Estilos globales para el cuerpo */
+        body {
+            font-family: 'Inter', sans-serif; /* Usamos la fuente Inter */
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f2f5; /* Un fondo suave */
+            display: flex;
+            justify-content: center; /* Centrado horizontal */
+            align-items: center; /* Centrado vertical */
+            min-height: 100vh; /* Ocupa al menos el 100% del alto de la ventana */
+            color: #333;
+            box-sizing: border-box; /* Incluye padding y border en el tamaño total */
+        }
+
+        /* Contenedor principal de la aplicación */
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px; /* Esquinas redondeadas */
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Sombra suave */
+            width: 100%;
+            max-width: 900px; /* Ancho máximo para pantallas grandes */
+            box-sizing: border-box;
+        }
+
+        /* Títulos principales */
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+
+        h2 {
+            color: #34495e;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        /* Separador horizontal */
+        hr {
+            border: 0;
+            height: 1px;
+            background-color: #e0e0e0;
+            margin: 40px 0;
+        }
+
+        /* Sección de datos/tabla */
+        .data-section {
+            overflow-x: auto; /* Permite desplazamiento horizontal en pantallas pequeñas */
+        }
+
+        /* Estilos de la tabla */
+        table#puntosTable {
+            width: 100%;
+            border-collapse: collapse; /* Elimina el espacio entre los bordes de las celdas */
+            margin-top: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            overflow: hidden; /* Asegura que las esquinas redondeadas se apliquen */
+        }
+
+        table#puntosTable th,
+        table#puntosTable td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd; /* Borde inferior para las filas */
+            border-right: 1px solid #e0e0e0; /* Borde vertical para las celdas */
+        }
+
+        table#puntosTable th:last-child,
+        table#puntosTable td:last-child {
+            border-right: none; /* Elimina el borde derecho de la última columna */
+        }
+
+        table#puntosTable th {
+            background-color: #3498db; /* Azul para los encabezados de la tabla */
+            color: white;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.95em;
+            cursor: pointer; /* Hace que los encabezados sean clickeables */
+            position: relative; /* Para posicionar las flechas */
+            padding-right: 30px; /* Espacio para la flecha */
+        }
+
+        /* Estilos para las flechas de ordenamiento */
+        table#puntosTable th .sort-arrow {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1em; /* Aumentar el tamaño de la flecha */
+            margin-left: 5px; /* Espacio entre el texto y la flecha */
+            color: #cccccc; /* Color por defecto más visible para flechas inactivas */
+            transition: color 0.2s ease; /* Transición suave para el color de la flecha */
+        }
+
+        /* Estilos para filas pares e impares */
+        table#puntosTable tbody tr:nth-child(even) {
+            background-color: #f8f8f8; /* Un gris muy claro para filas pares */
+        }
+
+        table#puntosTable tbody tr:hover {
+            background-color: #eef7fc; /* Resaltado al pasar el ratón por la fila */
+        }
+
+        /* Responsive design para pantallas pequeñas */
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            table#puntosTable th,
+            table#puntosTable td {
+                padding: 10px;
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Gestión de Puntos y Participantes</h1>
+
+        <div class="data-section">
+            <h2>Participantes y Puntos Acumulados</h2>
+            <table id="puntosTable">
+                <thead>
+                    <tr>
+                        <th data-sort-key="order">Orden <span class="sort-arrow"></span></th>
+                        <th data-sort-key="id">Explorador <span class="sort-arrow"></span></th>
+                        <th data-sort-key="totalPoints">Puntos Acumulados <span class="sort-arrow"></span></th>
+                        <th data-sort-key="visitedParksCount">Cantidad de Parques Visitados <span class="sort-arrow"></span></th>
+                        <th>Parques</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Aquí se insertarán los datos de los participantes con JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Script JavaScript integrado -->
+    <script>
+        // Obtener referencias a los elementos del DOM
+        const puntosTableBody = document.querySelector('#puntosTable tbody');
+
+        // Array para almacenar los datos de los participantes
+        // Se inicializa cargando desde localStorage o con un array vacío
+        let participantes = loadParticipants();
+
+        // Variables para el estado de ordenamiento
+        let currentSortKey = 'order'; // Clave de ordenamiento actual (por defecto 'order' para el índice)
+        let currentSortDirection = 'asc'; // Dirección de ordenamiento actual (ascendente o descendente)
+
+        /**
+         * Carga los datos de los participantes desde localStorage.
+         * @returns {Array} Un array de objetos participante.
+         */
+        function loadParticipants() {
+            try {
+                const data = localStorage.getItem('participantesPuntos');
+                // Si hay datos, los parsea como JSON. Si no, devuelve un array vacío.
+                return data ? JSON.parse(data) : [];
+            } catch (error) {
+                console.error('Error al cargar participantes desde localStorage:', error);
+                return []; // En caso de error, devuelve un array vacío para evitar que la aplicación falle.
+            }
+        }
+
+        /**
+         * Guarda los datos de los participantes en localStorage.
+         */
+        function saveParticipants() {
+            try {
+                localStorage.setItem('participantesPuntos', JSON.stringify(participantes));
+            } catch (error) {
+                console.error('Error al guardar participantes en localStorage:', error);
+                // Podríamos mostrar un mensaje al usuario aquí si el almacenamiento falla.
+            }
+        }
+
+        /**
+         * Ordena el array de participantes según la clave y dirección especificadas.
+         * @param {string} key - La propiedad por la cual ordenar ('id', 'totalPoints', 'visitedParksCount', 'order').
+         * @param {string} direction - La dirección de ordenamiento ('asc' o 'desc').
+         */
+        function sortParticipants(key, direction) {
+            participantes.sort((a, b) => {
+                let valA, valB;
+
+                // Determinar el valor de comparación según la clave
+                if (key === 'id') {
+                    valA = parseInt(a.id, 10);
+                    valB = parseInt(b.id, 10);
+                } else if (key === 'totalPoints') {
+                    valA = a.totalPoints;
+                    valB = b.totalPoints;
+                } else if (key === 'visitedParksCount') {
+                    valA = a.visitedParks.length;
+                    valB = b.visitedParks.length;
+                } else if (key === 'order') {
+                    // Para el "orden" visual, no se ordena el array de datos,
+                    // ya que se usa el índice de renderizado.
+                    return 0; // No cambiar el orden si la clave es 'order'
+                }
+
+                // Realizar la comparación según la dirección
+                if (valA < valB) {
+                    return direction === 'asc' ? -1 : 1;
+                }
+                if (valA > valB) {
+                    return direction === 'asc' ? 1 : -1;
+                }
+                return 0; // Mantener el orden si los valores son iguales
+            });
+        }
+
+        /**
+         * Actualiza los íconos de las flechas de ordenamiento en los encabezados de la tabla.
+         * Las flechas ahora son siempre visibles, pero se resaltan en la columna activa.
+         */
+        function updateSortIcons() {
+            // Recorrer todos los encabezados de columna ordenables
+            document.querySelectorAll('#puntosTable th[data-sort-key]').forEach(header => {
+                const arrowSpan = header.querySelector('.sort-arrow');
+                if (arrowSpan) {
+                    // Si este encabezado es la columna de ordenamiento activa
+                    if (header.getAttribute('data-sort-key') === currentSortKey) {
+                        arrowSpan.textContent = currentSortDirection === 'asc' ? ' ▲' : ' ▼'; // Flecha de ordenamiento
+                        arrowSpan.style.color = 'white'; // Color prominente para la flecha activa
+                    } else {
+                        // Para las columnas no activas, mostrar una flecha doble que indica que se puede ordenar
+                        arrowSpan.textContent = '↕'; // Carácter de flecha arriba/abajo
+                        arrowSpan.style.color = '#cccccc'; // Color sutil para la flecha inactiva
+                    }
+                }
+            });
+        }
+
+        /**
+         * Renderiza la tabla de participantes con los datos actuales y el ordenamiento aplicado.
+         */
+        function renderTable() {
+            // Limpia el contenido actual de la tabla
+            puntosTableBody.innerHTML = '';
+
+            // Aplicar el ordenamiento antes de renderizar
+            sortParticipants(currentSortKey, currentSortDirection);
+
+            // Itera sobre el array de participantes y crea una fila para cada uno
+            participantes.forEach((participante, index) => {
+                const row = puntosTableBody.insertRow(); // Crea una nueva fila <tr>
+
+                // Inserta las celdas <td> en la fila en el orden correcto
+                const cellOrder = row.insertCell();
+                const cellID = row.insertCell();
+                const cellPoints = row.insertCell();
+                const cellQuantityParks = row.insertCell(); // Nueva columna "Cantidad de Parques Visitados"
+                const cellParks = row.insertCell(); // Columna "Parques"
+
+                // Rellena las celdas con los datos del participante
+                cellOrder.textContent = index + 1; // El "orden" visual de la tabla
+                cellID.textContent = participante.id;
+                cellPoints.textContent = participante.totalPoints;
+                cellQuantityParks.textContent = participante.visitedParks.length; // Cantidad de parques
+                cellParks.textContent = participante.visitedParks.join(', '); // Lista de parques
+            });
+
+            // Actualiza los íconos de ordenamiento después de renderizar la tabla
+            updateSortIcons();
+        }
+
+        /**
+         * Maneja la recepción de puntos desde una fuente externa (simulada).
+         * Esta función sería llamada por tu otra aplicación.
+         * @param {string} participanteID - El ID del participante (DNI).
+         * @param {number} puntosGanados - Los puntos ganados por el participante.
+         * @param {string} parqueVisitado - El nombre del parque visitado.
+         */
+        function receivePointsFromExternalSource(participanteID, puntosGanados, parqueVisitado) {
+            // Validaciones básicas de los campos
+            if (!participanteID || typeof puntosGanados !== 'number' || puntosGanados <= 0 || !parqueVisitado) {
+                console.error('Datos inválidos recibidos:', { participanteID, puntosGanados, parqueVisitado });
+                return;
+            }
+            if (!/^\d+$/.test(participanteID)) {
+                console.error('ID de participante inválido (debe ser solo números):', participanteID);
+                return;
+            }
+
+            // Buscar si el participante ya existe
+            const existingParticipantIndex = participantes.findIndex(p => p.id === participanteID);
+
+            if (existingParticipantIndex !== -1) {
+                // Si el participante existe, actualizar sus puntos y añadir el parque
+                const existingParticipant = participantes[existingParticipantIndex];
+                existingParticipant.totalPoints += puntosGanados;
+
+                // Añadir el parque solo si no está ya en la lista (evitar duplicados)
+                if (!existingParticipant.visitedParks.includes(parqueVisitado)) {
+                    existingParticipant.visitedParks.push(parqueVisitado);
+                }
+                console.log(`Participante ${participanteID} actualizado. Puntos: ${existingParticipant.totalPoints}, Parques: ${existingParticipant.visitedParks}`);
+            } else {
+                // Si el participante no existe, crear una nueva entrada
+                const newParticipant = {
+                    id: participanteID,
+                    totalPoints: puntosGanados,
+                    visitedParks: [parqueVisitado] // El primer parque visitado
+                };
+                participantes.push(newParticipant);
+                console.log(`Nuevo participante ${participanteID} registrado. Puntos: ${newParticipant.totalPoints}, Parques: ${newParticipant.visitedParks}`);
+            }
+
+            // Guardar los datos actualizados en localStorage
+            saveParticipants();
+            // Volver a renderizar la tabla para mostrar los cambios
+            renderTable();
+        }
+
+        // Añadir listeners de evento a los encabezados de la tabla para ordenar
+        document.querySelectorAll('#puntosTable th[data-sort-key]').forEach(header => {
+            header.addEventListener('click', () => {
+                const key = header.getAttribute('data-sort-key');
+                if (currentSortKey === key) {
+                    // Si se hace clic en la misma columna, invertir la dirección
+                    currentSortDirection = currentSortDirection === 'asc' ? 'desc' : 'asc';
+                } else {
+                    // Si se hace clic en una nueva columna, establecerla como la clave y ordenar ascendente
+                    currentSortKey = key;
+                    currentSortDirection = 'asc';
+                }
+                renderTable(); // Re-renderizar la tabla con el nuevo orden
+            });
+        });
+
+        // Renderizar la tabla la primera vez que se carga la página
+        document.addEventListener('DOMContentLoaded', () => {
+            renderTable();
+        });
+
+        // NOTA: Esta función 'receivePointsFromExternalSource' es el punto de entrada
+        // que tu otra aplicación debería llamar. Por ejemplo, si tu otra app
+        // está en el mismo dominio o si usas postMessage para comunicación entre iframes.
+        // Ejemplo de cómo podrías llamarla desde la consola del navegador
+        // o desde tu otra aplicación:
+        // receivePointsFromExternalSource('12345678', 150, 'Parque Aventura');
+    </script>
+</body>
+</html>
