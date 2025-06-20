@@ -8,10 +8,13 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <link rel="manifest" href="manifest.json">
     
+    <!-- Enlace al CSS del chatbot de n8n -->
     <link href="https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css" rel="stylesheet" />
 
     <style>
-        /* Global CSS Variables */
+        /* ==================================================================== */
+        /* VARIABLES CSS GLOBALES                      */
+        /* ==================================================================== */
         :root {
             --color-primario-verde: #4CAF50;
             --color-primario-verde-claro: #66bb6a;
@@ -44,20 +47,23 @@
             --tamano-fuente-titulo-modal: 1.8em;
         }
 
-        /* General styles for the page body */
-        body,
-        html {
+        /* ==================================================================== */
+        /* ESTILOS GENERALES                         */
+        /* ==================================================================== */
+        body, html {
             margin: 0;
             padding: 0;
             height: 100%;
             font-family: var(--fuente-principal);
             font-size: var(--tamano-fuente-normal);
-            background-image: url('fondo.jpg');
+            background-image: url('fondo.jpg'); /* Asegúrate de que 'fondo.jpg' exista en la misma carpeta */
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
             background-attachment: fixed;
-            touch-action: pan-x pan-y;
+            /* Previene el zoom accidental y mejora la interacción táctil */
+            touch-action: pan-x pan-y; 
+            /* Deshabilita la selección de texto en la interfaz */
             -webkit-user-select: none;
             -moz-user-select: none;
             -ms-user-select: none;
@@ -67,14 +73,16 @@
         #map {
             height: 100vh;
             width: 100%;
-            touch-action: manipulation;
+            touch-action: manipulation; /* Permite interacciones de mapa como el zoom y arrastre */
             -webkit-user-select: auto;
             -moz-user-select: auto;
             -ms-user-select: auto;
             user-select: auto;
         }
 
-        /* Base styles for all modal windows */
+        /* ==================================================================== */
+        /* ESTILOS DE MODALES                      */
+        /* ==================================================================== */
         .modal-base {
             position: absolute;
             top: 50%;
@@ -88,10 +96,11 @@
             text-align: center;
             border: 1px solid rgba(0, 0, 0, 0.1);
             box-shadow: var(--sombra-modal);
-            display: none;
-            animation: fadeIn 0.5s ease-out;
+            display: none; /* Oculto por defecto */
+            animation: fadeIn 0.5s ease-out; /* Animación de aparición */
 
-            background: linear-gradient(var(--color-fondo-overlay), var(--color-fondo-overlay)), url('fondoventanas.jpg');
+            /* Fondo con imagen y overlay para legibilidad */
+            background: linear-gradient(var(--color-fondo-overlay), var(--color-fondo-overlay)), url('fondoventanas.jpg'); /* Asegúrate de que 'fondoventanas.jpg' exista */
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -103,7 +112,7 @@
         }
 
         .modal-base.mostrar {
-            display: block;
+            display: block; /* Muestra el modal */
         }
 
         .modal-base h2 {
@@ -122,9 +131,43 @@
             line-height: 1.6;
         }
 
-        /* Styles for general buttons */
-        button,
-        .button-style {
+        /* Estilos específicos para la ventana final */
+        #ventana-final {
+            max-width: 480px;
+            padding: var(--padding-modal-grande);
+            border-radius: var(--radio-borde-modal-grande);
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            z-index: 10001;
+        }
+
+        #ventana-final h2 {
+            color: var(--color-primario-verde-oscuro);
+        }
+
+        #ventana-final button {
+            background: linear-gradient(135deg, var(--color-secundario-azul-claro) 0%, var(--color-secundario-azul) 100%);
+        }
+
+        #ventana-final button:hover {
+            background: linear-gradient(135deg, var(--color-secundario-azul) 0%, var(--color-secundario-azul-oscuro) 100%);
+        }
+
+        /* Estilos para el overlay global que bloquea la interacción de fondo */
+        #global-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6); /* Fondo oscuro semi-transparente */
+            z-index: 999; /* Debajo de los modales, por encima del mapa */
+            display: none; /* Oculto por defecto */
+        }
+
+        /* ==================================================================== */
+        /* ESTILOS DE BOTONES                      */
+        /* ==================================================================== */
+        button, .button-style {
             margin: 10px 5px;
             padding: var(--padding-boton);
             font-size: var(--tamano-fuente-boton);
@@ -140,8 +183,8 @@
             text-decoration: none;
             display: inline-block;
             outline: none;
-            min-height: 44px;
-            min-width: 44px;
+            min-height: 44px; /* Tamaño mínimo para una fácil interacción táctil */
+            min-width: 44px;  /* Tamaño mínimo para una fácil interacción táctil */
             box-sizing: border-box;
             touch-action: manipulation;
             -webkit-user-select: none;
@@ -150,32 +193,27 @@
             user-select: none;
         }
 
-        button:hover,
-        .button-style:hover {
+        button:hover, .button-style:hover {
             background: linear-gradient(135deg, var(--color-primario-verde) 0%, var(--color-primario-verde-oscuro) 100%);
             transform: translateY(-2px);
             box-shadow: var(--sombra-elemento-hover);
         }
 
-        /* Styles for focus and active states (keyboard navigation/click feedback) */
-        button:focus-visible,
-        button:focus,
-        .button-style:focus-visible,
-        .button-style:focus {
+        /* Estilos para estados de foco y activo (navegación por teclado/feedback de click) */
+        button:focus-visible, button:focus, .button-style:focus-visible, .button-style:focus {
             transform: translateY(0);
             border: 3px solid var(--color-secundario-azul-claro);
             box-shadow: 0 0 0 2px var(--color-secundario-azul-claro),
-                0 3px 8px rgba(0, 0, 0, 0.25);
+                        0 3px 8px rgba(0, 0, 0, 0.25);
         }
 
-        button:active,
-        .button-style:active {
+        button:active, .button-style:active {
             transform: scale(0.95);
             opacity: 0.8;
             box-shadow: var(--sombra-elemento);
         }
 
-        /* Style for buttons that should always have the blue border */
+        /* Estilo para los botones de selección de edad */
         .age-selection-button {
             background: linear-gradient(135deg, var(--color-secundario-azul-claro) 0%, var(--color-secundario-azul) 100%) !important;
             border: 3px solid var(--color-secundario-azul-claro) !important;
@@ -189,7 +227,7 @@
             background: linear-gradient(135deg, var(--color-primario-verde) 0%, var(--color-primario-verde-oscuro) 100%) !important;
         }
 
-        /* Style for disabled buttons */
+        /* Estilo para botones deshabilitados */
         button:disabled {
             opacity: 0.6;
             cursor: not-allowed;
@@ -199,7 +237,7 @@
             border-color: #aaa !important;
         }
 
-        /* Fixed buttons */
+        /* Botones fijos en la esquina superior derecha */
         #botones-fijos {
             position: absolute;
             top: 10px;
@@ -208,11 +246,7 @@
             display: flex;
             flex-direction: column;
             gap: 5px;
-            touch-action: pan-x pan-y;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
+            display: none; /* Oculto por defecto, se muestra con JS */
         }
 
         #botones-fijos button {
@@ -229,11 +263,66 @@
             fill: var(--color-texto-blanco);
         }
 
+        /* Texto de los botones fijos oculto en pantallas pequeñas, visible en grandes */
         #botones-fijos button span {
             display: none;
         }
 
-        /* Progress panel */
+        /* Contenedor de opciones de pregunta (botones de respuesta) */
+        #opciones {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        #opciones button {
+            padding: 15px;
+            font-size: 1.1em;
+            cursor: pointer;
+            border: none;
+            border-radius: var(--radio-borde-general);
+            background-color: var(--color-secundario-azul-claro);
+            color: var(--color-texto-blanco);
+            box-shadow: var(--sombra-elemento);
+            transition: background-color 0.3s ease, transform 0.1s ease, box-shadow 0.1s ease;
+            font-weight: bold;
+            text-align: center;
+            white-space: normal; /* Permite que el texto se ajuste en varias líneas */
+            min-height: 44px;
+            line-height: 1.4;
+        }
+
+        #opciones button:hover {
+            background-color: var(--color-secundario-azul);
+            box-shadow: var(--sombra-elemento-hover);
+        }
+
+        #opciones button:active {
+            transform: scale(0.95);
+            opacity: 0.8;
+        }
+
+        /* Botones de confirmación/negación en modales personalizados */
+        .custom-js-modal .boton-confirmacion {
+            background: linear-gradient(135deg, var(--color-primario-verde-claro) 0%, var(--color-primario-verde) 100%);
+        }
+
+        .custom-js-modal .boton-confirmacion:hover {
+            background: linear-gradient(135deg, var(--color-primario-verde) 0%, var(--color-primario-verde-oscuro) 100%);
+        }
+
+        .custom-js-modal .boton-negacion {
+            background: linear-gradient(135deg, var(--color-error-rojo-claro) 0%, var(--color-error-rojo) 100%);
+        }
+
+        .custom-js-modal .boton-negacion:hover {
+            background: linear-gradient(135deg, var(--color-error-rojo) 0%, #d32f2f 100%);
+        }
+
+        /* ==================================================================== */
+        /* PANEL DE PROGRESO                          */
+        /* ==================================================================== */
         #panel-progreso {
             position: absolute;
             bottom: 10px;
@@ -248,11 +337,7 @@
             box-shadow: var(--sombra-elemento);
             font-size: 14px;
             color: var(--color-texto-oscuro);
-            touch-action: pan-x pan-y;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
+            display: none; /* Oculto por defecto, se muestra con JS */
         }
 
         #barra-progreso {
@@ -271,115 +356,9 @@
             transition: width 0.5s ease;
         }
 
-        /* Specific Final Window */
-        #ventana-final {
-            max-width: 480px;
-            padding: var(--padding-modal-grande);
-            border-radius: var(--radio-borde-modal-grande);
-            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
-            z-index: 10001;
-            touch-action: pan-x pan-y;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-        }
-
-        #ventana-final h2 {
-            color: var(--color-primario-verde-oscuro);
-        }
-
-        #ventana-final button {
-            background: linear-gradient(135deg, var(--color-secundario-azul-claro) 0%, var(--color-secundario-azul) 100%);
-        }
-
-        #ventana-final button:hover {
-            background: linear-gradient(135deg, var(--color-secundario-azul) 0%, var(--color-secundario-azul-oscuro) 100%);
-        }
-
-        /* Styles for the custom modal created by JS */
-        .custom-js-modal {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: var(--color-texto-blanco);
-            padding: var(--padding-modal);
-            border-radius: var(--radio-borde-modal);
-            box-shadow: var(--sombra-modal);
-            z-index: 10005;
-            text-align: center;
-            max-width: 380px;
-            width: 85vw;
-            color: var(--color-texto-oscuro);
-            touch-action: pan-x pan-y;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-        }
-
-        .custom-js-modal h3 {
-            font-size: 1.5em;
-            color: var(--color-texto-oscuro);
-            margin-bottom: 15px;
-            font-weight: bold;
-        }
-
-        .custom-js-modal p {
-            font-size: 1.1em;
-            margin-bottom: 25px;
-            line-height: 1.5;
-            text-shadow: none;
-            font-weight: normal;
-        }
-
-        .custom-js-modal .modal-botones button {
-            margin: 8px;
-            padding: 10px 20px;
-        }
-
-        /* Specific confirmation/error buttons for JS modal */
-        .custom-js-modal .boton-confirmacion {
-            background: linear-gradient(135deg, var(--color-primario-verde-claro) 0%, var(--color-primario-verde) 100%);
-        }
-
-        .custom-js-modal .boton-confirmacion:hover {
-            background: linear-gradient(135deg, var(--color-primario-verde) 0%, var(--color-primario-verde-oscuro) 100%);
-        }
-
-        .custom-js-modal .boton-negacion {
-            background: linear-gradient(135deg, var(--color-error-rojo-claro) 0%, var(--color-error-rojo) 100%);
-        }
-
-        .custom-js-modal .boton-negacion:hover {
-            background: linear-gradient(135deg, var(--color-error-rojo) 0%, #d32f2f 100%);
-        }
-
-        /* Style for the explanation text after answering a question */
-        #explicacion-respuesta {
-            margin-top: 20px;
-            padding: 15px;
-            background-color: rgba(240, 240, 240, 0.9);
-            border-radius: var(--radio-borde-general);
-            text-align: left;
-            font-size: 0.95em;
-            color: var(--color-texto-oscuro);
-            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
-            display: none;
-            touch-action: pan-x pan-y;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-        }
-
-        #explicacion-respuesta.mostrar {
-            display: block;
-            animation: fadeIn 0.5s ease-out;
-        }
-
-        /* Styles for the correct answer celebration modal */
+        /* ==================================================================== */
+        /* MODAL DE FELICITACIÓN                      */
+        /* ==================================================================== */
         #ventana-felicitacion {
             position: fixed;
             top: 50%;
@@ -396,11 +375,6 @@
             color: var(--color-texto-oscuro);
             display: none;
             animation: fadeIn 0.5s ease-out;
-            touch-action: pan-x pan-y;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
         }
 
         #ventana-felicitacion.mostrar {
@@ -437,99 +411,83 @@
             background: linear-gradient(135deg, var(--color-secundario-azul) 0%, var(--color-secundario-azul-oscuro) 100%);
         }
 
-        #opciones {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 10px;
+        /* ==================================================================== */
+        /* EXPLICACIÓN DE RESPUESTA                   */
+        /* ==================================================================== */
+        #explicacion-respuesta {
             margin-top: 20px;
-        }
-
-        #opciones button {
             padding: 15px;
-            font-size: 1.1em;
-            cursor: pointer;
-            border: none;
+            background-color: rgba(240, 240, 240, 0.9);
             border-radius: var(--radio-borde-general);
-            background-color: var(--color-secundario-azul-claro);
-            color: var(--color-texto-blanco);
-            box-shadow: var(--sombra-elemento);
-            transition: background-color 0.3s ease, transform 0.1s ease, box-shadow 0.1s ease;
-            font-weight: bold;
-            text-align: center;
-            white-space: normal;
-            min-height: 44px;
-            line-height: 1.4;
-        }
-
-        #opciones button:hover {
-            background-color: var(--color-secundario-azul);
-            box-shadow: var(--sombra-elemento-hover);
-        }
-
-        #opciones button:active {
-            transform: scale(0.95);
-            opacity: 0.8;
-        }
-
-        /* DNI Input Container Styles */
-        #dni-input-container {
-            margin-top: 25px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-        }
-
-        #dni-input-container p {
-            margin-bottom: 0;
-            font-size: 1.1em;
-        }
-
-        #dni-explorador {
-            padding: 12px 15px;
-            border: 2px solid var(--color-secundario-azul-claro);
-            border-radius: var(--radio-borde-general);
-            font-size: var(--tamano-fuente-normal);
-            width: 80%;
-            max-width: 250px;
-            box-sizing: border-box;
-            text-align: center;
+            text-align: left;
+            font-size: 0.95em;
+            color: var(--color-texto-oscuro);
             box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            display: none;
+            animation: fadeIn 0.5s ease-out;
         }
 
-        #dni-explorador:focus {
-            outline: none;
-            border-color: var(--color-primario-verde);
-            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+        #explicacion-respuesta.mostrar {
+            display: block;
+            animation: fadeIn 0.5s ease-out;
         }
 
-        /* Animaciones */
+        /* ==================================================================== */
+        /* MODAL CUSTOM JS                          */
+        /* ==================================================================== */
+        .custom-js-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--color-texto-blanco);
+            padding: var(--padding-modal);
+            border-radius: var(--radio-borde-modal);
+            box-shadow: var(--sombra-modal);
+            z-index: 10005;
+            text-align: center;
+            max-width: 380px;
+            width: 85vw;
+            color: var(--color-texto-oscuro);
+        }
+
+        .custom-js-modal h3 {
+            font-size: 1.5em;
+            color: var(--color-texto-oscuro);
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .custom-js-modal p {
+            font-size: 1.1em;
+            margin-bottom: 25px;
+            line-height: 1.5;
+            text-shadow: none;
+            font-weight: normal;
+        }
+
+        .custom-js-modal .modal-botones button {
+            margin: 8px;
+            padding: 10px 20px;
+        }
+
+        /* ==================================================================== */
+        /* ANIMACIONES                            */
+        /* ==================================================================== */
         @keyframes fadeIn {
-            0% {
-                opacity: 0;
-                transform: translate(-50%, -55%);
-            }
-
-            100% {
-                opacity: 1;
-                transform: translate(-50%, -50%);
-            }
+            0% { opacity: 0; transform: translate(-50%, -55%); }
+            100% { opacity: 1; transform: translate(-50%, -50%); }
         }
 
-        @keyframes aparecerVentana {
-            0% {
-                opacity: 0;
-                transform: translate(-50%, -60%);
-            }
-
-            100% {
-                opacity: 1;
-                transform: translate(-50%, -50%);
-            }
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
         }
 
-        /* Custom Leaflet DivIcon for user location */
+        /* ==================================================================== */
+        /* ICONO DE UBICACIÓN LEAFLET                 */
+        /* ==================================================================== */
         .leaflet-div-icon {
             background: none;
             border: none;
@@ -549,58 +507,24 @@
             animation: pulse 1.5s infinite ease-in-out;
         }
 
-        @keyframes pulse {
-            0% {
-                transform: scale(1);
-                opacity: 1;
-            }
-
-            50% {
-                transform: scale(1.05);
-                opacity: 0.8;
-            }
-
-            100% {
-                transform: scale(1);
-                opacity: 1;
-            }
-        }
-
-        /* Media queries for responsive design */
+        /* ==================================================================== */
+        /* MEDIA QUERIES (RESPONSIVE)                */
+        /* ==================================================================== */
         @media (max-width: 600px) {
-
-            .modal-base,
-            #ventana-final,
-            .custom-js-modal,
-            #ventana-felicitacion {
+            .modal-base, #ventana-final, .custom-js-modal, #ventana-felicitacion {
                 width: 95vw;
                 max-width: 95vw;
             }
 
-            .modal-base h2 {
-                font-size: 1.5em;
-            }
-
-            .custom-js-modal h3 {
-                font-size: 1.3em;
-            }
-
-            .custom-js-modal p {
-                font-size: 1em;
-            }
-
-            #ventana-felicitacion h3 {
-                font-size: 1.5em;
-            }
-
-            #panel-progreso {
-                font-size: 13px;
-            }
+            .modal-base h2 { font-size: 1.5em; }
+            .custom-js-modal h3 { font-size: 1.3em; }
+            .custom-js-modal p { font-size: 1em; }
+            #ventana-felicitacion h3 { font-size: 1.5em; }
+            #panel-progreso { font-size: 13px; }
 
             #botones-fijos {
                 top: 10px;
                 right: 10px;
-                display: flex;
                 flex-direction: column;
                 gap: 6px;
                 align-items: flex-end;
@@ -613,18 +537,20 @@
             }
 
             #botones-fijos button span {
-                display: inline;
+                display: inline; /* Muestra el texto en pantallas pequeñas */
             }
         }
 
-        /* Media query for larger screens to show text next to icons */
+        /* Media query para pantallas más grandes para mostrar texto junto a los iconos */
         @media (min-width: 601px) {
             #botones-fijos button span {
                 display: inline;
             }
         }
 
-        /* Estilos para el contenedor del chatbot de n8n para asegurar visibilidad */
+        /* ==================================================================== */
+        /* ESTILOS CHATBOT N8N                       */
+        /* ==================================================================== */
         #n8n-chat {
             position: fixed;
             bottom: 20px;
@@ -637,7 +563,7 @@
         /* Estilos para el botón flotante real que crea n8n (clases comunes) */
         #n8n-chat .n8n-chat-bubble,
         #n8n-chat .n8n-chat-launcher {
-            background-color: #25D366 !important;
+            background-color: #25D366 !important; /* Color de WhatsApp */
             color: white !important;
             border-radius: 50% !important;
             width: 60px !important;
@@ -667,7 +593,9 @@
 <body>
 
     <div id="map"></div>
+    <div id="global-overlay"></div> <!-- Overlay para bloquear interacción de fondo -->
 
+    <!-- Ventana de bienvenida y selección de edad -->
     <div id="ventana-bienvenida" class="modal-base" role="dialog" aria-modal="true" aria-labelledby="titulo-bienvenida">
         <h2 id="titulo-bienvenida">¡Bienvenido a la trivia de la "Reserva Natural Francisco Tau"!</h2>
         <p>¿En qué rango de edad te encontrás?</p>
@@ -676,13 +604,9 @@
             <button data-edad="6a12" class="age-selection-button">Entre 6 y 12 años</button>
             <button data-edad="mayor12" class="age-selection-button">Mayor a 12 años</button>
         </div>
-        <div id="dni-input-container">
-            <p>Ingresa el DNI del Explorador:</p>
-            <input type="text" id="dni-explorador" placeholder="Ej: 12345678" pattern="[0-9]*" inputmode="numeric" maxlength="8" aria-label="Ingresar DNI del Explorador">
-            <button id="boton-ingresar-aplicacion" disabled>Ingresar a la aplicación</button>
-        </div>
     </div>
 
+    <!-- Ventana de instrucciones -->
     <div id="ventana-instrucciones" class="modal-base" role="dialog" aria-modal="true"
         aria-labelledby="titulo-instrucciones">
         <h2 id="titulo-instrucciones">¡Bienvenido a la trivia de la "Reserva Natural Francisco Tau"!</h2>
@@ -693,20 +617,23 @@
         <button id="boton-comenzar-instrucciones">¡Comencemos!</button>
     </div>
 
+    <!-- Ventana de pregunta -->
     <div id="pregunta" class="modal-base" role="dialog" aria-modal="true" aria-labelledby="texto-pregunta">
         <p id="texto-pregunta"></p>
         <div id="opciones"></div>
         <div id="explicacion-respuesta"></div>
     </div>
 
+    <!-- Ventana de felicitación por respuesta correcta -->
     <div id="ventana-felicitacion" role="dialog" aria-modal="true" aria-labelledby="titulo-felicitacion">
         <h3 id="titulo-felicitacion">¡Respuesta Correcta!</h3>
-        <img id="felicitacion-imagen" src="algarrobo.jpg" alt="Imagen del lugar">
+        <img id="felicitacion-imagen" src="algarrobo.jpg" alt="Imagen del lugar"> <!-- Placeholder, se carga dinámicamente -->
         <p id="felicitacion-explicacion"></p>
         <button id="boton-continuar-felicitacion">Continuar</button>
     </div>
 
-    <div id="botones-fijos" style="display: none;">
+    <!-- Botones fijos en la interfaz principal del mapa -->
+    <div id="botones-fijos">
         <button id="boton-reiniciar" aria-label="Reiniciar Trivia">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <path
@@ -734,13 +661,15 @@
         </button>
     </div>
 
-    <div id="panel-progreso" style="display: none;">
+    <!-- Panel de progreso de la trivia -->
+    <div id="panel-progreso">
         <div id="barra-progreso">
             <div id="progreso-porcentaje"></div>
         </div>
         <div id="progreso-texto">0 / 0 preguntas respondidas - Puntaje: 0 / 0</div>
     </div>
 
+    <!-- Ventana final de resultados de la trivia -->
     <div id="ventana-final" class="modal-base" role="dialog" aria-modal="true" aria-labelledby="titulo-final">
         <h2 id="titulo-final">🎉 ¡Felicitaciones!</h2>
         <p>Has finalizado la trivia del <strong>Parque Natural Francisco Tau</strong>.</p>
@@ -749,22 +678,27 @@
         <button id="boton-cerrar-final">Cerrar</button>
     </div>
 
+    <!-- Elementos de audio -->
     <audio id="sonido-correcto" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg"
         preload="auto"></audio>
     <audio id="sonido-incorrecto" src="https://actions.google.com/sounds/v1/cartoon/boing.ogg"
         preload="auto"></audio>
     <audio id="alarmaSonido" preload="auto">
-        <source src="alarma.mp3" type="audio/mpeg">
-        Tu navegador no sopporta el elemento de audio.
+        <source src="alarma.mp3" type="audio/mpeg"> <!-- Asegúrate de que 'alarma.mp3' exista en la misma carpeta -->
+        Tu navegador no soporta el elemento de audio.
     </audio>
 
+    <!-- Contenedor para el chatbot de n8n -->
     <div id="n8n-chat"></div>
 
+    <!-- Scripts externos -->
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script type="module">
         import { createChat } from 'https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js';
 
-        // --- Global Variables and Configuration ---
+        // ==================================================================== */
+        //                         VARIABLES GLOBALES Y DATOS                   */
+        /* ==================================================================== */
         const preguntasData = {
             "menor6": [
                 {
@@ -818,7 +752,7 @@
                 {
                     "coords": [-34.61100, -58.36843],
                     "texto": "“Cuido plantas y animales y ayudo a los visitantes. ¿Quién soy?”",
-                    "opciones": ["Científico", "Turista", "Guardaparque"],
+                    "opciones": ["Científico", "Rurista", "Guardaparque"],
                     "correcta": 2,
                     "explicacion": "La guardaparque del Tau es la super-heroína verde: vigila senderos, da consejos y protege cada rincón del bosque todos los días.",
                     "fotoUrl": "guarda.png"
@@ -886,7 +820,7 @@
                     "texto": "¿Qué roedor semiacuático, parecido a una nutria, habita en las orillas del Río Ctalamochita dentro del parque?",
                     "opciones": ["Comadreja overa", "Coipo", "Cuis"],
                     "correcta": 1,
-                    "explicacion": "El coipo, también llamado nutria criolla, es un mamífero roedor semiacuático que vive en zonas cercanas al agua, como las orillas del Río Ctalamochita, dentro del Parque Francisco Tau. Tiene un cuerpo robusto, pelaje denso e impermeable, y una cola larga y redondeada. Sus patas traseras palmeadas le permiten nadar con gran agilidad. Se alimenta principalmente de vegetación acuática y raíces, y suele construir madrigueras en barrancas o entre la vegetación ribereña. Es una especie nativa de América del Sur y cumple un rol ecológico importante en el ecosistema acuático, ayudando a controlar el crecimiento de plantas en lagunas y ríos. Su presencia en el parque indica una buena calidad ambiental en los ambientes ribereños y la existencia de refugio adecuado para fauna nativa.",
+                    "explicacion": "El coipo, también llamado nutria criolla, es un mamífero roedor semiacuático que vive en zonas cercanas al agua, como las orillas del Río Ctalamochita, dentro del Parque Francisco Tau. Tiene un cuerpo robusto, pelaje denso e impermeable, y una cola larga y redondeada. Sus patas trasmeras palmeadas le permiten nadar con gran agilidad. Se alimenta principalmente de vegetación acuática y raíces, y suele construir madrigueras en barrancas o entre la vegetación ribereña. Es una especie nativa de América del Sur y cumple un rol ecológico importante en el ecosistema acuático, ayudando a controlar el crecimiento de plantas en lagunas y ríos. Su presencia en el parque indica una buena calidad ambiental en los ambientes ribereños y la existencia de refugio adecuado para fauna nativa.",
                     "fotoUrl": "coipo.jpg"
                 }
             ],
@@ -934,27 +868,24 @@
             ]
         };
 
+        // Variables de estado de la aplicación
         let edadSeleccionada = null;
         let progreso = {
             actual: 0,
             puntaje: 0,
-            intentos: {}
+            intentos: {} // Guarda el número de intentos por pregunta
         };
         let mapa;
         let marcadorUbicacion;
         let ubicacionWatchId = null;
-        const ACTIVATION_RADIUS = 10;
-        const preguntaMarkers = [];
-        let currentQuestionRadiusCircle = null;
+        const ACTIVATION_RADIUS = 10; // Radio en metros para activar una pregunta
+        const preguntaMarkers = []; // Almacena los marcadores de preguntas en el mapa
+        let currentQuestionRadiusCircle = null; // Círculo que muestra el radio de activación de la pregunta actual
         let sonidoActivado = true;
-        let supportsWebP = false;
-        let dniValido = false; // Variable para controlar la validez del DNI
-        let botonEdadSeleccionado = null; // Para guardar la referencia al botón de edad seleccionado
-        let bienvenidaLeida = false; // Nueva variable para controlar si la bienvenida ya se leyó
+        let botonEdadSeleccionado = null; // Referencia al botón de edad actualmente seleccionado
+        let bienvenidaLeida = false; // Bandera para controlar si la bienvenida de voz ya se reprodujo
 
-        const computedStyles = getComputedStyle(document.documentElement);
-        const colorErrorRojo = computedStyles.getPropertyValue('--color-error-rojo').trim();
-
+        // Referencias a elementos del DOM
         const ventanaBienvenida = document.getElementById("ventana-bienvenida");
         const ventanaInstrucciones = document.getElementById("ventana-instrucciones");
         const ventanaPregunta = document.getElementById("pregunta");
@@ -967,69 +898,84 @@
         const botonToggleSonido = document.getElementById("boton-toggle-sonido");
         const iconSoundOn = document.getElementById("icon-sound-on");
         const iconSoundOff = document.getElementById("icon-sound-off");
-        const dniExploradorInput = document.getElementById("dni-explorador");
-        const botonIngresarAplicacion = document.getElementById("boton-ingresar-aplicacion");
+        const globalOverlay = document.getElementById("global-overlay");
 
+        // Audio para la alarma (inicializado de forma perezosa)
+        let alarmaAudio;
 
-        function checkWebPSupport() {
-            return new Promise((resolve) => {
-                const img = new Image();
-                img.onload = function () {
-                    resolve(img.width > 0 && img.height > 0);
-                };
-                img.onerror = function () {
-                    resolve(false);
-                };
-                img.src = 'data:image/webp;base64,UklGRhoAAABXRUJQVlA4TA0AAAAvAAAAEAcQERGIiP4HAA==';
-            });
-        }
+        // ==================================================================== */
+        //                             FUNCIONES DE UTILIDAD                    */
+        /* ==================================================================== */
 
-        function loadImage(imgElement) {
-            // Se asigna directamente la fotoUrl al src de la imagen
-            // No se usan data-src o data-srcset, y no se realiza conversión a WebP aquí.
-        }
-
+        /**
+         * Reproduce un elemento de audio si el sonido está activado.
+         * @param {HTMLAudioElement} audio - El elemento de audio a reproducir.
+         */
         function reproducirSonido(audio) {
             if (sonidoActivado) {
-                audio.currentTime = 0;
-                audio.play();
+                audio.currentTime = 0; // Reinicia el audio al principio
+                audio.play().catch(e => console.error(`Error al reproducir ${audio.id}:`, e));
+                console.log(`Reproduciendo sonido: ${audio.id}`); // Debugging
+            } else {
+                console.log(`Sonido ${audio.id} no reproducido: Sonido desactivado.`); // Debugging
             }
         }
 
-        let alarmaAudio;
+        /**
+         * Reproduce el sonido de alarma. Se inicializa el elemento de audio si aún no lo está.
+         */
         function reproducirAlarma() {
             if (!alarmaAudio) {
                 alarmaAudio = document.getElementById('alarmaSonido');
             }
-            if (sonidoActivado && alarmaAudio && alarmaAudio.readyState >= 2) {
+            if (sonidoActivado && alarmaAudio && alarmaAudio.readyState >= 2) { // readyState >=2 significa que los datos están disponibles
                 alarmaAudio.currentTime = 0;
                 alarmaAudio.play().catch(e => console.error("Error al reproducir la alarma:", e));
+                console.log("Intentando reproducir alarma.mp3"); // Debugging
             } else {
-                console.warn("Alarma no reproducida: sonido deshabilitado o audio no cargado.", { sonidoActivado, readyState: alarmaAudio ? alarmaAudio.readyState : 'N/A' });
+                console.warn("Alarma no reproducida: sonido deshabilitado o audio no cargado.", { sonidoActivado, readyState: alarmaAudio ? alarmaAudio.readyState : 'N/A' }); // Debugging
             }
         }
 
+        /**
+         * Genera un feedback háptico (vibración) si el dispositivo lo soporta.
+         * @param {number|number[]} pattern - Patrón de vibración en milisegundos.
+         */
         function feedbackHaptico(pattern = 50) {
             if ('vibrate' in navigator) {
                 navigator.vibrate(pattern);
             }
         }
 
+        /**
+         * Reproduce un texto usando la API de síntesis de voz del navegador.
+         * @param {string} text - El texto a reproducir.
+         */
         function reproducirTexto(text) {
             if ('speechSynthesis' in window && sonidoActivado) {
                 const utterance = new SpeechSynthesisUtterance(text);
-                utterance.lang = 'es-ES';
+                utterance.lang = 'es-ES'; // Configura el idioma a español
                 utterance.volume = 1;
                 utterance.rate = 1;
                 utterance.pitch = 1;
-                window.speechSynthesis.cancel(); // Cancel any ongoing speech
+                window.speechSynthesis.cancel(); // Cancela cualquier habla en curso
                 window.speechSynthesis.speak(utterance);
+                console.log(`Reproduciendo texto: "${text.substring(0, Math.min(text.length, 50))}..."`); // Debugging
             } else if (!('speechSynthesis' in window)) {
                 console.warn("La API de síntesis de voz no está soportada en este navegador.");
+            } else if (!sonidoActivado) {
+                console.log("Texto no reproducido: Sonido desactivado."); // Debugging
             }
         }
 
+        /**
+         * Crea y muestra un modal personalizado con título, mensaje y botones.
+         * @param {string} titulo - Título del modal.
+         * @param {string} mensaje - Contenido HTML del mensaje.
+         * @param {Array<Object>} botonesConfig - Array de objetos {texto: string, clase: string, callback: function}.
+         */
         function crearModalPersonalizado(titulo, mensaje, botonesConfig) {
+            // Elimina cualquier modal personalizado existente para evitar duplicados
             const modalExistente = document.querySelector('.custom-js-modal');
             if (modalExistente) {
                 document.body.removeChild(modalExistente);
@@ -1043,6 +989,7 @@
             const modalTitulo = document.createElement('h3');
             modalTitulo.textContent = titulo;
             modal.appendChild(modalTitulo);
+            // Asegura un ID único para el aria-labelledby
             const tituloId = 'custom-modal-titulo-' + Date.now();
             modalTitulo.id = tituloId;
             modal.setAttribute('aria-labelledby', tituloId);
@@ -1064,128 +1011,150 @@
                     if (btnConfig.callback) {
                         btnConfig.callback();
                     }
-                    document.body.removeChild(modal);
+                    document.body.removeChild(modal); // Cierra el modal al hacer click
                 });
                 botonesDiv.appendChild(button);
             });
 
             modal.appendChild(botonesDiv);
             document.body.appendChild(modal);
+            // Enfoca el primer botón para accesibilidad
             if (botonesDiv.firstChild && typeof botonesDiv.firstChild.focus === 'function') {
                 botonesDiv.firstChild.focus();
             }
         }
 
+        /**
+         * Obtiene el array de preguntas para la edad seleccionada.
+         * @returns {Array} Array de objetos de preguntas.
+         */
         function obtenerPreguntas() {
             return preguntasData[edadSeleccionada] || [];
         }
 
-        function validarDNI() {
-            const dni = dniExploradorInput.value.replace(/\D/g, ''); // Eliminar no-dígitos
-            dniExploradorInput.value = dni; // Actualizar el valor en el campo
+        // ==================================================================== */
+        //                       FUNCIONES DE LÓGICA DE LA TRIVIA               */
+        /* ==================================================================== */
 
-            // DNI debe tener entre 7 y 8 dígitos y solo números
-            const esValido = dni.length >= 7 && dni.length <= 8 && /^\d+$/.test(dni);
-            
-            // Habilitar el botón de ingresar si la edad está seleccionada Y el DNI es válido
-            dniValido = esValido;
-            botonIngresarAplicacion.disabled = !(edadSeleccionada && dniValido);
-        }
-
+        /**
+         * Maneja la selección de un rango de edad.
+         * @param {string} rango - El rango de edad seleccionado ('menor6', '6a12', 'mayor12').
+         * @param {HTMLElement} botonElement - El botón HTML que fue clickeado.
+         */
         function seleccionarEdad(rango, botonElement) {
-            // Eliminar la clase 'seleccionado' de cualquier botón previamente seleccionado
+            // Quita la clase 'seleccionado' del botón previamente activo
             if (botonEdadSeleccionado) {
                 botonEdadSeleccionado.classList.remove('seleccionado');
             }
             
-            // Añadir la clase 'seleccionado' al botón actual
+            // Añade la clase 'seleccionado' al botón clickeado y guarda su referencia
             botonElement.classList.add('seleccionado');
-            botonEdadSeleccionado = botonElement; // Guardar la referencia
+            botonEdadSeleccionado = botonElement;
 
             edadSeleccionada = rango;
-            validarDNI(); // Re-validar DNI para habilitar/deshabilitar el botón de ingreso
-
-            // Reproducir texto de bienvenida una vez después de la primera interacción
-            if (!bienvenidaLeida) {
-                const tituloBienvenida = document.getElementById("titulo-bienvenida").textContent;
-                const parrafoBienvenida = document.querySelector("#ventana-bienvenida p").textContent;
-                reproducirTexto(tituloBienvenida + " " + parrafoBienvenida);
-                bienvenidaLeida = true; // Marcar como leído
-            }
+            
+            // Inicia la aplicación una vez que se ha seleccionado la edad
+            iniciarAplicacionPorEdad();
         }
 
-        function iniciarAplicacion() {
-            if (edadSeleccionada && dniValido) {
+        /**
+         * Inicia el flujo principal de la aplicación después de la selección de edad.
+         * Oculta la ventana de bienvenida, reproduce alarma y texto de instrucciones.
+         */
+        function iniciarAplicacionPorEdad() {
+            if (edadSeleccionada) {
                 ventanaBienvenida.classList.remove("mostrar");
-                iniciarMapa();
-                ventanaInstrucciones.classList.add("mostrar");
+                globalOverlay.style.display = "none"; // Oculta el overlay de la bienvenida
+                reproducirAlarma(); // Reproduce la alarma al iniciar la aplicación
+
+                iniciarMapa(); // Inicializa el mapa
+
+                ventanaInstrucciones.classList.add("mostrar"); // Muestra la ventana de instrucciones
+                globalOverlay.style.display = "block"; // Muestra el overlay para las instrucciones
+
+                // Reproduce el texto de las instrucciones
+                const tituloInstrucciones = document.getElementById("titulo-instrucciones").textContent;
+                const parrafosInstrucciones = Array.from(document.querySelectorAll("#ventana-instrucciones p")).map(p => p.textContent).join(" ");
+                reproducirTexto(tituloInstrucciones + " " + parrafosInstrucciones);
+
+                // Enfoca el botón de comenzar para accesibilidad
                 document.getElementById("boton-comenzar-instrucciones").focus();
 
             } else {
-                let mensajeError = "";
-                if (!edadSeleccionada) {
-                    mensajeError += "Por favor, selecciona un rango de edad.<br>";
-                }
-                if (!dniValido) {
-                    mensajeError += "Por favor, ingresa un DNI válido (7 u 8 dígitos, solo números).";
-                }
-                crearModalPersonalizado("Error de Ingreso", mensajeError, [{ texto: "Entendido", clase: "boton-negacion" }]);
+                crearModalPersonalizado(
+                    "Error de Ingreso",
+                    "Por favor, selecciona un rango de edad para comenzar.",
+                    [{ texto: "Entendido", clase: "boton-negacion" }]
+                );
             }
         }
 
+        /**
+         * Cierra la ventana de instrucciones y comienza el seguimiento de la ubicación.
+         */
         function cerrarVentanaInstrucciones() {
             ventanaInstrucciones.classList.remove("mostrar");
+            globalOverlay.style.display = "none"; // Oculta el overlay
             if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel();
+                window.speechSynthesis.cancel(); // Cancela cualquier habla en curso (ej. si el usuario hace clic rápido)
             }
+            // Inicia el seguimiento de la ubicación si aún no está activo
             if (!ubicacionWatchId) {
                 iniciarSeguimientoUbicacion();
             }
-            // Reproducir texto de instrucciones al cerrar la ventana de instrucciones (al hacer clic en "¡Comencemos!")
-            const textoInstrucciones = document.getElementById("titulo-instrucciones").textContent + " " +
-                Array.from(document.querySelectorAll("#ventana-instrucciones p")).map(p => p.textContent).join(" ");
-            reproducirTexto(textoInstrucciones);
         }
 
+        /**
+         * Inicializa el mapa Leaflet y añade los marcadores de preguntas.
+         */
         function iniciarMapa() {
-            const primerasPreguntas = obtenerPreguntas();
-            if (primerasPreguntas.length === 0) {
+            const preguntas = obtenerPreguntas();
+            if (preguntas.length === 0) {
                 crearModalPersonalizado("Error", "No hay preguntas para el rango de edad seleccionado.", [{
                     texto: "Cerrar"
                 }]);
                 return;
             }
-            mapa = L.map('map').setView(primerasPreguntas[0].coords, 15);
+            // Inicializa el mapa centrado en la primera pregunta
+            mapa = L.map('map').setView(preguntas[0].coords, 15);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '© OpenStreetMap contributors'
             }).addTo(mapa);
 
+            // Elimina marcadores anteriores y limpia el array
             preguntaMarkers.forEach(marker => marker.remove());
             preguntaMarkers.length = 0;
 
-            primerasPreguntas.forEach((p, index) => {
+            // Crea un marcador para cada pregunta y lo guarda en el array
+            preguntas.forEach((p, index) => {
                 const marker = L.marker(p.coords, {
-                    opacity: 0.5,
-                    interactive: false
+                    opacity: 0.5, // Marcadores iniciales semitransparentes
+                    interactive: false // No interactivos hasta que se activen
                 });
-                p.marker = marker;
+                p.marker = marker; // Asocia el marcador al objeto de pregunta
                 preguntaMarkers.push(marker);
             });
 
-            actualizarPanelProgreso();
-            botonesFijos.style.display = "flex";
-            panelProgreso.style.display = "block";
+            actualizarPanelProgreso(); // Actualiza el progreso inicial
+            botonesFijos.style.display = "flex"; // Muestra los botones fijos
+            panelProgreso.style.display = "block"; // Muestra el panel de progreso
         }
 
+        /**
+         * Actualiza la visibilidad del marcador de la pregunta actual y su círculo de radio.
+         */
         function actualizarVisibilidadMarcadorActual() {
             if (progreso.actual < obtenerPreguntas().length) {
                 const preguntaActual = obtenerPreguntas()[progreso.actual];
+                // Si el marcador de la pregunta actual no está en el mapa, lo añade y le da opacidad total
                 if (preguntaActual.marker && !mapa.hasLayer(preguntaActual.marker)) {
                     preguntaActual.marker.setOpacity(1).addTo(mapa);
                 }
+                // Remueve el círculo de radio anterior si existe
                 if (currentQuestionRadiusCircle) {
                     mapa.removeLayer(currentQuestionRadiusCircle);
                 }
+                // Dibuja un nuevo círculo de radio alrededor de la pregunta actual
                 currentQuestionRadiusCircle = L.circle(L.latLng(preguntaActual.coords), {
                     color: 'blue',
                     fillColor: '#0000ff',
@@ -1193,33 +1162,33 @@
                     radius: ACTIVATION_RADIUS
                 }).addTo(mapa);
             } else if (currentQuestionRadiusCircle) {
+                // Si no hay más preguntas, remueve el círculo
                 mapa.removeLayer(currentQuestionRadiusCircle);
                 currentQuestionRadiusCircle = null;
             }
         }
 
+        /**
+         * Muestra la ventana de felicitación después de una respuesta correcta.
+         * @param {Object} pregunta - Objeto de la pregunta respondida correctamente.
+         */
         function mostrarFelicitacionCorrecta(pregunta) {
             const felicitacionImagen = document.getElementById("felicitacion-imagen");
-            felicitacionImagen.src = pregunta.fotoUrl;
-            felicitacionImagen.removeAttribute('data-src');
-            felicitacionImagen.removeAttribute('data-srcset');
-            felicitacionImagen.removeAttribute('sizes');
-            felicitacionImagen.alt = `Imagen relacionada con la pregunta: ${pregunta.texto}`;
+            felicitacionImagen.src = pregunta.fotoUrl; // Carga la imagen de la pregunta
+            felicitacionImagen.alt = `Imagen relacionada con la pregunta: ${pregunta.texto}`; // Texto alternativo
 
             document.getElementById("felicitacion-explicacion").textContent = pregunta.explicacion;
 
-            ventanaFelicitacion.classList.add("mostrar");
+            ventanaFelicitacion.classList.add("mostrar"); // Muestra la ventana de felicitación
+            globalOverlay.style.display = "block"; // Muestra el overlay
 
-            if (sonidoActivado) {
-                sonidoCorrecto.currentTime = 0;
-                sonidoCorrecto.play();
-            }
-            feedbackHaptico(100);
+            reproducirSonido(sonidoCorrecto); // Sonido de respuesta correcta
+            feedbackHaptico(100); // Vibración
+            reproducirTexto(pregunta.explicacion); // Lee la explicación
 
-            reproducirTexto(pregunta.explicacion);
+            document.getElementById("boton-continuar-felicitacion").focus(); // Enfoca el botón de continuar
 
-            document.getElementById("boton-continuar-felicitacion").focus();
-
+            // Maneja el listener del botón "Continuar" para evitar múltiples bindings
             const botonContinuar = document.getElementById("boton-continuar-felicitacion");
             const oldListener = botonContinuar._currentListener;
             if (oldListener) {
@@ -1228,79 +1197,89 @@
 
             const newListener = () => {
                 if ('speechSynthesis' in window) {
-                    window.speechSynthesis.cancel();
+                    window.speechSynthesis.cancel(); // Cancela habla si sigue reproduciendo
                 }
                 ventanaFelicitacion.classList.remove("mostrar");
+                globalOverlay.style.display = "none"; // Oculta ventana y overlay
 
-                pregunta.marker.setOpacity(0.4);
+                pregunta.marker.setOpacity(0.4); // Baja la opacidad del marcador de la pregunta respondida
                 pregunta.marker.options.interactive = false;
 
                 if (currentQuestionRadiusCircle) {
-                    mapa.removeLayer(currentQuestionRadiusCircle);
+                    mapa.removeLayer(currentQuestionRadiusCircle); // Remueve el círculo de radio
                     currentQuestionRadiusCircle = null;
                 }
 
-                progreso.actual++;
+                progreso.actual++; // Avanza a la siguiente pregunta
                 actualizarPanelProgreso();
                 actualizarVisibilidadMarcadorActual();
 
                 if (progreso.actual >= obtenerPreguntas().length) {
-                    mostrarVentanaFinal();
+                    mostrarVentanaFinal(); // Si no hay más preguntas, muestra la ventana final
                 }
-                ventanaPregunta.classList.remove("mostrar");
+                ventanaPregunta.classList.remove("mostrar"); // Oculta la ventana de pregunta
             };
             botonContinuar.addEventListener('click', newListener);
-            botonContinuar._currentListener = newListener;
+            botonContinuar._currentListener = newListener; // Guarda la referencia al listener actual
         }
 
+        /**
+         * Muestra una pregunta específica en el modal de pregunta.
+         * @param {number} index - Índice de la pregunta a mostrar.
+         */
         function mostrarPregunta(index) {
+            // Evita mostrar la misma pregunta si ya está activa o si no es la pregunta actual
             if (index !== progreso.actual || ventanaPregunta.classList.contains('mostrar')) {
                 return;
             }
 
             const p = obtenerPreguntas()[index];
             const preguntaId = `pregunta_${index}`;
-            progreso.intentos[preguntaId] = progreso.intentos[preguntaId] || 0;
+            progreso.intentos[preguntaId] = progreso.intentos[preguntaId] || 0; // Inicializa intentos si es la primera vez
 
             document.getElementById("texto-pregunta").textContent = p.texto;
             const opcionesDiv = document.getElementById("opciones");
-            opcionesDiv.innerHTML = "";
+            opcionesDiv.innerHTML = ""; // Limpia opciones anteriores
 
-            const fragment = document.createDocumentFragment();
+            const fragment = document.createDocumentFragment(); // Usa un fragmento para mejor rendimiento
 
+            // Crea los botones de opción para la pregunta
             p.opciones.forEach((opcion, i) => {
                 const btn = document.createElement("button");
                 btn.textContent = opcion;
                 btn.addEventListener('click', () => {
                     if (i === p.correcta) {
+                        // Respuesta correcta
                         reproducirSonido(sonidoCorrecto);
                         feedbackHaptico(100);
-                        const puntosGanados = Math.max(0, 3 - progreso.intentos[preguntaId]);
+                        const puntosGanados = Math.max(0, 3 - progreso.intentos[preguntaId]); // Más puntos por menos intentos
                         progreso.puntaje += puntosGanados;
-                        mostrarFelicitacionCorrecta(p);
+                        mostrarFelicitacionCorrecta(p); // Muestra felicitación y avanza
                     } else {
+                        // Respuesta incorrecta
                         reproducirSonido(sonidoIncorrecto);
                         feedbackHaptico([200, 100, 200]);
-                        progreso.intentos[preguntaId]++;
+                        progreso.intentos[preguntaId]++; // Incrementa intentos
                         crearModalPersonalizado(
                             "Respuesta Incorrecta",
                             "¡Ups! Esa no es la respuesta. Intentá de nuevo.",
-                            [{
-                                texto: "Entendido",
-                                clase: "boton-negacion"
-                            }]
+                            [{ texto: "Entendido", clase: "boton-negacion" }]
                         );
                     }
                 });
                 fragment.appendChild(btn);
             });
             opcionesDiv.appendChild(fragment);
-            ventanaPregunta.classList.add("mostrar");
+            ventanaPregunta.classList.add("mostrar"); // Muestra la ventana de pregunta
+            globalOverlay.style.display = "block"; // Muestra el overlay
             if (opcionesDiv.firstChild && typeof opcionesDiv.firstChild.focus === 'function') {
-                opcionesDiv.firstChild.focus();
+                opcionesDiv.firstChild.focus(); // Enfoca la primera opción para accesibilidad
             }
         }
 
+        /**
+         * Inicia el seguimiento continuo de la ubicación del usuario y verifica la proximidad a las preguntas.
+         */
         function iniciarSeguimientoUbicacion() {
             if (!navigator.geolocation) {
                 crearModalPersonalizado("Error de Geolocalización", "La geolocalización no está soportada por tu navegador.", [{
@@ -1309,6 +1288,7 @@
                 return;
             }
 
+            // Si ya hay un seguimiento, simplemente centra el mapa si hay un marcador
             if (ubicacionWatchId !== null) {
                 if (marcadorUbicacion) mapa.setView(marcadorUbicacion.getLatLng(), 17);
                 return;
@@ -1317,6 +1297,7 @@
             ubicacionWatchId = navigator.geolocation.watchPosition(
                 (pos) => {
                     const userLocation = L.latLng(pos.coords.latitude, pos.coords.longitude);
+                    // Actualiza o crea el marcador de la ubicación del usuario
                     if (marcadorUbicacion) {
                         marcadorUbicacion.setLatLng(userLocation);
                     } else {
@@ -1328,15 +1309,17 @@
                                 iconAnchor: [15, 30]
                             })
                         }).addTo(mapa).bindPopup("¡Estás aquí!");
-                        mapa.setView(userLocation, 17);
+                        mapa.setView(userLocation, 17); // Centra el mapa en la ubicación inicial
                     }
 
+                    // Verifica la proximidad a la pregunta actual
                     if (progreso.actual < obtenerPreguntas().length) {
                         const preguntaActual = obtenerPreguntas()[progreso.actual];
                         const preguntaId = `pregunta_${progreso.actual}`;
                         const preguntaLocation = L.latLng(preguntaActual.coords);
                         const distance = userLocation.distanceTo(preguntaLocation);
 
+                        // Asegura que el marcador de la pregunta actual esté visible
                         if (preguntaActual.marker && !mapa.hasLayer(preguntaActual.marker)) {
                             preguntaActual.marker.setOpacity(1).addTo(mapa);
                         }
@@ -1344,19 +1327,19 @@
 
                         const preguntaYaActivada = (progreso.intentos[preguntaId] !== undefined);
 
+                        // Si el usuario está dentro del radio de activación y la pregunta no está activa ni la ventana de felicitación, muestra la pregunta
                         if (distance <= ACTIVATION_RADIUS && !ventanaPregunta.classList.contains('mostrar') && !preguntaYaActivada && !ventanaFelicitacion.classList.contains('mostrar')) {
-                            reproducirAlarma();
-                            progreso.intentos[preguntaId] = 0;
+                            reproducirAlarma(); // Alarma al activar la pregunta
+                            progreso.intentos[preguntaId] = 0; // Reinicia o establece intentos para esta pregunta
+                            // Deshabilita la interactividad del marcador de pregunta para evitar múltiples activaciones
                             if (preguntaActual.marker.options.interactive) {
                                 preguntaActual.marker.closeTooltip();
                                 preguntaActual.marker.options.interactive = false;
                             }
-                            mapa.setView(preguntaLocation, 17);
-                            mostrarPregunta(progreso.actual);
-                            crearModalPersonalizado("¡Pregunta Activa!", "Estás en el lugar de la próxima pregunta. ¡Responde!", [{
-                                texto: "OK"
-                            }]);
+                            mapa.setView(preguntaLocation, 17); // Centra el mapa en la pregunta
+                            mostrarPregunta(progreso.actual); // Muestra el modal de la pregunta
                         } else if (distance > ACTIVATION_RADIUS) {
+                            // Si el usuario se aleja, asegura que el marcador no sea interactivo
                             if (preguntaActual.marker.options.interactive) {
                                 preguntaActual.marker.options.interactive = false;
                                 preguntaActual.marker.closeTooltip();
@@ -1369,23 +1352,25 @@
                     crearModalPersonalizado(
                         "Error de Geolocalización",
                         `No se pudo obtener tu ubicación: ${err.message}. Verifica los permisos.`,
-                        [{
-                            texto: "Cerrar"
-                        }]
+                        [{ texto: "Cerrar" }]
                     );
+                    // Detiene el seguimiento si hay un error persistente
                     if (ubicacionWatchId !== null) {
                         navigator.geolocation.clearWatch(ubicacionWatchId);
                         ubicacionWatchId = null;
                     }
                 }, {
-                    enableHighAccuracy: true,
-                    timeout: 10000,
-                    maximumAge: 0
+                    enableHighAccuracy: true, // Solicita la máxima precisión
+                    timeout: 10000,          // Tiempo máximo para obtener la ubicación (10 segundos)
+                    maximumAge: 0            // No usa caché, siempre intenta obtener una ubicación nueva
                 }
             );
-            actualizarVisibilidadMarcadorActual();
+            actualizarVisibilidadMarcadorActual(); // Asegura la visibilidad del marcador al inicio del seguimiento
         }
 
+        /**
+         * Actualiza el panel de progreso en la interfaz.
+         */
         function actualizarPanelProgreso() {
             const totalPreguntas = obtenerPreguntas().length;
             const porcentaje = totalPreguntas > 0 ? Math.round((progreso.actual / totalPreguntas) * 100) : 0;
@@ -1394,23 +1379,24 @@
                 `${progreso.actual} / ${totalPreguntas} preguntas respondidas - Puntaje: ${progreso.puntaje} / ${totalPreguntas * 3}`;
         }
 
+        /**
+         * Reinicia la trivia, recargando la página.
+         * Pide confirmación al usuario antes de reiniciar.
+         */
         function reiniciarTrivia() {
             crearModalPersonalizado(
                 "Reiniciar Trivia",
                 "¿Estás seguro que querés reiniciar tu progreso? Se perderá todo.",
-                [{
-                    texto: "Sí, reiniciar",
-                    clase: "boton-negacion",
-                    callback: () => location.reload()
-                },
-                {
-                    texto: "No, continuar",
-                    clase: "boton-confirmacion"
-                }
+                [
+                    { texto: "Sí, reiniciar", clase: "boton-negacion", callback: () => location.reload() },
+                    { texto: "No, continuar", clase: "boton-confirmacion" }
                 ]
             );
         }
 
+        /**
+         * Muestra la ventana final de resultados al completar la trivia.
+         */
         function mostrarVentanaFinal() {
             const totalPreguntas = obtenerPreguntas().length;
             document.getElementById("puntaje-final").textContent = `${progreso.puntaje} / ${totalPreguntas * 3}`;
@@ -1423,8 +1409,10 @@
 
             document.getElementById("mensaje-final").textContent = mensaje;
             ventanaFinal.classList.add("mostrar");
+            globalOverlay.style.display = "block"; // Muestra el overlay
             document.getElementById("boton-cerrar-final").focus();
 
+            // Detiene el seguimiento de ubicación y limpia el círculo de radio al finalizar
             if (ubicacionWatchId !== null) {
                 navigator.geolocation.clearWatch(ubicacionWatchId);
                 ubicacionWatchId = null;
@@ -1434,30 +1422,66 @@
                 currentQuestionRadiusCircle = null;
             }
             if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel();
+                window.speechSynthesis.cancel(); // Cancela cualquier habla en curso
             }
+
+            // Pide confirmación para enviar resultados
+            crearModalPersonalizado(
+                "Resultados de la Trivia",
+                "¿Deseas enviar tus resultados y finalizar la aplicación?",
+                [
+                    {
+                        texto: "Sí, enviar y salir",
+                        clase: "boton-confirmacion",
+                        callback: () => {
+                            const score = progreso.puntaje;
+                            const reserveName = "ReservaNaturalFranciscoTau";
+                            const params = new URLSearchParams({
+                                score: score,
+                                reserve: reserveName
+                            }).toString();
+                            // ¡IMPORTANTE! Reemplaza esta URL con la real de tu repositorio/página de GitHub
+                            const targetUrl = `https://TU_USUARIO_GITHUB.github.io/TU_REPOSITORIO/resultados.html?${params}`;
+                            window.location.href = targetUrl;
+                        }
+                    },
+                    {
+                        texto: "No, solo cerrar",
+                        clase: "boton-negacion",
+                        callback: () => {
+                            cerrarVentanaFinal();
+                        }
+                    }
+                ]
+            );
         }
 
+        /**
+         * Cierra la ventana final de resultados.
+         */
         function cerrarVentanaFinal() {
             ventanaFinal.classList.remove("mostrar");
+            globalOverlay.style.display = "none"; // Oculta el overlay
         }
 
+        /**
+         * Muestra la ubicación actual del usuario en el mapa o informa sobre el estado del GPS.
+         */
         function accionMostrarUbicacion() {
             if (marcadorUbicacion && mapa.hasLayer(marcadorUbicacion)) {
-                mapa.setView(marcadorUbicacion.getLatLng(), 17);
-                marcadorUbicacion.openPopup();
+                mapa.setView(marcadorUbicacion.getLatLng(), 17); // Centra el mapa en la ubicación del usuario
+                marcadorUbicacion.openPopup(); // Abre el popup del marcador
             } else if (!ubicacionWatchId) {
-                iniciarSeguimientoUbicacion();
-                crearModalPersonalizado("Ubicación", "Iniciando seguimiento de ubicación para mostrarte en el mapa.", [{
-                    texto: "OK"
-                }]);
+                iniciarSeguimientoUbicacion(); // Inicia el seguimiento si no está activo
+                crearModalPersonalizado("Ubicación", "Iniciando seguimiento de ubicación para mostrarte en el mapa.", [{ texto: "OK" }]);
             } else {
-                crearModalPersonalizado("Ubicación", "Esperando señal de GPS para mostrar tu ubicación...", [{
-                    texto: "OK"
-                }]);
+                crearModalPersonalizado("Ubicación", "Esperando señal de GPS para mostrar tu ubicación...", [{ texto: "OK" }]);
             }
         }
 
+        /**
+         * Alterna el estado del sonido (activado/desactivado) y actualiza el icono.
+         */
         function toggleSonido() {
             sonidoActivado = !sonidoActivado;
             if (sonidoActivado) {
@@ -1467,18 +1491,19 @@
                 iconSoundOn.style.display = 'none';
                 iconSoundOff.style.display = 'inline-block';
                 if ('speechSynthesis' in window) {
-                    window.speechSynthesis.cancel();
+                    window.speechSynthesis.cancel(); // Cancela cualquier habla si se desactiva el sonido
                 }
             }
-            crearModalPersonalizado("Sonido", `Sonido ${sonidoActivado ? 'activado' : 'desactivado'}.`, [{
-                texto: "OK"
-            }]);
+            crearModalPersonalizado("Sonido", `Sonido ${sonidoActivado ? 'activado' : 'desactivado'}.`, [{ texto: "OK" }]);
         }
         
+        // ==================================================================== */
+        //                             INICIALIZACIÓN                           */
+        /* ==================================================================== */
+
+        // Evento que se dispara cuando el DOM está completamente cargado
         document.addEventListener('DOMContentLoaded', async () => {
-            supportsWebP = await checkWebPSupport();
-            
-            // Inicializar el chatbot de n8n
+            // Inicializa el chatbot de n8n
             createChat({
                 webhookUrl: 'https://n8n.efficienza.es/webhook/8173e5e9-1b3c-445f-9beb-d0f5360d7ba4/chat',
                 webhookConfig: {
@@ -1506,25 +1531,32 @@
                 },
             });
 
+            // Asigna listeners a los botones de selección de edad
             document.querySelectorAll('#botones-edad button').forEach(button => {
                 button.addEventListener('click', function () {
                     seleccionarEdad(this.dataset.edad, this);
                 });
             });
 
-            dniExploradorInput.addEventListener('input', validarDNI);
-            document.getElementById('boton-ingresar-aplicacion').addEventListener('click', iniciarAplicacion);
+            // Asigna listeners a los botones de control de la trivia
             document.getElementById('boton-comenzar-instrucciones').addEventListener('click', cerrarVentanaInstrucciones);
             document.getElementById('boton-reiniciar').addEventListener('click', reiniciarTrivia);
             document.getElementById('boton-mostrar-ubicacion').addEventListener('click', accionMostrarUbicacion);
             document.getElementById('boton-cerrar-final').addEventListener('click', cerrarVentanaFinal);
             botonToggleSonido.addEventListener('click', toggleSonido);
 
-            // Show welcome window on load
+            // Muestra la ventana de bienvenida al cargar la página
             if (ventanaBienvenida) {
                 ventanaBienvenida.classList.add("mostrar");
-                // Focus the DNI input field initially
-                dniExploradorInput.focus();
+                globalOverlay.style.display = "block"; // Muestra el overlay
+
+                // Reproduce el texto de bienvenida si aún no se ha leído (considerando políticas de autoplay)
+                if (!bienvenidaLeida) {
+                    const tituloBienvenida = document.getElementById("titulo-bienvenida").textContent;
+                    const parrafoBienvenida = document.querySelector("#ventana-bienvenida p").textContent;
+                    reproducirTexto(tituloBienvenida + " " + parrafoBienvenida);
+                    bienvenidaLeida = true;
+                }
             } else {
                 console.error('Error: Element with ID "ventana-bienvenida" not found.');
             }
@@ -1534,6 +1566,7 @@
 </body>
 
 </html>
+
 
 
 
