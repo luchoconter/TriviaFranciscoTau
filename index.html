@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <link rel="manifest" href="manifest.json">
-    
+
     <!-- Enlace al CSS del chatbot de n8n -->
     <link href="https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css" rel="stylesheet" />
 
@@ -62,7 +62,7 @@
             background-repeat: no-repeat;
             background-attachment: fixed;
             /* Previene el zoom accidental y mejora la interacción táctil */
-            touch-action: pan-x pan-y; 
+            touch-action: pan-x pan-y;
             /* Deshabilita la selección de texto en la interfaz */
             -webkit-user-select: none;
             -moz-user-select: none;
@@ -129,27 +129,6 @@
             font-weight: bold;
             margin-bottom: 15px;
             line-height: 1.6;
-        }
-
-        /* Estilos específicos para la ventana final */
-        #ventana-final {
-            max-width: 480px;
-            padding: var(--padding-modal-grande);
-            border-radius: var(--radio-borde-modal-grande);
-            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
-            z-index: 10001;
-        }
-
-        #ventana-final h2 {
-            color: var(--color-primario-verde-oscuro);
-        }
-
-        #ventana-final button {
-            background: linear-gradient(135deg, var(--color-secundario-azul-claro) 0%, var(--color-secundario-azul) 100%);
-        }
-
-        #ventana-final button:hover {
-            background: linear-gradient(135deg, var(--color-secundario-azul) 0%, var(--color-secundario-azul-oscuro) 100%);
         }
 
         /* Estilos para el overlay global que bloquea la interacción de fondo */
@@ -357,9 +336,9 @@
         }
 
         /* ==================================================================== */
-        /* MODAL DE FELICITACIÓN                      */
+        /* MODAL DE FELICITACIÓN FINAL (Nuevo)        */
         /* ==================================================================== */
-        #ventana-felicitacion {
+        #ventana-felicitacion-final {
             position: fixed;
             top: 50%;
             left: 50%;
@@ -377,17 +356,17 @@
             animation: fadeIn 0.5s ease-out;
         }
 
-        #ventana-felicitacion.mostrar {
+        #ventana-felicitacion-final.mostrar {
             display: block;
         }
 
-        #ventana-felicitacion h3 {
+        #ventana-felicitacion-final h3 {
             font-size: 2em;
             color: var(--color-primario-verde-oscuro);
             margin-bottom: 20px;
         }
 
-        #ventana-felicitacion img {
+        #ventana-felicitacion-final img {
             max-width: 100%;
             height: auto;
             border-radius: var(--radio-borde-general);
@@ -395,7 +374,7 @@
             box-shadow: var(--sombra-elemento);
         }
 
-        #ventana-felicitacion p {
+        #ventana-felicitacion-final p {
             font-size: 1.1em;
             line-height: 1.6;
             margin-bottom: 20px;
@@ -403,11 +382,11 @@
             font-weight: normal;
         }
 
-        #ventana-felicitacion button {
+        #ventana-felicitacion-final button {
             background: linear-gradient(135deg, var(--color-secundario-azul-claro) 0%, var(--color-secundario-azul) 100%);
         }
 
-        #ventana-felicitacion button:hover {
+        #ventana-felicitacion-final button:hover {
             background: linear-gradient(135deg, var(--color-secundario-azul) 0%, var(--color-secundario-azul-oscuro) 100%);
         }
 
@@ -511,7 +490,7 @@
         /* MEDIA QUERIES (RESPONSIVE)                */
         /* ==================================================================== */
         @media (max-width: 600px) {
-            .modal-base, #ventana-final, .custom-js-modal, #ventana-felicitacion {
+            .modal-base, .custom-js-modal, #ventana-felicitacion, #ventana-felicitacion-final {
                 width: 95vw;
                 max-width: 95vw;
             }
@@ -519,7 +498,7 @@
             .modal-base h2 { font-size: 1.5em; }
             .custom-js-modal h3 { font-size: 1.3em; }
             .custom-js-modal p { font-size: 1em; }
-            #ventana-felicitacion h3 { font-size: 1.5em; }
+            #ventana-felicitacion h3, #ventana-felicitacion-final h3 { font-size: 1.5em; }
             #panel-progreso { font-size: 13px; }
 
             #botones-fijos {
@@ -669,13 +648,12 @@
         <div id="progreso-texto">0 / 0 preguntas respondidas - Puntaje: 0 / 0</div>
     </div>
 
-    <!-- Ventana final de resultados de la trivia -->
-    <div id="ventana-final" class="modal-base" role="dialog" aria-modal="true" aria-labelledby="titulo-final">
-        <h2 id="titulo-final">🎉 ¡Felicitaciones!</h2>
-        <p>Has finalizado la trivia del <strong>Parque Natural Francisco Tau</strong>.</p>
-        <p id="mensaje-final"></p>
+    <!-- Ventana de felicitaciones final (Reemplaza la antigua ventana final) -->
+    <div id="ventana-felicitacion-final" class="modal-base" role="dialog" aria-modal="true" aria-labelledby="titulo-felicitacion-final">
+        <h3 id="titulo-felicitacion-final">¡Felicidades!</h3>
+        <p id="mensaje-felicitacion-final"></p>
         <p>Tu puntaje final es: <span id="puntaje-final"></span></p>
-        <button id="boton-cerrar-final">Cerrar</button>
+        <button id="boton-reiniciar-final">Volver a jugar</button>
     </div>
 
     <!-- Elementos de audio -->
@@ -702,12 +680,84 @@
         const preguntasData = {
             "menor6": [
                 {
-                    "coords": [-34.72316, -58.39785],
+                    "coords": [-34.72313, -58.39789],
                     "texto": "“ Tengo tronco fuerte y vainas dulces; doy mucha sombra en el parque. ¿Quién soy?”",
                     "opciones": ["Eucalipto", "Pino", "Algarrobo blanco"],
                     "correcta": 2,
                     "explicacion": "¡Este algarrobo vive en el Parque Tau desde hace más de 400 años! Es un “abuelo” del bosque que da sombra fresca y alimento a muchos animalitos.",
                     "fotoUrl": "algarrobo.jpg"
+                },
+                {
+                    "coords": [-34.72316, -58.397701],
+                    "texto": "“Toc-toc, pico el barro y hago mi casita redonda. ¿Quién canta así?”",
+                    "opciones": ["Gorrión", "Hornero", "Jilguero"],
+                    "correcta": 1,
+                    "explicacion": "El hornero es un pajarito constructor: amasa barro como plastilina y levanta un nido redondo que parece un hornito de pan.",
+                    "fotoUrl": "hornero.jpg"
+                },
+                {
+                    "coords": [-34.72319, -58.39752],
+                    "texto": "“Me abrochas antes de subir al gomón para que flotes seguro. ¿Qué soy?”",
+                    "opciones": ["Casco", "Salvavidas", "Remo"],
+                    "correcta": 1,
+                    "explicacion": "La Fundación tiene ¡cien chalecos! Se cierran con clic-clic y te abrazan para que navegues protegido mientras disfrutas del río.",
+                    "fotoUrl": "chaleco.jpg"
+                },
+                {
+                    "coords": [-34.72322, -58.39734],
+                    "texto": "“Serpenteo con agua fresca junto al bosque del parque. ¿Cómo me llamo?”",
+                    "opciones": ["Río Segundo", "Río Primero", "Río Ctalamochita"],
+                    "correcta": 2,
+                    "explicacion": "Su nombre indígena significa “lugar de muchos árboles”. Con sus curvas suaves forma playitas donde peces, plantas y personas se refrescan.",
+                    "fotoUrl": "rioct.jpg"
+                },
+                {
+                    "coords": [-34.72330, -58.39725],
+                    "texto": "“Tomo sol quieto, tengo escamas y una lengua larga. ¿Quién soy?”",
+                    "opciones": ["Serpiente", "Tortuga", "Lagarto overo"],
+                    "correcta": 2,
+                    "explicacion": "Este lagarto moteado adora broncearse en los claros del parque. Ayuda a mantener el equilibrio porque se come insectos y pequeños bichitos.",
+                    "fotoUrl": "lagarto.jpg"
+                },
+                {
+                    "coords": [-34.72344, -58.39728],
+                    "texto": "“Cuelgo de los árboles como una flor que vive del aire. ¿Cómo me llaman?”",
+                    "opciones": ["Orquídea", "Clavel del aire", "Rosa"],
+                    "correcta": 1,
+                    "explicacion": "No necesita tierra: bebe la humedad del viento y adorna las ramas con sus hojitas plateadas, ¡un colgante natural del bosque!",
+                    "fotoUrl": "clavel.jpg"
+                },
+                {
+                    "coords": [-34.72367, -58.39734],
+                    "texto": "“Cuido plantas y animales y ayudo a los visitantes. ¿Quién soy?”",
+                    "opciones": ["Científico", "Rurista", "Guardaparque"],
+                    "correcta": 2,
+                    "explicacion": "La guardaparque del Tau es la super-heroína verde: vigila senderos, da consejos y protege cada rincón del bosque todos los días.",
+                    "fotoUrl": "guarda.png"
+                },
+                {
+                    "coords": [-34.72389, -58.39738],
+                    "texto": "“Si tiras basura aquí, ensucias a peces y patos. ¿Qué lugar es?”",
+                    "opciones": ["El río", "El lago", "La calle"],
+                    "correcta": 0,
+                    "explicacion": "Usar los tachos y llevarte tus residuos mantiene el agua clarita y feliz; así el río sigue sano para nadar y remar.",
+                    "fotoUrl": "rio.jpg"
+                },
+                {
+                    "coords": [-34.72412, -58.39743],
+                    "texto": "“Reciclando papel le salvamos la vida a este gran amigo verde. ¿Quién es?”",
+                    "opciones": ["Pasto", "Flor", "Árbol"],
+                    "correcta": 2,
+                    "explicacion": "Los árboles dan sombra, aire puro y casita a los pájaros. En el parque crecen talas, chañares y un histórico algarrobo blanco que son verdaderos tesoros.",
+                    "fotoUrl": "arbol.jpg"
+                },
+                {
+                    "coords": [-34.72426, -58.39747],
+                    "texto": "“Llevo gorrita roja y pechito blanco; mi canto suena fuerte. ¿Qué pájaro soy?”",
+                    "opciones": ["Colibrí", "Cardenal común", "Benteveo"],
+                    "correcta": 1,
+                    "explicacion": "Con su “sombrerito” rojo brillante, el cardenal es una de las aves más vistosas del parque y se deja ver entre las ramas cantando con energía.",
+                    "fotoUrl": "cardenal.jpg"
                 }
             ],
             "6a12": [
@@ -800,13 +850,14 @@
         let edadSeleccionada = null;
         let progreso = {
             actual: 0,
-            puntaje: 0,
+            puntaje: 0, // Puntos acumulados (1 punto por respuesta correcta)
+            preguntasCorrectas: 0, // Nuevo: Cuenta las preguntas correctas
             intentos: {} // Guarda el número de intentos por pregunta
         };
         let mapa;
         let marcadorUbicacion;
         let ubicacionWatchId = null;
-        const ACTIVATION_RADIUS = 100; // Radio en metros para activar una pregunta
+        const ACTIVATION_RADIUS = 10; // Radio en metros para activar una pregunta
         const preguntaMarkers = []; // Almacena los marcadores de preguntas en el mapa
         let currentQuestionRadiusCircle = null; // Círculo que muestra el radio de activación de la pregunta actual
         let sonidoActivado = true;
@@ -817,8 +868,9 @@
         const ventanaBienvenida = document.getElementById("ventana-bienvenida");
         const ventanaInstrucciones = document.getElementById("ventana-instrucciones");
         const ventanaPregunta = document.getElementById("pregunta");
-        const ventanaFinal = document.getElementById("ventana-final");
         const ventanaFelicitacion = document.getElementById("ventana-felicitacion");
+        // Nuevo: Referencia a la ventana de felicitación final
+        const ventanaFelicitacionFinal = document.getElementById("ventana-felicitacion-final");
         const panelProgreso = document.getElementById("panel-progreso");
         const botonesFijos = document.getElementById("botones-fijos");
         const sonidoCorrecto = document.getElementById("sonido-correcto");
@@ -974,13 +1026,13 @@
             if (botonEdadSeleccionado) {
                 botonEdadSeleccionado.classList.remove('seleccionado');
             }
-            
+
             // Añade la clase 'seleccionado' al botón clickeado y guarda su referencia
             botonElement.classList.add('seleccionado');
             botonEdadSeleccionado = botonElement;
 
             edadSeleccionada = rango;
-            
+
             // Inicia la aplicación una vez que se ha seleccionado la edad
             iniciarAplicacionPorEdad();
         }
@@ -1143,7 +1195,7 @@
                 actualizarVisibilidadMarcadorActual();
 
                 if (progreso.actual >= obtenerPreguntas().length) {
-                    mostrarVentanaFinal(); // Si no hay más preguntas, muestra la ventana final
+                    mostrarFelicitacionFinal(); // Si no hay más preguntas, muestra la nueva ventana final de felicitación
                 }
                 ventanaPregunta.classList.remove("mostrar"); // Oculta la ventana de pregunta
             };
@@ -1166,6 +1218,9 @@
             progreso.intentos[preguntaId] = progreso.intentos[preguntaId] || 0; // Inicializa intentos si es la primera vez
 
             document.getElementById("texto-pregunta").textContent = p.texto;
+            // Nuevo: Reproduce el texto de la pregunta
+            reproducirTexto(p.texto);
+
             const opcionesDiv = document.getElementById("opciones");
             opcionesDiv.innerHTML = ""; // Limpia opciones anteriores
 
@@ -1180,14 +1235,16 @@
                         // Respuesta correcta
                         reproducirSonido(sonidoCorrecto);
                         feedbackHaptico(100);
-                        const puntosGanados = Math.max(0, 3 - progreso.intentos[preguntaId]); // Más puntos por menos intentos
-                        progreso.puntaje += puntosGanados;
+                        // Se mantiene la lógica de puntos, pero se añade un contador para preguntas correctas
+                        progreso.puntaje += 1; // Suma 1 punto por respuesta correcta (para porcentaje)
+                        progreso.preguntasCorrectas++; // Incrementa contador de preguntas correctas
+
                         mostrarFelicitacionCorrecta(p); // Muestra felicitación y avanza
                     } else {
                         // Respuesta incorrecta
                         reproducirSonido(sonidoIncorrecto);
                         feedbackHaptico([200, 100, 200]);
-                        progreso.intentos[preguntaId]++; // Incrementa intentos
+                        // progreso.intentos[preguntaId]++; // Ya no se rastrean intentos para puntos, solo para el feedback
                         crearModalPersonalizado(
                             "Respuesta Incorrecta",
                             "¡Ups! Esa no es la respuesta. Intentá de nuevo.",
@@ -1243,7 +1300,7 @@
                     // Verifica la proximidad a la pregunta actual
                     if (progreso.actual < obtenerPreguntas().length) {
                         const preguntaActual = obtenerPreguntas()[progreso.actual];
-                        const preguntaId = `pregunta_${progreso.actual}`;
+                        // const preguntaId = `pregunta_${progreso.actual}`; // No se usa directamente aquí
                         const preguntaLocation = L.latLng(preguntaActual.coords);
                         const distance = userLocation.distanceTo(preguntaLocation);
 
@@ -1253,12 +1310,14 @@
                         }
                         actualizarVisibilidadMarcadorActual();
 
-                        const preguntaYaActivada = (progreso.intentos[preguntaId] !== undefined);
+                        // La pregunta se considera "activa" si su ventana está visible
+                        const preguntaYaActiva = ventanaPregunta.classList.contains('mostrar');
+                        const felicitacionActiva = ventanaFelicitacion.classList.contains('mostrar');
 
                         // Si el usuario está dentro del radio de activación y la pregunta no está activa ni la ventana de felicitación, muestra la pregunta
-                        if (distance <= ACTIVATION_RADIUS && !ventanaPregunta.classList.contains('mostrar') && !preguntaYaActivada && !ventanaFelicitacion.classList.contains('mostrar')) {
+                        if (distance <= ACTIVATION_RADIUS && !preguntaYaActiva && !felicitacionActiva) {
                             reproducirAlarma(); // Alarma al activar la pregunta
-                            progreso.intentos[preguntaId] = 0; // Reinicia o establece intentos para esta pregunta
+                            // Se elimina el `progreso.intentos[preguntaId] = 0;` de aquí porque los intentos ahora solo afectan el feedback.
                             // Deshabilita la interactividad del marcador de pregunta para evitar múltiples activaciones
                             if (preguntaActual.marker.options.interactive) {
                                 preguntaActual.marker.closeTooltip();
@@ -1301,10 +1360,10 @@
          */
         function actualizarPanelProgreso() {
             const totalPreguntas = obtenerPreguntas().length;
-            const porcentaje = totalPreguntas > 0 ? Math.round((progreso.actual / totalPreguntas) * 100) : 0;
-            document.getElementById("progreso-porcentaje").style.width = porcentaje + "%";
+            const porcentajeRespondidas = totalPreguntas > 0 ? Math.round((progreso.actual / totalPreguntas) * 100) : 0;
+            document.getElementById("progreso-porcentaje").style.width = porcentajeRespondidas + "%";
             document.getElementById("progreso-texto").textContent =
-                `${progreso.actual} / ${totalPreguntas} preguntas respondidas - Puntaje: ${progreso.puntaje} / ${totalPreguntas * 3}`;
+                `${progreso.actual} / ${totalPreguntas} preguntas respondidas - Preguntas Correctas: ${progreso.preguntasCorrectas}`;
         }
 
         /**
@@ -1323,22 +1382,32 @@
         }
 
         /**
-         * Muestra la ventana final de resultados al completar la trivia.
+         * Muestra la nueva ventana de felicitaciones final al completar la trivia,
+         * con un mensaje personalizado basado en el porcentaje de respuestas correctas.
          */
-        function mostrarVentanaFinal() {
+        function mostrarFelicitacionFinal() {
             const totalPreguntas = obtenerPreguntas().length;
-            document.getElementById("puntaje-final").textContent = `${progreso.puntaje} / ${totalPreguntas * 3}`;
-            const porcentajeScore = totalPreguntas > 0 ? progreso.puntaje / (totalPreguntas * 3) : 0;
-            let mensaje = "";
-            if (porcentajeScore < 0.4) mensaje = "Debes estudiar más de la fauna y flora de nuestro parque. ¡Vuelve a intentarlo!";
-            else if (porcentajeScore <= 0.6) mensaje = "Tienes conocimientos básicos de nuestra flora y fauna. ¡Puedes esforzarte un poco más!";
-            else if (porcentajeScore <= 0.89) mensaje = "Tienes muy buenos conocimientos del parque. ¡Un poco más de estudio y lo aprenderás todo!";
-            else mensaje = "¡Eres un experto conocedor del Parque Francisco Tau!";
+            const porcentajeCorrectas = totalPreguntas > 0 ? (progreso.preguntasCorrectas / totalPreguntas) * 100 : 0;
+            let mensajeParaNino = "";
 
-            document.getElementById("mensaje-final").textContent = mensaje;
-            ventanaFinal.classList.add("mostrar");
+            if (porcentajeCorrectas < 25) {
+                mensajeParaNino = "¡Uhm... parece que aún hay mucho por aprender! No te preocupes, ¡sigue explorando el parque y lo lograrás!";
+            } else if (porcentajeCorrectas >= 25 && porcentajeCorrectas <= 50) {
+                mensajeParaNino = "¡Lo estás haciendo muy bien! Con un poco más de práctica, ¡serás un experto del parque!";
+            } else if (porcentajeCorrectas > 50 && porcentajeCorrectas <= 75) {
+                mensajeParaNino = "¡Fantástico! ¡Conoces muy bien el parque! Eres un verdadero guardián de la naturaleza.";
+            } else { // Mayor a 75%
+                mensajeParaNino = "¡Eres un super experto del Parque Francisco Tau! ¡Felicitaciones por tu gran conocimiento!";
+            }
+
+            document.getElementById("mensaje-felicitacion-final").textContent = mensajeParaNino;
+            document.getElementById("puntaje-final").textContent = `${progreso.preguntasCorrectas} de ${totalPreguntas}`;
+
+            ventanaFelicitacionFinal.classList.add("mostrar");
             globalOverlay.style.display = "block"; // Muestra el overlay
-            document.getElementById("boton-cerrar-final").focus();
+
+            reproducirTexto(`¡Felicidades! ${mensajeParaNino} Tu puntaje final es ${progreso.preguntasCorrectas} de ${totalPreguntas} preguntas correctas.`);
+            document.getElementById("boton-reiniciar-final").focus();
 
             // Detiene el seguimiento de ubicación y limpia el círculo de radio al finalizar
             if (ubicacionWatchId !== null) {
@@ -1352,44 +1421,6 @@
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel(); // Cancela cualquier habla en curso
             }
-
-            // Pide confirmación para enviar resultados
-            crearModalPersonalizado(
-                "Resultados de la Trivia",
-                "¿Deseas enviar tus resultados y finalizar la aplicación?",
-                [
-                    {
-                        texto: "Sí, enviar y salir",
-                        clase: "boton-confirmacion",
-                        callback: () => {
-                            const score = progreso.puntaje;
-                            const reserveName = "ReservaNaturalFranciscoTau";
-                            const params = new URLSearchParams({
-                                score: score,
-                                reserve: reserveName
-                            }).toString();
-                            // ¡IMPORTANTE! Reemplaza esta URL con la real de tu repositorio/página de GitHub
-                            const targetUrl = `https://TU_USUARIO_GITHUB.github.io/TU_REPOSITORIO/resultados.html?${params}`;
-                            window.location.href = targetUrl;
-                        }
-                    },
-                    {
-                        texto: "No, solo cerrar",
-                        clase: "boton-negacion",
-                        callback: () => {
-                            cerrarVentanaFinal();
-                        }
-                    }
-                ]
-            );
-        }
-
-        /**
-         * Cierra la ventana final de resultados.
-         */
-        function cerrarVentanaFinal() {
-            ventanaFinal.classList.remove("mostrar");
-            globalOverlay.style.display = "none"; // Oculta el overlay
         }
 
         /**
@@ -1424,7 +1455,7 @@
             }
             crearModalPersonalizado("Sonido", `Sonido ${sonidoActivado ? 'activado' : 'desactivado'}.`, [{ texto: "OK" }]);
         }
-        
+
         // ==================================================================== */
         //                             INICIALIZACIÓN                           */
         /* ==================================================================== */
@@ -1470,7 +1501,8 @@
             document.getElementById('boton-comenzar-instrucciones').addEventListener('click', cerrarVentanaInstrucciones);
             document.getElementById('boton-reiniciar').addEventListener('click', reiniciarTrivia);
             document.getElementById('boton-mostrar-ubicacion').addEventListener('click', accionMostrarUbicacion);
-            document.getElementById('boton-cerrar-final').addEventListener('click', cerrarVentanaFinal);
+            // Nuevo: Listener para el botón de reiniciar de la ventana final
+            document.getElementById('boton-reiniciar-final').addEventListener('click', reiniciarTrivia);
             botonToggleSonido.addEventListener('click', toggleSonido);
 
             // Muestra la ventana de bienvenida al cargar la página
@@ -1494,6 +1526,7 @@
 </body>
 
 </html>
+
 
 
 
