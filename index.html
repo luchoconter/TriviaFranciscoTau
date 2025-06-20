@@ -702,84 +702,12 @@
         const preguntasData = {
             "menor6": [
                 {
-                    "coords": [-34.61017, -58.36833],
+                    "coords": [-34.72316, -58.39785],
                     "texto": "“ Tengo tronco fuerte y vainas dulces; doy mucha sombra en el parque. ¿Quién soy?”",
                     "opciones": ["Eucalipto", "Pino", "Algarrobo blanco"],
                     "correcta": 2,
                     "explicacion": "¡Este algarrobo vive en el Parque Tau desde hace más de 400 años! Es un “abuelo” del bosque que da sombra fresca y alimento a muchos animalitos.",
                     "fotoUrl": "algarrobo.jpg"
-                },
-                {
-                    "coords": [-34.61018, -58.36851],
-                    "texto": "“Toc-toc, pico el barro y hago mi casita redonda. ¿Quién canta así?”",
-                    "opciones": ["Gorrión", "Hornero", "Jilguero"],
-                    "correcta": 1,
-                    "explicacion": "El hornero es un pajarito constructor: amasa barro como plastilina y levanta un nido redondo que parece un hornito de pan.",
-                    "fotoUrl": "hornero.jpg"
-                },
-                {
-                    "coords": [-34.61026, -58.36866],
-                    "texto": "“Me abrochas antes de subir al gomón para que flotes seguro. ¿Qué soy?”",
-                    "opciones": ["Casco", "Salvavidas", "Remo"],
-                    "correcta": 1,
-                    "explicacion": "La Fundación tiene ¡cien chalecos! Se cierran con clic-clic y te abrazan para que navegues protegido mientras disfrutas del río.",
-                    "fotoUrl": "chaleco.jpg"
-                },
-                {
-                    "coords": [-34.61042, -58.36870],
-                    "texto": "“Serpenteo con agua fresca junto al bosque del parque. ¿Cómo me llamo?”",
-                    "opciones": ["Río Segundo", "Río Primero", "Río Ctalamochita"],
-                    "correcta": 2,
-                    "explicacion": "Su nombre indígena significa “lugar de muchos árboles”. Con sus curvas suaves forma playitas donde peces, plantas y personas se refrescan.",
-                    "fotoUrl": "rioct.jpg"
-                },
-                {
-                    "coords": [-34.61063, -58.36858],
-                    "texto": "“Tomo sol quieto, tengo escamas y una lengua larga. ¿Quién soy?”",
-                    "opciones": ["Serpiente", "Tortuga", "Lagarto overo"],
-                    "correcta": 2,
-                    "explicacion": "Este lagarto moteado adora broncearse en los claros del parque. Ayuda a mantener el equilibrio porque se come insectos y pequeños bichitos.",
-                    "fotoUrl": "lagarto.jpg"
-                },
-                {
-                    "coords": [-34.61082, -58.36855],
-                    "texto": "“Cuelgo de los árboles como una flor que vive del aire. ¿Cómo me llaman?”",
-                    "opciones": ["Orquídea", "Clavel del aire", "Rosa"],
-                    "correcta": 1,
-                    "explicacion": "No necesita tierra: bebe la humedad del viento y adorna las ramas con sus hojitas plateadas, ¡un colgante natural del bosque!",
-                    "fotoUrl": "clavel.jpg"
-                },
-                {
-                    "coords": [-34.61100, -58.36843],
-                    "texto": "“Cuido plantas y animales y ayudo a los visitantes. ¿Quién soy?”",
-                    "opciones": ["Científico", "Rurista", "Guardaparque"],
-                    "correcta": 2,
-                    "explicacion": "La guardaparque del Tau es la super-heroína verde: vigila senderos, da consejos y protege cada rincón del bosque todos los días.",
-                    "fotoUrl": "guarda.png"
-                },
-                {
-                    "coords": [-34.61097, -58.36814],
-                    "texto": "“Si tiras basura aquí, ensucias a peces y patos. ¿Qué lugar es?”",
-                    "opciones": ["El río", "El lago", "La calle"],
-                    "correcta": 0,
-                    "explicacion": "Usar los tachos y llevarte tus residuos mantiene el agua clarita y feliz; así el río sigue sano para nadar y remar.",
-                    "fotoUrl": "rio.jpg"
-                },
-                {
-                    "coords": [-34.61095, -58.36787],
-                    "texto": "“Reciclando papel le salvamos la vida a este gran amigo verde. ¿Quién es?”",
-                    "opciones": ["Pasto", "Flor", "Árbol"],
-                    "correcta": 2,
-                    "explicacion": "Los árboles dan sombra, aire puro y casita a los pájaros. En el parque crecen talas, chañares y un histórico algarrobo blanco que son verdaderos tesoros.",
-                    "fotoUrl": "arbol.jpg"
-                },
-                {
-                    "coords": [-34.61091,-58.36750],
-                    "texto": "“Llevo gorrita roja y pechito blanco; mi canto suena fuerte. ¿Qué pájaro soy?”",
-                    "opciones": ["Colibrí", "Cardenal común", "Benteveo"],
-                    "correcta": 1,
-                    "explicacion": "Con su “sombrerito” rojo brillante, el cardenal es una de las aves más vistosas del parque y se deja ver entre las ramas cantando con energía.",
-                    "fotoUrl": "cardenal.jpg"
                 }
             ],
             "6a12": [
@@ -878,7 +806,7 @@
         let mapa;
         let marcadorUbicacion;
         let ubicacionWatchId = null;
-        const ACTIVATION_RADIUS = 10; // Radio en metros para activar una pregunta
+        const ACTIVATION_RADIUS = 100; // Radio en metros para activar una pregunta
         const preguntaMarkers = []; // Almacena los marcadores de preguntas en el mapa
         let currentQuestionRadiusCircle = null; // Círculo que muestra el radio de activación de la pregunta actual
         let sonidoActivado = true;
@@ -1566,6 +1494,7 @@
 </body>
 
 </html>
+
 
 
 
