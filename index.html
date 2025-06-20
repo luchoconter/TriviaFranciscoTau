@@ -6,9 +6,8 @@
     <title>Trivia Francisco Tau</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <link rel="manifest" href="manifest.json"> <!-- AÑADIDO: Enlace al manifest.json -->
+    <link rel="manifest" href="manifest.json">
     
-    <!-- NUEVO: CSS para el chatbot de n8n -->
     <link href="https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css" rel="stylesheet" />
 
     <style>
@@ -25,7 +24,6 @@
             --color-texto-oscuro: #333;
             --color-texto-blanco: #fff;
             --color-fondo-overlay: rgba(255, 255, 255, 0.85);
-            /* Slightly increased opacity for better contrast */
 
             --radio-borde-general: 8px;
             --radio-borde-modal: 12px;
@@ -44,7 +42,6 @@
             --tamano-fuente-normal: 16px;
             --tamano-fuente-boton: 17px;
             --tamano-fuente-titulo-modal: 1.8em;
-            /* Adjusted for h2 in modals */
         }
 
         /* General styles for the page body */
@@ -56,31 +53,22 @@
             font-family: var(--fuente-principal);
             font-size: var(--tamano-fuente-normal);
             background-image: url('fondo.jpg');
-            /* Placeholder for background image - assuming it's in the root */
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
             background-attachment: fixed;
-            /* Disable zoom on non-map elements */
             touch-action: pan-x pan-y;
-            /* Allows scrolling but prevents pinch-zoom on the body */
             -webkit-user-select: none;
-            /* Safari */
             -moz-user-select: none;
-            /* Firefox */
             -ms-user-select: none;
-            /* IE 10+ */
             user-select: none;
-            /* Standard */
         }
 
         #map {
             height: 100vh;
             width: 100%;
-            /* Allow all touch actions including zoom on the map */
             touch-action: manipulation;
             -webkit-user-select: auto;
-            /* Allow selection inside map if needed */
             -moz-user-select: auto;
             -ms-user-select: auto;
             user-select: auto;
@@ -99,19 +87,14 @@
             max-width: 450px;
             text-align: center;
             border: 1px solid rgba(0, 0, 0, 0.1);
-            /* Subtle border */
             box-shadow: var(--sombra-modal);
             display: none;
-            /* Hidden by default */
             animation: fadeIn 0.5s ease-out;
 
-            /* Background with image and overlay for readability */
             background: linear-gradient(var(--color-fondo-overlay), var(--color-fondo-overlay)), url('fondoventanas.jpg');
-            /* Placeholder for window background image - assuming it's in the root */
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            /* Ensure modals also prevent zoom */
             touch-action: pan-x pan-y;
             -webkit-user-select: none;
             -moz-user-select: none;
@@ -135,7 +118,6 @@
             color: var(--color-texto-oscuro);
             text-shadow: 0 0 8px var(--color-texto-blanco);
             font-weight: bold;
-            /* Maintained from original style */
             margin-bottom: 15px;
             line-height: 1.6;
         }
@@ -143,37 +125,25 @@
         /* Styles for general buttons */
         button,
         .button-style {
-            /* .button-style for elements that are not buttons but should look like one */
             margin: 10px 5px;
-            /* Margin adjustment */
             padding: var(--padding-boton);
             font-size: var(--tamano-fuente-boton);
             border-radius: var(--radio-borde-general);
             border: 1px solid rgba(0, 0, 0, 0.2);
-            /* More subtle border */
             background: linear-gradient(135deg, var(--color-primario-verde-claro) 0%, var(--color-primario-verde) 100%);
             color: var(--color-texto-blanco);
             cursor: pointer;
             box-shadow: var(--sombra-elemento);
             transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
-            /* Added opacity transition */
             font-weight: 600;
             letter-spacing: 0.5px;
             text-decoration: none;
-            /* For .button-style if it's an <a> */
             display: inline-block;
-            /* For .button-style if it's an <a> */
             outline: none;
-            /* Remove default outline */
             min-height: 44px;
-            /* Minimum touch target size */
             min-width: 44px;
-            /* Minimum touch target size */
             box-sizing: border-box;
-            /* Include padding and border in the element's total width and height */
-            /* Prevent zoom on buttons */
             touch-action: manipulation;
-            /* Allows tap, double-tap, pan, but not pinch-zoom */
             -webkit-user-select: none;
             -moz-user-select: none;
             -ms-user-select: none;
@@ -194,33 +164,39 @@
         .button-style:focus {
             transform: translateY(0);
             border: 3px solid var(--color-secundario-azul-claro);
-            /* Thicker blue border */
             box-shadow: 0 0 0 2px var(--color-secundario-azul-claro),
-                /* Blue outline effect (slightly smaller to complement border) */
                 0 3px 8px rgba(0, 0, 0, 0.25);
-            /* Original shadow */
         }
 
         button:active,
         .button-style:active {
             transform: scale(0.95);
-            /* Slightly shrink on click */
             opacity: 0.8;
-            /* Fade a bit */
             box-shadow: var(--sombra-elemento);
-            /* Reset shadow to normal on active */
         }
-
 
         /* Style for buttons that should always have the blue border */
         .age-selection-button {
-            /* New class for age selection buttons */
+            background: linear-gradient(135deg, var(--color-secundario-azul-claro) 0%, var(--color-secundario-azul) 100%) !important;
             border: 3px solid var(--color-secundario-azul-claro) !important;
-            /* Force blue border */
-            box-shadow: 0 0 0 2px var(--color-secundario-azul-claro),
-                /* Blue outline effect */
-                var(--sombra-elemento) !important;
-            /* Keep original shadow */
+            box-shadow: var(--sombra-elemento) !important;
+        }
+
+        .age-selection-button.seleccionado {
+            border-color: var(--color-primario-verde-oscuro) !important;
+            box-shadow: 0 0 0 4px var(--color-primario-verde-claro), var(--sombra-elemento-hover) !important;
+            transform: scale(1.02);
+            background: linear-gradient(135deg, var(--color-primario-verde) 0%, var(--color-primario-verde-oscuro) 100%) !important;
+        }
+
+        /* Style for disabled buttons */
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            background: #ccc !important;
+            box-shadow: none !important;
+            transform: none !important;
+            border-color: #aaa !important;
         }
 
         /* Fixed buttons */
@@ -229,13 +205,9 @@
             top: 10px;
             right: 10px;
             z-index: 999;
-            /* Adjusted z-index to be behind modals */
             display: flex;
-            /* Use flexbox for layout */
             flex-direction: column;
-            /* Stack vertically */
             gap: 5px;
-            /* Space between buttons */
             touch-action: pan-x pan-y;
             -webkit-user-select: none;
             -moz-user-select: none;
@@ -499,6 +471,38 @@
             opacity: 0.8;
         }
 
+        /* DNI Input Container Styles */
+        #dni-input-container {
+            margin-top: 25px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        #dni-input-container p {
+            margin-bottom: 0;
+            font-size: 1.1em;
+        }
+
+        #dni-explorador {
+            padding: 12px 15px;
+            border: 2px solid var(--color-secundario-azul-claro);
+            border-radius: var(--radio-borde-general);
+            font-size: var(--tamano-fuente-normal);
+            width: 80%;
+            max-width: 250px;
+            box-sizing: border-box;
+            text-align: center;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        #dni-explorador:focus {
+            outline: none;
+            border-color: var(--color-primario-verde);
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+        }
 
         /* Animaciones */
         @keyframes fadeIn {
@@ -625,15 +629,15 @@
             position: fixed;
             bottom: 20px;
             right: 20px;
-            z-index: 10007; /* Asegura que esté por encima de todos los demás elementos */
-            width: 60px; /* Para dar un tamaño mínimo al contenedor donde estará el botón */
+            z-index: 10007;
+            width: 60px;
             height: 60px;
         }
 
         /* Estilos para el botón flotante real que crea n8n (clases comunes) */
         #n8n-chat .n8n-chat-bubble,
         #n8n-chat .n8n-chat-launcher {
-            background-color: #25D366 !important; /* Color similar al WhatsApp */
+            background-color: #25D366 !important;
             color: white !important;
             border-radius: 50% !important;
             width: 60px !important;
@@ -644,7 +648,7 @@
             justify-content: center !important;
             cursor: pointer !important;
             transition: transform 0.2s ease, box-shadow 0.2s ease !important;
-            padding: 0 !important; /* Asegurarse que no haya padding interno inesperado */
+            padding: 0 !important;
         }
 
         #n8n-chat .n8n-chat-bubble:hover,
@@ -669,8 +673,13 @@
         <p>¿En qué rango de edad te encontrás?</p>
         <div id="botones-edad">
             <button data-edad="menor6" class="age-selection-button">Menor a 6 años</button>
-            <button data-edad="6a125" class="age-selection-button">Entre 6 y 12 años</button>
+            <button data-edad="6a12" class="age-selection-button">Entre 6 y 12 años</button>
             <button data-edad="mayor12" class="age-selection-button">Mayor a 12 años</button>
+        </div>
+        <div id="dni-input-container">
+            <p>Ingresa el DNI del Explorador:</p>
+            <input type="text" id="dni-explorador" placeholder="Ej: 12345678" pattern="[0-9]*" inputmode="numeric" maxlength="8" aria-label="Ingresar DNI del Explorador">
+            <button id="boton-ingresar-aplicacion" disabled>Ingresar a la aplicación</button>
         </div>
     </div>
 
@@ -749,7 +758,6 @@
         Tu navegador no sopporta el elemento de audio.
     </audio>
 
-    <!-- Contenedor donde se renderizará el chatbot de n8n -->
     <div id="n8n-chat"></div>
 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
@@ -760,7 +768,7 @@
         const preguntasData = {
             "menor6": [
                 {
-                    "coords": [-34.61017, -58.36833], // Coordenadas de ejemplo, ajustar según necesidad real
+                    "coords": [-34.61017, -58.36833],
                     "texto": "“ Tengo tronco fuerte y vainas dulces; doy mucha sombra en el parque. ¿Quién soy?”",
                     "opciones": ["Eucalipto", "Pino", "Algarrobo blanco"],
                     "correcta": 2,
@@ -768,7 +776,7 @@
                     "fotoUrl": "algarrobo.jpg"
                 },
                 {
-                    "coords": [-34.61018, -58.36851], // Coordenadas de ejemplo
+                    "coords": [-34.61018, -58.36851],
                     "texto": "“Toc-toc, pico el barro y hago mi casita redonda. ¿Quién canta así?”",
                     "opciones": ["Gorrión", "Hornero", "Jilguero"],
                     "correcta": 1,
@@ -776,7 +784,7 @@
                     "fotoUrl": "hornero.jpg"
                 },
                 {
-                    "coords": [-34.61026, -58.36866], // Coordenadas de ejemplo
+                    "coords": [-34.61026, -58.36866],
                     "texto": "“Me abrochas antes de subir al gomón para que flotes seguro. ¿Qué soy?”",
                     "opciones": ["Casco", "Salvavidas", "Remo"],
                     "correcta": 1,
@@ -784,7 +792,7 @@
                     "fotoUrl": "chaleco.jpg"
                 },
                 {
-                    "coords": [-34.61042, -58.36870], // Coordenadas de ejemplo
+                    "coords": [-34.61042, -58.36870],
                     "texto": "“Serpenteo con agua fresca junto al bosque del parque. ¿Cómo me llamo?”",
                     "opciones": ["Río Segundo", "Río Primero", "Río Ctalamochita"],
                     "correcta": 2,
@@ -792,7 +800,7 @@
                     "fotoUrl": "rioct.jpg"
                 },
                 {
-                    "coords": [-34.61063, -58.36858], // Coordenadas de ejemplo
+                    "coords": [-34.61063, -58.36858],
                     "texto": "“Tomo sol quieto, tengo escamas y una lengua larga. ¿Quién soy?”",
                     "opciones": ["Serpiente", "Tortuga", "Lagarto overo"],
                     "correcta": 2,
@@ -800,7 +808,7 @@
                     "fotoUrl": "lagarto.jpg"
                 },
                 {
-                    "coords": [-34.61082, -58.36855], // Coordenadas de ejemplo para las nuevas preguntas
+                    "coords": [-34.61082, -58.36855],
                     "texto": "“Cuelgo de los árboles como una flor que vive del aire. ¿Cómo me llaman?”",
                     "opciones": ["Orquídea", "Clavel del aire", "Rosa"],
                     "correcta": 1,
@@ -808,7 +816,7 @@
                     "fotoUrl": "clavel.jpg"
                 },
                 {
-                    "coords": [-34.61100, -58.36843], // Coordenadas de ejemplo
+                    "coords": [-34.61100, -58.36843],
                     "texto": "“Cuido plantas y animales y ayudo a los visitantes. ¿Quién soy?”",
                     "opciones": ["Científico", "Turista", "Guardaparque"],
                     "correcta": 2,
@@ -816,7 +824,7 @@
                     "fotoUrl": "guarda.png"
                 },
                 {
-                    "coords": [-34.61097, -58.36814], // Coordenadas de ejemplo
+                    "coords": [-34.61097, -58.36814],
                     "texto": "“Si tiras basura aquí, ensucias a peces y patos. ¿Qué lugar es?”",
                     "opciones": ["El río", "El lago", "La calle"],
                     "correcta": 0,
@@ -824,7 +832,7 @@
                     "fotoUrl": "rio.jpg"
                 },
                 {
-                    "coords": [-34.61095, -58.36787], // Coordenadas de ejemplo
+                    "coords": [-34.61095, -58.36787],
                     "texto": "“Reciclando papel le salvamos la vida a este gran amigo verde. ¿Quién es?”",
                     "opciones": ["Pasto", "Flor", "Árbol"],
                     "correcta": 2,
@@ -832,7 +840,7 @@
                     "fotoUrl": "arbol.jpg"
                 },
                 {
-                    "coords": [-34.61091,-58.36750], // Coordenadas de ejemplo
+                    "coords": [-34.61091,-58.36750],
                     "texto": "“Llevo gorrita roja y pechito blanco; mi canto suena fuerte. ¿Qué pájaro soy?”",
                     "opciones": ["Colibrí", "Cardenal común", "Benteveo"],
                     "correcta": 1,
@@ -870,7 +878,7 @@
                     "texto": "¿Cuántas especies de aves, aproximadamente, han sido identificadas en el Parque Francisco Tau?",
                     "opciones": ["100", "135", "125"],
                     "correcta": 2,
-                    "explicacion": "El Parque Francisco Tau alberga una gran diversidad de aves, con al menos 125 especies registradas, lo que lo convierte en un sitio ideal para la observación de aves. Se encuentran 					especies comunes y vistosas como el hornero, el benteveo, el cardenal común y el chingolo, así como aves acuáticas como el biguá, la gallareta y el martín pescador chico. También se 					observan aves rapaces como el carancho y la lechucita de las vizcacheras.\n\t\t\t\t\tLa variedad de hábitats del parque (bosque, ribera, pastizal) favorece esta riqueza avifaunística, que es clave para el equilibrio ecológico y un gran recurso para la educación 					ambiental.",
+                    "explicacion": "El Parque Francisco Tau alberga una gran diversidad de aves, con al menos 125 especies registradas, lo que lo convierte en un sitio ideal para la observación de aves. Se encuentran especies comunes y vistosas como el hornero, el benteveo, el cardenal común y el chingolo, así como aves acuáticas como el biguá, la gallareta y el martín pescador chico. También se observan aves rapaces como el carancho y la lechucita de las vizcacheras.\n\t\t\t\t\tLa variedad de hábitats del parque (bosque, ribera, pastizal) favorece esta riqueza avifaunística, que es clave para el equilibrio ecológico y un gran recurso para la educación ambiental.",
                     "fotoUrl": "ave.jpg"
                 },
                 {
@@ -878,7 +886,7 @@
                     "texto": "¿Qué roedor semiacuático, parecido a una nutria, habita en las orillas del Río Ctalamochita dentro del parque?",
                     "opciones": ["Comadreja overa", "Coipo", "Cuis"],
                     "correcta": 1,
-                    "explicacion": "El coipo, también llamado nutria criolla, es un mamífero roedor semiacuático que vive en zonas cercanas al agua, como las orillas del Río Ctalamochita, dentro del Parque Francisco Tau. 					Tiene un cuerpo robusto, pelaje denso e impermeable, y una cola larga y redondeada. Sus patas traseras palmeadas le permiten nadar con gran agilidad. Se alimenta principalmente de vegetación 						acuática y raíces, y suele construir madrigueras en barrancas o entre la vegetación ribereña. Es una especie nativa de América del Sur y cumple un rol ecológico importante en el ecosistema 						acuático, ayudando a controlar el crecimiento de plantas en lagunas y ríos. Su presencia en el parque indica una buena calidad ambiental en los ambientes ribereños y la existencia de refugio 						adecuado para fauna nativa.",
+                    "explicacion": "El coipo, también llamado nutria criolla, es un mamífero roedor semiacuático que vive en zonas cercanas al agua, como las orillas del Río Ctalamochita, dentro del Parque Francisco Tau. Tiene un cuerpo robusto, pelaje denso e impermeable, y una cola larga y redondeada. Sus patas traseras palmeadas le permiten nadar con gran agilidad. Se alimenta principalmente de vegetación acuática y raíces, y suele construir madrigueras en barrancas o entre la vegetación ribereña. Es una especie nativa de América del Sur y cumple un rol ecológico importante en el ecosistema acuático, ayudando a controlar el crecimiento de plantas en lagunas y ríos. Su presencia en el parque indica una buena calidad ambiental en los ambientes ribereños y la existencia de refugio adecuado para fauna nativa.",
                     "fotoUrl": "coipo.jpg"
                 }
             ],
@@ -912,7 +920,7 @@
                     "texto": "Según relevamientos recientes, ¿cuántas especies avifaunísticas habitan actualmente el Parque Francisco Tau?",
                     "opciones": ["125", "135", "115"],
                     "correcta": 0,
-                    "explicacion": "El Parque Francisco Tau alberga una gran diversidad de aves, con al menos 125 especies registradas, lo que lo convierte en un sitio ideal para la observación de aves. Se encuentran 					especies comunes y vistosas como el hornero, el benteveo, el cardenal común y el chingolo, así como aves acuáticas como el biguá, la gallareta y el martín pescador chico. También se 					observan aves rapaces como el carancho y la lechucita de las vizcacheras.\n\t\t\t\t\tLa variedad de hábitats del parque (bosque, ribera, pastizal) favorece esta riqueza avifaunística, que es clave para el equilibrio ecológico y un gran recurso para la educación 					ambiental.",
+                    "explicacion": "El Parque Francisco Tau alberga una gran diversidad de aves, con al menos 125 especies registradas, lo que lo convierte en un sitio ideal para la observación de aves. Se encuentran especies comunes y vistosas como el hornero, el benteveo, el cardenal común y el chingolo, así como aves acuáticas como el biguá, la gallareta y el martín pescador chico. También se observan aves rapaces como el carancho y la lechucita de las vizcacheras.\n\t\t\t\t\tLa variedad de hábitats del parque (bosque, ribera, pastizal) favorece esta riqueza avifaunística, que es clave para el equilibrio ecológico y un gran recurso para la educación ambiental.",
                     "fotoUrl": "ave.jpg"
                 },
                 {
@@ -940,6 +948,9 @@
         let currentQuestionRadiusCircle = null;
         let sonidoActivado = true;
         let supportsWebP = false;
+        let dniValido = false; // Variable para controlar la validez del DNI
+        let botonEdadSeleccionado = null; // Para guardar la referencia al botón de edad seleccionado
+        let bienvenidaLeida = false; // Nueva variable para controlar si la bienvenida ya se leyó
 
         const computedStyles = getComputedStyle(document.documentElement);
         const colorErrorRojo = computedStyles.getPropertyValue('--color-error-rojo').trim();
@@ -956,6 +967,9 @@
         const botonToggleSonido = document.getElementById("boton-toggle-sonido");
         const iconSoundOn = document.getElementById("icon-sound-on");
         const iconSoundOff = document.getElementById("icon-sound-off");
+        const dniExploradorInput = document.getElementById("dni-explorador");
+        const botonIngresarAplicacion = document.getElementById("boton-ingresar-aplicacion");
+
 
         function checkWebPSupport() {
             return new Promise((resolve) => {
@@ -1008,7 +1022,7 @@
                 utterance.volume = 1;
                 utterance.rate = 1;
                 utterance.pitch = 1;
-                window.speechSynthesis.cancel();
+                window.speechSynthesis.cancel(); // Cancel any ongoing speech
                 window.speechSynthesis.speak(utterance);
             } else if (!('speechSynthesis' in window)) {
                 console.warn("La API de síntesis de voz no está soportada en este navegador.");
@@ -1066,20 +1080,57 @@
             return preguntasData[edadSeleccionada] || [];
         }
 
-        function seleccionarEdad(rango) {
+        function validarDNI() {
+            const dni = dniExploradorInput.value.replace(/\D/g, ''); // Eliminar no-dígitos
+            dniExploradorInput.value = dni; // Actualizar el valor en el campo
+
+            // DNI debe tener entre 7 y 8 dígitos y solo números
+            const esValido = dni.length >= 7 && dni.length <= 8 && /^\d+$/.test(dni);
+            
+            // Habilitar el botón de ingresar si la edad está seleccionada Y el DNI es válido
+            dniValido = esValido;
+            botonIngresarAplicacion.disabled = !(edadSeleccionada && dniValido);
+        }
+
+        function seleccionarEdad(rango, botonElement) {
+            // Eliminar la clase 'seleccionado' de cualquier botón previamente seleccionado
+            if (botonEdadSeleccionado) {
+                botonEdadSeleccionado.classList.remove('seleccionado');
+            }
+            
+            // Añadir la clase 'seleccionado' al botón actual
+            botonElement.classList.add('seleccionado');
+            botonEdadSeleccionado = botonElement; // Guardar la referencia
+
             edadSeleccionada = rango;
-            ventanaBienvenida.classList.remove("mostrar");
-            iniciarMapa();
-            ventanaInstrucciones.classList.add("mostrar");
-            document.getElementById("boton-comenzar-instrucciones").focus();
+            validarDNI(); // Re-validar DNI para habilitar/deshabilitar el botón de ingreso
 
-            const tituloBienvenida = document.getElementById("titulo-bienvenida").textContent;
-            const parrafoBienvenida = document.querySelector("#ventana-bienvenida p").textContent;
-            reproducirTexto(tituloBienvenida + " " + parrafoBienvenida);
+            // Reproducir texto de bienvenida una vez después de la primera interacción
+            if (!bienvenidaLeida) {
+                const tituloBienvenida = document.getElementById("titulo-bienvenida").textContent;
+                const parrafoBienvenida = document.querySelector("#ventana-bienvenida p").textContent;
+                reproducirTexto(tituloBienvenida + " " + parrafoBienvenida);
+                bienvenidaLeida = true; // Marcar como leído
+            }
+        }
 
-            const textoInstrucciones = document.getElementById("titulo-instrucciones").textContent + " " +
-                Array.from(document.querySelectorAll("#ventana-instrucciones p")).map(p => p.textContent).join(" ");
-            reproducirTexto(textoInstrucciones);
+        function iniciarAplicacion() {
+            if (edadSeleccionada && dniValido) {
+                ventanaBienvenida.classList.remove("mostrar");
+                iniciarMapa();
+                ventanaInstrucciones.classList.add("mostrar");
+                document.getElementById("boton-comenzar-instrucciones").focus();
+
+            } else {
+                let mensajeError = "";
+                if (!edadSeleccionada) {
+                    mensajeError += "Por favor, selecciona un rango de edad.<br>";
+                }
+                if (!dniValido) {
+                    mensajeError += "Por favor, ingresa un DNI válido (7 u 8 dígitos, solo números).";
+                }
+                crearModalPersonalizado("Error de Ingreso", mensajeError, [{ texto: "Entendido", clase: "boton-negacion" }]);
+            }
         }
 
         function cerrarVentanaInstrucciones() {
@@ -1090,6 +1141,10 @@
             if (!ubicacionWatchId) {
                 iniciarSeguimientoUbicacion();
             }
+            // Reproducir texto de instrucciones al cerrar la ventana de instrucciones (al hacer clic en "¡Comencemos!")
+            const textoInstrucciones = document.getElementById("titulo-instrucciones").textContent + " " +
+                Array.from(document.querySelectorAll("#ventana-instrucciones p")).map(p => p.textContent).join(" ");
+            reproducirTexto(textoInstrucciones);
         }
 
         function iniciarMapa() {
@@ -1432,8 +1487,8 @@
                 },
                 target: '#n8n-chat',
                 mode: 'window',
-                chatInputKey: 'chatInput', // El campo esperado por el backend para el mensaje del usuario
-                chatSessionKey: 'sessionId', // El campo esperado por el backend para el ID de sesión
+                chatInputKey: 'chatInput',
+                chatSessionKey: 'sessionId',
                 metadata: {},
                 showWelcomeScreen: false,
                 defaultLanguage: 'es',
@@ -1453,28 +1508,25 @@
 
             document.querySelectorAll('#botones-edad button').forEach(button => {
                 button.addEventListener('click', function () {
-                    seleccionarEdad(this.dataset.edad);
+                    seleccionarEdad(this.dataset.edad, this);
                 });
             });
 
+            dniExploradorInput.addEventListener('input', validarDNI);
+            document.getElementById('boton-ingresar-aplicacion').addEventListener('click', iniciarAplicacion);
             document.getElementById('boton-comenzar-instrucciones').addEventListener('click', cerrarVentanaInstrucciones);
             document.getElementById('boton-reiniciar').addEventListener('click', reiniciarTrivia);
             document.getElementById('boton-mostrar-ubicacion').addEventListener('click', accionMostrarUbicacion);
             document.getElementById('boton-cerrar-final').addEventListener('click', cerrarVentanaFinal);
             botonToggleSonido.addEventListener('click', toggleSonido);
 
-            // Show welcome window on load (no audio playback here directly)
+            // Show welcome window on load
             if (ventanaBienvenida) {
                 ventanaBienvenida.classList.add("mostrar");
-                // The audio for this welcome message will now be triggered by selecting an age.
+                // Focus the DNI input field initially
+                dniExploradorInput.focus();
             } else {
                 console.error('Error: Element with ID "ventana-bienvenida" not found.');
-            }
-
-            // Focus the first age button
-            const primerBotonEdad = document.querySelector('#botones-edad button');
-            if (primerBotonEdad) {
-                primerBotonEdad.focus();
             }
         });
     </script>
@@ -1482,6 +1534,7 @@
 </body>
 
 </html>
+
 
 
 
