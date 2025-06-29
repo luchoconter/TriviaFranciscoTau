@@ -920,7 +920,7 @@
         let marcadorUbicacion;
         let ubicacionWatchId = null;
         const ACTIVATION_RADIUS = 10; // Radio en metros para activar una pregunta
-        const preguntaMarkers = []; // Almacena los marcadores de preguntas en el mapa
+        let preguntaMarkers = []; // Almacena los marcadores de preguntas en el mapa
         let currentQuestionRadiusCircle = null; // Círculo que muestra el radio de activación de la pregunta actual
         let sonidoActivado = true;
         let botonEdadSeleccionado = null; // Referencia al botón de edad actualmente seleccionado
@@ -1186,6 +1186,12 @@
                 }]);
                 return;
             }
+
+            // Si ya existe una instancia de mapa, destrúyela antes de crear una nueva
+            if (mapa) {
+                mapa.remove();
+            }
+
             // Inicializa el mapa centrado en la primera pregunta
             mapa = L.map('map').setView(preguntas[0].coords, 15);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -1194,7 +1200,7 @@
 
             // Elimina marcadores anteriores y limpia el array
             preguntaMarkers.forEach(marker => marker.remove());
-            preguntaMarkers.length = 0;
+            preguntaMarkers = []; // Reinicia el array
 
             // Crea un marcador para cada pregunta y lo guarda en el array
             preguntas.forEach((p, index) => {
@@ -1473,7 +1479,7 @@
         }
 
         /**
-         * Reinicia la trivia, recargando la página.
+         * Reinicia la trivia, restableciendo todas las variables de estado y la interfaz de usuario.
          * Pide confirmación al usuario antes de reiniciar.
          */
         function reiniciarTrivia() {
@@ -1481,11 +1487,93 @@
                 "Reiniciar Trivia",
                 "¿Estás seguro que querés reiniciar tu progreso? Se perderá todo.",
                 [
-                    { texto: "Sí, reiniciar", clase: "boton-negacion", callback: () => location.reload() },
+                    { texto: "Sí, reiniciar", clase: "boton-negacion", callback: resetApplicationState },
                     { texto: "No, continuar", clase: "boton-confirmacion" }
                 ]
             );
         }
+
+        /**
+         * Restablece completamente el estado de la aplicación a su inicio.
+         */
+        function resetApplicationState() {
+            // Resetear variables de estado
+            edadSeleccionada = null;
+            progreso = {
+                actual: 0,
+                preguntasCorrectas: 0,
+                intentos: {}
+            };
+
+            // Detener seguimiento de ubicación si está activo
+            if (ubicacionWatchId !== null) {
+                navigator.geolocation.clearWatch(ubicacionWatchId);
+                ubicacionWatchId = null;
+            }
+
+            // Eliminar mapa existente si hay
+            if (mapa) {
+                mapa.remove();
+                mapa = null;
+            }
+            marcadorUbicacion = null;
+
+            // Limpiar marcadores de preguntas
+            preguntaMarkers.forEach(marker => {
+                if (mapa && mapa.hasLayer(marker)) { // Verifica si el mapa existe y el marcador está en él
+                    mapa.removeLayer(marker);
+                }
+            });
+            preguntaMarkers = [];
+
+            // Eliminar círculo de radio de pregunta actual
+            if (currentQuestionRadiusCircle) {
+                if (mapa && mapa.hasLayer(currentQuestionRadiusCircle)) { // Verifica si el mapa existe
+                    mapa.removeLayer(currentQuestionRadiusCircle);
+                }
+                currentQuestionRadiusCircle = null;
+            }
+
+            // Ocultar todos los modales
+            ocultarModal(ventanaBienvenida);
+            ocultarModal(ventanaInstrucciones);
+            ocultarModal(ventanaPregunta);
+            ocultarModal(ventanaFelicitacion);
+            ocultarModal(ventanaFelicitacionFinal);
+
+            // Ocultar paneles y botones fijos
+            panelProgreso.style.display = "none";
+            botonesFijos.style.display = "none";
+
+            // Reiniciar estado de sonido y sus iconos
+            sonidoActivado = true;
+            iconSoundOn.style.display = 'inline-block';
+            iconSoundOff.style.display = 'none';
+
+            // Resetear botón de edad seleccionado
+            if (botonEdadSeleccionado) {
+                botonEdadSeleccionado.classList.remove('seleccionado');
+                botonEdadSeleccionado = null;
+            }
+
+            // Reiniciar estado de bienvenida leída
+            bienvenidaLeida = false;
+
+            // Cancelar cualquier reproducción de voz actual
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+            }
+
+            // Volver a mostrar la ventana de bienvenida
+            mostrarModal(ventanaBienvenida);
+            // Reproducir el texto de bienvenida nuevamente
+            const tituloBienvenida = document.getElementById("titulo-bienvenida").textContent;
+            const parrafoBienvenida = document.querySelector("#ventana-bienvenida p").textContent;
+            reproducirTexto(tituloBienvenida + " " + parrafoBienvenida);
+
+            console.log("Aplicación reiniciada completamente.");
+        }
+
 
         /**
          * Muestra la nueva ventana de felicitaciones final al completar la trivia,
@@ -1606,7 +1694,7 @@
             document.getElementById('boton-comenzar-instrucciones').addEventListener('click', cerrarVentanaInstrucciones);
             document.getElementById('boton-reiniciar').addEventListener('click', reiniciarTrivia);
             document.getElementById('boton-mostrar-ubicacion').addEventListener('click', accionMostrarUbicacion);
-            document.getElementById('boton-reiniciar-final').addEventListener('click', reiniciarTrivia);
+            document.getElementById('boton-reiniciar-final').addEventListener('click', reiniciarTrivia); // Este botón ahora también llama a reiniciarTrivia
             botonToggleSonido.addEventListener('click', toggleSonido);
 
             // Muestra la ventana de bienvenida al cargar la página
@@ -1629,6 +1717,7 @@
 </body>
 
 </html>
+
 
 
 
