@@ -319,7 +319,7 @@
         }
 
         #opciones button {
-            padding: 15px;
+            padding: 15px; /* Aumentado para mejor ajuste de texto */
             font-size: 1.1em;
             cursor: pointer;
             border: none;
@@ -331,7 +331,7 @@
             font-weight: bold;
             text-align: center;
             white-space: normal; /* Permite que el texto se ajuste en varias líneas */
-            min-height: 44px;
+            min-height: 60px; /* Aumentado para dar más espacio vertical al texto */
             line-height: 1.4;
         }
 
@@ -913,7 +913,8 @@
         let edadSeleccionada = null;
         let progreso = {
             actual: 0,
-            preguntasCorrectas: 0, // Cuenta las preguntas correctas
+            preguntasCorrectas: 0, // Cuenta las preguntas correctas (aunque ya no es la métrica principal de puntaje)
+            puntajeTotal: 0, // NUEVO: Total de puntos acumulados
             intentos: {} // Guarda el número de intentos por pregunta
         };
         let mapa;
@@ -940,6 +941,7 @@
         const iconSoundOn = document.getElementById("icon-sound-on");
         const iconSoundOff = document.getElementById("icon-sound-off");
         const globalOverlay = document.getElementById("global-overlay");
+        const opcionesDiv = document.getElementById("opciones"); // Referencia global para limpiar opciones
 
         // Audio para la alarma (inicializado de forma perezosa)
         let alarmaAudio;
@@ -971,15 +973,13 @@
         }
 
         /**
-         * Oculta un modal y el overlay, y habilita el scroll del body.
+         * Oculta un modal. El control del globalOverlay y el scroll del body
+         * se gestiona centralmente en `resetApplicationState` o cuando no hay
+         * otros modales visibles.
          * @param {HTMLElement} modalElement - El elemento modal a ocultar.
          */
         function ocultarModal(modalElement) {
             modalElement.classList.remove("mostrar");
-            // No ocultar el globalOverlay aquí si hay otros modales abiertos o la lógica lo requiere.
-            // Se ocultará en `resetApplicationState` para un control centralizado.
-            // Aquí solo ocultamos el modal específico.
-            // El scroll del body se habilita cuando no hay más modales visibles, o al resetear la app.
         }
 
         /**
@@ -1238,12 +1238,12 @@
             if (progreso.actual < obtenerPreguntas().length) {
                 const preguntaActual = obtenerPreguntas()[progreso.actual];
                 // Si el marcador de la pregunta actual no está en el mapa, lo añade y le da opacidad total
-                if (preguntaActual.marker && !mapa.hasLayer(preguntaActual.marker)) {
+                if (preguntaActual.marker && mapa && !mapa.hasLayer(preguntaActual.marker)) {
                     preguntaActual.marker.setOpacity(1).addTo(mapa);
                     console.log("Marcador de pregunta actual visible y añadido al mapa.");
                 }
                 // Remueve el círculo de radio anterior si existe
-                if (currentQuestionRadiusCircle) {
+                if (currentQuestionRadiusCircle && mapa && mapa.hasLayer(currentQuestionRadiusCircle)) {
                     mapa.removeLayer(currentQuestionRadiusCircle);
                     console.log("Círculo de radio anterior removido.");
                 }
@@ -1255,7 +1255,7 @@
                     radius: ACTIVATION_RADIUS
                 }).addTo(mapa);
                 console.log("Nuevo círculo de radio dibujado.");
-            } else if (currentQuestionRadiusCircle) {
+            } else if (currentQuestionRadiusCircle && mapa) { // Asegúrate de que el mapa exista antes de intentar remover la capa
                 // Si no hay más preguntas, remueve el círculo
                 mapa.removeLayer(currentQuestionRadiusCircle);
                 currentQuestionRadiusCircle = null;
@@ -1269,6 +1269,22 @@
          */
         function mostrarFelicitacionCorrecta(pregunta) {
             console.log("Entrando a mostrarFelicitacionCorrecta para la pregunta:", pregunta);
+
+            // Calcular puntos ganados
+            const preguntaId = `pregunta_${progreso.actual}`; // ID para acceder a los intentos de esta pregunta
+            const incorrectAttempts = progreso.intentos[preguntaId] || 0; // Número de intentos incorrectos antes de esta respuesta
+
+            let pointsEarned = 0;
+            if (incorrectAttempts === 0) {
+                pointsEarned = 3; // Correcto en el primer intento
+            } else if (incorrectAttempts === 1) {
+                pointsEarned = 2; // Correcto en el segundo intento
+            } else { // incorrectAttempts >= 2
+                pointsEarned = 1; // Correcto en el tercer intento o posterior
+            }
+            progreso.puntajeTotal += pointsEarned; // Sumar puntos al total
+            console.log(`Pregunta ${preguntaId} respondida correctamente. Intentos incorrectos antes: ${incorrectAttempts}. Puntos ganados: ${pointsEarned}. Puntaje total actual: ${progreso.puntajeTotal}`);
+            // Fin del cálculo de puntos
 
             // 1. Ocultar la ventana de pregunta inmediatamente
             ocultarModal(ventanaPregunta);
@@ -1316,12 +1332,12 @@
                 globalOverlay.style.display = "none";
                 toggleBodyScroll(false);
 
-                if (pregunta.marker) { // Verifica si el marcador existe antes de acceder a sus propiedades
+                if (pregunta.marker && mapa && mapa.hasLayer(pregunta.marker)) { // Verifica si el marcador existe antes de acceder a sus propiedades
                     pregunta.marker.setOpacity(0.4); // Baja la opacidad del marcador de la pregunta respondida
                     pregunta.marker.options.interactive = false;
                 }
 
-                if (currentQuestionRadiusCircle) {
+                if (currentQuestionRadiusCircle && mapa) { // Asegúrate de que el mapa exista antes de intentar remover la capa
                     mapa.removeLayer(currentQuestionRadiusCircle); // Remueve el círculo de radio
                     currentQuestionRadiusCircle = null;
                 }
@@ -1354,13 +1370,16 @@
 
             const p = obtenerPreguntas()[index];
             const preguntaId = `pregunta_${index}`;
-            progreso.intentos[preguntaId] = progreso.intentos[preguntaId] || 0; // Inicializa intentos si es la primera vez
+            // Inicializa intentos si es la primera vez que se muestra esta pregunta.
+            // Los intentos se incrementan SOLO cuando la respuesta es INCORRECTA.
+            if (progreso.intentos[preguntaId] === undefined) {
+                progreso.intentos[preguntaId] = 0;
+            }
 
             document.getElementById("texto-pregunta").textContent = p.texto;
             // Nuevo: Reproduce el texto de la pregunta
             reproducirTexto(p.texto);
 
-            const opcionesDiv = document.getElementById("opciones");
             opcionesDiv.innerHTML = ""; // Limpia opciones anteriores
 
             const fragment = document.createDocumentFragment(); // Usa un fragmento para mejor rendimiento
@@ -1381,7 +1400,7 @@
                         // Respuesta incorrecta
                         reproducirSonido(sonidoIncorrecto);
                         feedbackHaptico([200, 100, 200]);
-                        progreso.intentos[preguntaId]++; // Incrementa intentos (para feedback visual si se desea)
+                        progreso.intentos[preguntaId]++; // Incrementa intentos para esta pregunta
                         crearModalPersonalizado(
                             "Respuesta Incorrecta",
                             "¡Ups! Esa no es la respuesta. Intentá de nuevo.",
@@ -1412,7 +1431,7 @@
 
             // Si ya hay un seguimiento, simplemente centra el mapa si hay un marcador
             if (ubicacionWatchId !== null) {
-                if (marcadorUbicacion) mapa.setView(marcadorUbicacion.getLatLng(), 17);
+                if (marcadorUbicacion && mapa) mapa.setView(marcadorUbicacion.getLatLng(), 17); // Añadir verificación de mapa
                 console.log("Seguimiento de ubicación ya activo, centrando mapa.");
                 return;
             }
@@ -1444,7 +1463,7 @@
                         console.log(`Distancia a la pregunta actual (${progreso.actual}): ${distance.toFixed(2)}m`);
 
                         // Asegura que el marcador de la pregunta actual esté visible
-                        if (preguntaActual.marker && !mapa.hasLayer(preguntaActual.marker)) {
+                        if (preguntaActual.marker && mapa && !mapa.hasLayer(preguntaActual.marker)) {
                             preguntaActual.marker.setOpacity(1).addTo(mapa);
                         }
                         actualizarVisibilidadMarcadorActual();
@@ -1463,7 +1482,7 @@
                                 preguntaActual.marker.closeTooltip();
                                 preguntaActual.marker.options.interactive = false;
                             }
-                            mapa.setView(preguntaLocation, 17); // Centra el mapa en la pregunta
+                            if (mapa) mapa.setView(preguntaLocation, 17); // Añadir verificación de mapa
                             mostrarPregunta(progreso.actual); // Muestra el modal de la pregunta
                         } else if (distance > ACTIVATION_RADIUS) {
                             // Si el usuario se aleja, asegura que el marcador no sea interactivo
@@ -1545,6 +1564,7 @@
             progreso = {
                 actual: 0,
                 preguntasCorrectas: 0,
+                puntajeTotal: 0, // Reiniciar el puntaje total
                 intentos: {}
             };
             bienvenidaLeida = false; // Permite que el texto de bienvenida se reproduzca de nuevo
@@ -1556,7 +1576,25 @@
                 console.log("Seguimiento de ubicación detenido.");
             }
 
-            // 3. Eliminar mapa existente si hay
+            // 3. Eliminar marcadores de preguntas y círculo de radio del mapa *antes* de remover el mapa.
+            // Es crucial verificar si el mapa existe y si la capa está en él antes de intentar removerla.
+            preguntaMarkers.forEach(marker => {
+                if (mapa && mapa.hasLayer(marker)) {
+                    mapa.removeLayer(marker);
+                }
+            });
+            preguntaMarkers = []; // Vacía el array para futuras inicializaciones
+            console.log("Marcadores de preguntas removidos del mapa y array vaciado.");
+
+            if (currentQuestionRadiusCircle && mapa && mapa.hasLayer(currentQuestionRadiusCircle)) {
+                mapa.removeLayer(currentQuestionRadiusCircle);
+                currentQuestionRadiusCircle = null;
+                console.log("Círculo de radio de pregunta removido del mapa.");
+            } else {
+                currentQuestionRadiusCircle = null; // Asegurarse de que la referencia se limpie incluso si no está en el mapa
+            }
+
+            // 4. Eliminar mapa existente si hay
             if (mapa) {
                 mapa.remove();
                 mapa = null;
@@ -1564,56 +1602,45 @@
             }
             marcadorUbicacion = null; // Reiniciar marcador de ubicación
 
-            // 4. Limpiar marcadores de preguntas
-            preguntaMarkers = []; // Simplemente vacía el array, ya que iniciarMapa los volverá a crear
-            console.log("Marcadores de preguntas restablecidos.");
-
-
-            // 5. Eliminar círculo de radio de pregunta actual (asegurando que no haya errores si el mapa ya se removió)
-            if (currentQuestionRadiusCircle) {
-                if (currentQuestionRadiusCircle.getMap()) { // Verificar si el círculo aún está en un mapa
-                    currentQuestionRadiusCircle.remove();
-                }
-                currentQuestionRadiusCircle = null;
-                console.log("Círculo de radio de pregunta restablecido.");
-            }
-
-            // 6. Ocultar todos los modales activos
-            ocultarModal(ventanaBienvenida); // Asegurarse de que esté oculto antes de mostrarlo
+            // 5. Ocultar todos los modales activos
+            // Llamar a ocultarModal para cada uno solo remueve la clase 'mostrar'.
+            ocultarModal(ventanaBienvenida);
             ocultarModal(ventanaInstrucciones);
             ocultarModal(ventanaPregunta);
+            opcionesDiv.innerHTML = ""; // Limpiar explícitamente las opciones de la pregunta
             ocultarModal(ventanaFelicitacion);
             ocultarModal(ventanaFelicitacionFinal);
-            globalOverlay.style.display = "none"; // Ocultar explícitamente el overlay global
-            toggleBodyScroll(false); // Asegurar que el scroll del body esté habilitado
+
+            // El globalOverlay y el scroll del body se gestionan aquí de forma centralizada
+            globalOverlay.style.display = "none";
+            toggleBodyScroll(false);
             console.log("Todos los modales y overlay ocultos.");
 
-
-            // 7. Ocultar paneles y botones fijos
+            // 6. Ocultar paneles y botones fijos
             panelProgreso.style.display = "none";
             botonesFijos.style.display = "none";
             console.log("Panel de progreso y botones fijos ocultos.");
 
-            // 8. Reiniciar estado de sonido y sus iconos
+            // 7. Reiniciar estado de sonido y sus iconos
             sonidoActivado = true;
             iconSoundOn.style.display = 'inline-block';
             iconSoundOff.style.display = 'none';
             console.log("Estado de sonido restablecido.");
 
-            // 9. Resetear botón de edad seleccionado
+            // 8. Resetear botón de edad seleccionado
             if (botonEdadSeleccionado) {
                 botonEdadSeleccionado.classList.remove('seleccionado');
                 botonEdadSeleccionado = null;
                 console.log("Botón de edad seleccionado restablecido.");
             }
 
-            // 10. Cancelar cualquier reproducción de voz actual
+            // 9. Cancelar cualquier reproducción de voz actual
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
                 console.log("Síntesis de voz cancelada.");
             }
 
-            // 11. Volver a mostrar la ventana de bienvenida para iniciar el flujo
+            // 10. Volver a mostrar la ventana de bienvenida para iniciar el flujo
             mostrarModal(ventanaBienvenida);
             // Reproducir el texto de bienvenida nuevamente
             const tituloBienvenida = document.getElementById("titulo-bienvenida").textContent;
@@ -1630,6 +1657,7 @@
         function mostrarFelicitacionFinal() {
             console.log("mostrarFelicitacionFinal: Mostrando ventana de felicitación final.");
             const totalPreguntas = obtenerPreguntas().length;
+            const maxPuntajePosible = totalPreguntas * 3; // 3 puntos por pregunta si todas son correctas al primer intento
             const porcentajeCorrectas = totalPreguntas > 0 ? (progreso.preguntasCorrectas / totalPreguntas) * 100 : 0;
             let mensajeParaNino = "";
 
@@ -1644,11 +1672,12 @@
             }
 
             document.getElementById("mensaje-felicitacion-final").textContent = mensajeParaNino;
-            document.getElementById("puntaje-final").textContent = `${progreso.preguntasCorrectas} de ${totalPreguntas}`;
+            // Actualización para mostrar el puntaje total sobre el máximo posible
+            document.getElementById("puntaje-final").textContent = `${progreso.puntajeTotal} de ${maxPuntajePosible} puntos.`;
 
             mostrarModal(ventanaFelicitacionFinal); // Usa la nueva función para mostrar y manejar scroll
 
-            reproducirTexto(`¡Felicidades! ${mensajeParaNino} Tu puntaje final es ${progreso.preguntasCorrectas} de ${totalPreguntas} preguntas correctas.`);
+            reproducirTexto(`¡Felicidades! ${mensajeParaNino} Tu puntaje final es ${progreso.puntajeTotal} de ${maxPuntajePosible} puntos.`);
             document.getElementById("boton-reiniciar-final").focus();
 
             // Detiene el seguimiento de ubicación y limpia el círculo de radio al finalizar
@@ -1657,7 +1686,7 @@
                 ubicacionWatchId = null;
                 console.log("Seguimiento de ubicación detenido al finalizar la trivia.");
             }
-            if (currentQuestionRadiusCircle) {
+            if (currentQuestionRadiusCircle && mapa) { // Asegúrate de que el mapa exista antes de intentar remover la capa
                 mapa.removeLayer(currentQuestionRadiusCircle);
                 currentQuestionRadiusCircle = null;
                 console.log("Círculo de radio de pregunta removido al finalizar la trivia.");
@@ -1672,7 +1701,7 @@
          */
         function accionMostrarUbicacion() {
             console.log("accionMostrarUbicacion: Intentando mostrar ubicación.");
-            if (marcadorUbicacion && mapa.hasLayer(marcadorUbicacion)) {
+            if (marcadorUbicacion && mapa && mapa.hasLayer(marcadorUbicacion)) { // Añadir verificación de mapa
                 mapa.setView(marcadorUbicacion.getLatLng(), 17); // Centra el mapa en la ubicación del usuario
                 marcadorUbicacion.openPopup(); // Abre el popup del marcador
                 console.log("Ubicación del usuario mostrada en el mapa.");
@@ -1782,6 +1811,7 @@
 </body>
 
 </html>
+
 
 
 
