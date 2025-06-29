@@ -331,8 +331,8 @@
             font-weight: bold;
             text-align: center;
             white-space: normal; /* Permite que el texto se ajuste en varias líneas */
-            overflow-wrap: break-word; /* NUEVO: Permite que palabras muy largas se rompan */
-            word-break: break-word; /* NUEVO: Para mayor compatibilidad con navegadores antiguos */
+            overflow-wrap: break-word; /* Permite que palabras muy largas se rompan */
+            word-break: break-word; /* Para mayor compatibilidad con navegadores antiguos */
             min-height: 60px; /* Aumentado para dar más espacio vertical al texto */
             line-height: 1.4;
         }
@@ -446,14 +446,7 @@
             text-shadow: none;
             font-weight: normal;
         }
-
-        #ventana-felicitacion-final button {
-            background: linear-gradient(135deg, var(--color-secundario-azul-claro) 0%, var(--color-secundario-azul) 100%);
-        }
-
-        #ventana-felicitacion-final button:hover {
-            background: linear-gradient(135deg, var(--color-secundario-azul) 0%, var(--color-secundario-azul-oscuro) 100%);
-        }
+        /* ELIMINADO: No hay botón "Volver a jugar" aquí */
 
         /* ==================================================================== */
         /* EXPLICACIÓN DE RESPUESTA                   */
@@ -527,6 +520,22 @@
             0% { transform: scale(1); opacity: 1; }
             50% { transform: scale(1.05); opacity: 0.8; }
             100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* NUEVA ANIMACIÓN para el botón de reiniciar */
+        @keyframes highlightPulse {
+            0% { transform: scale(1); box-shadow: var(--sombra-elemento); }
+            50% { transform: scale(1.03); box-shadow: 0 0 0 4px var(--color-primario-verde-claro), 0 4px 15px rgba(0, 0, 0, 0.3); }
+            100% { transform: scale(1); box-shadow: var(--sombra-elemento); }
+        }
+
+        /* Clase para resaltar el botón de reiniciar */
+        #botones-fijos .highlight-restart-button {
+            animation: highlightPulse 2s infinite ease-in-out;
+            border: 3px solid var(--color-primario-verde-oscuro); /* Un borde más notorio */
+            /* Asegura que estas propiedades se mantengan sobre los estilos base del botón */
+            background: linear-gradient(135deg, var(--color-primario-verde-claro) 0%, var(--color-primario-verde) 100%);
+            color: var(--color-texto-blanco);
         }
 
         /* ==================================================================== */
@@ -718,7 +727,7 @@
         <h3 id="titulo-felicitacion-final">¡Felicidades!</h3>
         <p id="mensaje-felicitacion-final"></p>
         <p>Tu puntaje final es: <span id="puntaje-final"></span></p>
-        <button id="boton-reiniciar-final">Volver a jugar</button>
+        <!-- BOTÓN ELIMINADO: <button id="boton-reiniciar-final">Volver a jugar</button> -->
     </div>
 
     <!-- Elementos de audio -->
@@ -937,6 +946,7 @@
         const ventanaFelicitacionFinal = document.getElementById("ventana-felicitacion-final");
         const panelProgreso = document.getElementById("panel-progreso");
         const botonesFijos = document.getElementById("botones-fijos");
+        const botonReiniciar = document.getElementById("boton-reiniciar"); // Obtener referencia al botón Reiniciar
         const sonidoCorrecto = document.getElementById("sonido-correcto");
         const sonidoIncorrecto = document.getElementById("sonido-incorrecto");
         const botonToggleSonido = document.getElementById("boton-toggle-sonido");
@@ -1242,12 +1252,10 @@
                 // Si el marcador de la pregunta actual no está en el mapa, lo añade y le da opacidad total
                 if (preguntaActual.marker && mapa && !mapa.hasLayer(preguntaActual.marker)) {
                     preguntaActual.marker.setOpacity(1).addTo(mapa);
-                    console.log("Marcador de pregunta actual visible y añadido al mapa.");
                 }
                 // Remueve el círculo de radio anterior si existe
                 if (currentQuestionRadiusCircle && mapa && mapa.hasLayer(currentQuestionRadiusCircle)) {
                     mapa.removeLayer(currentQuestionRadiusCircle);
-                    console.log("Círculo de radio anterior removido.");
                 }
                 // Dibuja un nuevo círculo de radio alrededor de la pregunta actual
                 currentQuestionRadiusCircle = L.circle(L.latLng(preguntaActual.coords), {
@@ -1636,13 +1644,19 @@
                 console.log("Botón de edad seleccionado restablecido.");
             }
 
-            // 9. Cancelar cualquier reproducción de voz actual
+            // 9. Quitar el resaltado del botón de reiniciar
+            if (botonReiniciar) { // Asegúrate de que el elemento exista antes de intentar modificarlo
+                botonReiniciar.classList.remove('highlight-restart-button');
+                console.log("Resaltado del botón de reiniciar removido.");
+            }
+
+            // 10. Cancelar cualquier reproducción de voz actual
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
                 console.log("Síntesis de voz cancelada.");
             }
 
-            // 10. Volver a mostrar la ventana de bienvenida para iniciar el flujo
+            // 11. Volver a mostrar la ventana de bienvenida para iniciar el flujo
             mostrarModal(ventanaBienvenida);
             // Reproducir el texto de bienvenida nuevamente
             const tituloBienvenida = document.getElementById("titulo-bienvenida").textContent;
@@ -1680,7 +1694,14 @@
             mostrarModal(ventanaFelicitacionFinal); // Usa la nueva función para mostrar y manejar scroll
 
             reproducirTexto(`¡Felicidades! ${mensajeParaNino} Tu puntaje final es ${progreso.puntajeTotal} de ${maxPuntajePosible} puntos.`);
-            document.getElementById("boton-reiniciar-final").focus();
+            // Ya no enfocamos el botón dentro del modal, porque fue eliminado.
+            // En su lugar, resaltamos el botón de reiniciar de la interfaz principal.
+            if (botonReiniciar) { // Asegúrate de que el elemento exista antes de intentar modificarlo
+                botonReiniciar.classList.add('highlight-restart-button');
+                botonReiniciar.focus(); // Enfoca el botón de reiniciar para accesibilidad
+                console.log("Botón de reiniciar resaltado y enfocado.");
+            }
+
 
             // Detiene el seguimiento de ubicación y limpia el círculo de radio al finalizar
             if (ubicacionWatchId !== null) {
@@ -1787,7 +1808,7 @@
             document.getElementById('boton-comenzar-instrucciones').addEventListener('click', cerrarVentanaInstrucciones);
             document.getElementById('boton-reiniciar').addEventListener('click', reiniciarTrivia);
             document.getElementById('boton-mostrar-ubicacion').addEventListener('click', accionMostrarUbicacion);
-            document.getElementById('boton-reiniciar-final').addEventListener('click', reiniciarTrivia); // Este botón ahora también llama a reiniciarTrivia
+            // ELIMINADO: document.getElementById('boton-reiniciar-final').addEventListener('click', reiniciarTrivia);
             botonToggleSonido.addEventListener('click', toggleSonido);
             console.log("Listeners de botones de control de trivia asignados.");
 
@@ -1813,6 +1834,7 @@
 </body>
 
 </html>
+
 
 
 
