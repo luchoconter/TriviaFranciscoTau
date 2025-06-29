@@ -67,75 +67,6 @@
             -webkit-user-select: none;
             -moz-user-select: none;
             -ms-user-select: none;
-            user-select: none;<!DOCTYPE html>
-<html lang="es">
-
-<head>
-    <meta charset="UTF-8" />
-    <title>Trivia Francisco Tau</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <link rel="manifest" href="manifest.json">
-
-    <!-- Enlace al CSS del chatbot de n8n -->
-    <link href="https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css" rel="stylesheet" />
-
-    <style>
-        /* ==================================================================== */
-        /* VARIABLES CSS GLOBALES                      */
-        /* ==================================================================== */
-        :root {
-            --color-primario-verde: #4CAF50;
-            --color-primario-verde-claro: #66bb6a;
-            --color-primario-verde-oscuro: #388E3C;
-            --color-secundario-azul: #2196f3;
-            --color-secundario-azul-claro: #42a5f5;
-            --color-secundario-azul-oscuro: #1976D2;
-            --color-error-rojo: #e53935;
-            --color-error-rojo-claro: #ef5350;
-            --color-texto-oscuro: #333;
-            --color-texto-blanco: #fff;
-            --color-fondo-overlay: rgba(255, 255, 255, 0.85);
-
-            --radio-borde-general: 8px;
-            --radio-borde-modal: 12px;
-            --radio-borde-modal-grande: 15px;
-
-            --padding-boton: 12px 25px;
-            --padding-modal: 30px;
-            --padding-modal-grande: 35px 30px;
-
-            --sombra-elemento: 0 4px 10px rgba(0, 0, 0, 0.15), 0 2px 5px rgba(0, 0, 0, 0.1);
-            --sombra-elemento-hover: 0 6px 12px rgba(0, 0, 0, 0.2);
-            --sombra-modal: 0 15px 40px rgba(0, 0, 0, 0.2), 0 6px 20px rgba(0, 0, 0, 0.15);
-            --sombra-modal-hover: 0 8px 20px rgba(0, 0, 0, 0.25);
-
-            --fuente-principal: Arial, sans-serif;
-            --tamano-fuente-normal: 16px;
-            --tamano-fuente-boton: 17px;
-            --tamano-fuente-titulo-modal: 1.8em;
-        }
-
-        /* ==================================================================== */
-        /* ESTILOS GENERALES                         */
-        /* ==================================================================== */
-        body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            font-family: var(--fuente-principal);
-            font-size: var(--tamano-fuente-normal);
-            background-image: url('fondo.jpg'); /* Asegúrate de que 'fondo.jpg' exista en la misma carpeta */
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            /* Previene el zoom accidental y mejora la interacción táctil */
-            touch-action: pan-x pan-y;
-            /* Deshabilita la selección de texto en la interfaz */
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
             user-select: none;
             /* Evita el scroll del body cuando el overlay está activo */
             overflow: auto; /* Valor por defecto */
@@ -812,7 +743,7 @@
         const preguntasData = {
             "menor6": [
                 {
-                    "coords": [-34.72326, -58.39773],
+                    "coords": [-34.72324, -58.39788],
                     "texto": "“ Tengo tronco fuerte y vainas dulces; doy mucha sombra en el parque. ¿Quién soy?”",
                     "opciones": ["Eucalipto", "Pino", "Algarrobo blanco"],
                     "correcta": 2,
@@ -820,7 +751,7 @@
                     "fotoUrl": "algarrobo.jpg"
                 },
                 {
-                    "coords": [-34.72326, -58.39773],
+                    "coords": [-34.72324, -58.39788],
                     "texto": "“Toc-toc, pico el barro y hago mi casita redonda. ¿Quién canta así?”",
                     "opciones": ["Gorrión", "Hornero", "Jilguero"],
                     "correcta": 1,
@@ -828,7 +759,7 @@
                     "fotoUrl": "hornero.jpg"
                 },
                 {
-                    "coords": [-34.72326, -58.39773],
+                    "coords": [-34.72324, -58.39788],
                     "texto": "“Me abrochas antes de subir al gomón para que flotes seguro. ¿Qué soy?”",
                     "opciones": ["Casco", "Salvavidas", "Remo"],
                     "correcta": 1,
@@ -836,7 +767,7 @@
                     "fotoUrl": "chaleco.jpg"
                 },
                 {
-                    "coords": [-34.72326, -58.39773],
+                    "coords": [-34.72324, -58.39788],
                     "texto": "“Serpenteo con agua fresca junto al bosque del parque. ¿Cómo me llamo?”",
                     "opciones": ["Río Segundo", "Río Primero", "Río Ctalamochita"],
                     "correcta": 2,
@@ -844,7 +775,7 @@
                     "fotoUrl": "rioct.jpg"
                 },
                 {
-                    "coords": [-34.72326, -58.39773],
+                    "coords": [-34.72324, -58.39788],
                     "texto": "“Tomo sol quieto, tengo escamas y una lengua larga. ¿Quién soy?”",
                     "opciones": ["Serpiente", "Tortuga", "Lagarto overo"],
                     "correcta": 2,
@@ -852,7 +783,7 @@
                     "fotoUrl": "lagarto.jpg"
                 },
                 {
-                    "coords": [-34.72326, -58.39773],
+                    "coords": [-34.72324, -58.39788],
                     "texto": "“Cuelgo de los árboles como una flor que vive del aire. ¿Cómo me llaman?”",
                     "opciones": ["Orquídea", "Clavel del aire", "Rosa"],
                     "correcta": 1,
@@ -860,7 +791,7 @@
                     "fotoUrl": "clavel.jpg"
                 },
                 {
-                    "coords": [-34.72326, -58.39773],
+                    "coords": [-34.72324, -58.39788],
                     "texto": "“Cuido plantas y animales y ayudo a los visitantes. ¿Quién soy?”",
                     "opciones": ["Científico", "Rurista", "Guardaparque"],
                     "correcta": 2,
@@ -868,7 +799,7 @@
                     "fotoUrl": "guarda.png"
                 },
                 {
-                    "coords": [-34.72326, -58.39773],
+                    "coords": [-34.72324, -58.39788],
                     "texto": "“Si tiras basura aquí, ensucias a peces y patos. ¿Qué lugar es?”",
                     "opciones": ["El río", "El lago", "La calle"],
                     "correcta": 0,
@@ -876,7 +807,7 @@
                     "fotoUrl": "rio.jpg"
                 },
                 {
-                    "coords": [-34.72326, -58.39773],
+                    "coords": [-34.72324, -58.39788],
                     "texto": "“Reciclando papel le salvamos la vida a este gran amigo verde. ¿Quién es?”",
                     "opciones": ["Pasto", "Flor", "Árbol"],
                     "correcta": 2,
@@ -884,7 +815,7 @@
                     "fotoUrl": "arbol.jpg"
                 },
                 {
-                    "coords": [-34.72326, -58.39773],
+                    "coords": [-34.72324, -58.39788],
                     "texto": "“Llevo gorrita roja y pechito blanco; mi canto suena fuerte. ¿Qué pájaro soy?”",
                     "opciones": ["Colibrí", "Cardenal común", "Benteveo"],
                     "correcta": 1,
@@ -1045,8 +976,10 @@
          */
         function ocultarModal(modalElement) {
             modalElement.classList.remove("mostrar");
-            globalOverlay.style.display = "none";
-            toggleBodyScroll(false); // Habilita el scroll del body
+            // No ocultar el globalOverlay aquí si hay otros modales abiertos o la lógica lo requiere.
+            // Se ocultará en `resetApplicationState` para un control centralizado.
+            // Aquí solo ocultamos el modal específico.
+            // El scroll del body se habilita cuando no hay más modales visibles, o al resetear la app.
         }
 
         /**
@@ -1205,6 +1138,7 @@
          * Oculta la ventana de bienvenida, reproduce alarma y texto de instrucciones.
          */
         function iniciarAplicacionPorEdad() {
+            console.log("iniciarAplicacionPorEdad: Edad seleccionada:", edadSeleccionada);
             if (edadSeleccionada) {
                 ocultarModal(ventanaBienvenida); // Usa la nueva función para ocultar y manejar scroll
                 reproducirAlarma(); // Reproduce la alarma al iniciar la aplicación
@@ -1242,12 +1176,17 @@
             if (!ubicacionWatchId) {
                 iniciarSeguimientoUbicacion();
             }
+            // Oculta el overlay global después de cerrar las instrucciones
+            // Esto es crucial si la ventana de instrucciones es la última modal abierta
+            globalOverlay.style.display = "none";
+            toggleBodyScroll(false); // Habilita el scroll del body
         }
 
         /**
          * Inicializa el mapa Leaflet y añade los marcadores de preguntas.
          */
         function iniciarMapa() {
+            console.log("iniciarMapa: Inicializando mapa...");
             const preguntas = obtenerPreguntas();
             if (preguntas.length === 0) {
                 crearModalPersonalizado("Error", "No hay preguntas para el rango de edad seleccionado.", [{
@@ -1259,6 +1198,7 @@
             // Si ya existe una instancia de mapa, destrúyela antes de crear una nueva
             if (mapa) {
                 mapa.remove();
+                console.log("Mapa existente removido.");
             }
 
             // Inicializa el mapa centrado en la primera pregunta
@@ -1266,10 +1206,12 @@
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '© OpenStreetMap contributors'
             }).addTo(mapa);
+            console.log("Nuevo mapa inicializado y centrado.");
 
             // Elimina marcadores anteriores y limpia el array
             preguntaMarkers.forEach(marker => marker.remove());
             preguntaMarkers = []; // Reinicia el array
+            console.log("Marcadores de preguntas anteriores eliminados.");
 
             // Crea un marcador para cada pregunta y lo guarda en el array
             preguntas.forEach((p, index) => {
@@ -1280,25 +1222,30 @@
                 p.marker = marker; // Asocia el marcador al objeto de pregunta
                 preguntaMarkers.push(marker);
             });
+            console.log("Nuevos marcadores de preguntas creados.");
 
             actualizarPanelProgreso(); // Actualiza el progreso inicial
             botonesFijos.style.display = "flex"; // Muestra los botones fijos
             panelProgreso.style.display = "block"; // Muestra el panel de progreso
+            console.log("Panel de progreso y botones fijos mostrados.");
         }
 
         /**
          * Actualiza la visibilidad del marcador de la pregunta actual y su círculo de radio.
          */
         function actualizarVisibilidadMarcadorActual() {
+            console.log("actualizarVisibilidadMarcadorActual: Actualizando visibilidad del marcador...");
             if (progreso.actual < obtenerPreguntas().length) {
                 const preguntaActual = obtenerPreguntas()[progreso.actual];
                 // Si el marcador de la pregunta actual no está en el mapa, lo añade y le da opacidad total
                 if (preguntaActual.marker && !mapa.hasLayer(preguntaActual.marker)) {
                     preguntaActual.marker.setOpacity(1).addTo(mapa);
+                    console.log("Marcador de pregunta actual visible y añadido al mapa.");
                 }
                 // Remueve el círculo de radio anterior si existe
                 if (currentQuestionRadiusCircle) {
                     mapa.removeLayer(currentQuestionRadiusCircle);
+                    console.log("Círculo de radio anterior removido.");
                 }
                 // Dibuja un nuevo círculo de radio alrededor de la pregunta actual
                 currentQuestionRadiusCircle = L.circle(L.latLng(preguntaActual.coords), {
@@ -1307,10 +1254,12 @@
                     fillOpacity: 0.2,
                     radius: ACTIVATION_RADIUS
                 }).addTo(mapa);
+                console.log("Nuevo círculo de radio dibujado.");
             } else if (currentQuestionRadiusCircle) {
                 // Si no hay más preguntas, remueve el círculo
                 mapa.removeLayer(currentQuestionRadiusCircle);
                 currentQuestionRadiusCircle = null;
+                console.log("Todas las preguntas completadas, círculo de radio removido.");
             }
         }
 
@@ -1319,7 +1268,7 @@
          * @param {Object} pregunta - Objeto de la pregunta respondida correctamente.
          */
         function mostrarFelicitacionCorrecta(pregunta) {
-            console.log("Entrando a mostrarFelicitacionCorrecta para la pregunta:", pregunta); // Debugging
+            console.log("Entrando a mostrarFelicitacionCorrecta para la pregunta:", pregunta);
 
             // 1. Ocultar la ventana de pregunta inmediatamente
             ocultarModal(ventanaPregunta);
@@ -1348,21 +1297,24 @@
             const botonContinuar = document.getElementById("boton-continuar-felicitacion");
             botonContinuar.style.display = 'inline-block'; // Asegura que no esté oculto por alguna regla anterior
             botonContinuar.focus(); // Enfoca el botón de continuar
-            console.log("Intento de enfocar el botón:", botonContinuar); // Debugging
+            console.log("Intento de enfocar el botón:", botonContinuar);
 
             // Maneja el listener del botón "Continuar" para evitar múltiples bindings
             const oldListener = botonContinuar._currentListener;
             if (oldListener) {
                 botonContinuar.removeEventListener('click', oldListener);
-                console.log("Eliminado listener anterior del botón Continuar."); // Debugging
+                console.log("Eliminado listener anterior del botón Continuar.");
             }
 
             const newListener = () => {
-                console.log("Botón Continuar clickeado."); // Debugging
+                console.log("Botón Continuar clickeado.");
                 if ('speechSynthesis' in window) {
                     window.speechSynthesis.cancel(); // Cancela el habla si sigue reproduciendo
                 }
-                ocultarModal(ventanaFelicitacion); // Usa la nueva función para ocultar y manejar scroll
+                // Al ocultar la ventana de felicitación, también ocultar el globalOverlay y habilitar el scroll
+                ocultarModal(ventanaFelicitacion);
+                globalOverlay.style.display = "none";
+                toggleBodyScroll(false);
 
                 if (pregunta.marker) { // Verifica si el marcador existe antes de acceder a sus propiedades
                     pregunta.marker.setOpacity(0.4); // Baja la opacidad del marcador de la pregunta respondida
@@ -1379,14 +1331,14 @@
                 actualizarVisibilidadMarcadorActual();
 
                 if (progreso.actual >= obtenerPreguntas().length) {
-                    console.log("Todas las preguntas respondidas, mostrando felicitación final."); // Debugging
+                    console.log("Todas las preguntas respondidas, mostrando felicitación final.");
                     mostrarFelicitacionFinal(); // Si no hay más preguntas, muestra la nueva ventana final de felicitación
                 }
                 // Ya no necesitamos ocultar ventanaPregunta aquí, se hizo al inicio de mostrarFelicitacionCorrecta
             };
             botonContinuar.addEventListener('click', newListener);
             botonContinuar._currentListener = newListener; // Guarda la referencia al listener actual
-            console.log("Nuevo listener adjuntado al botón Continuar."); // Debugging
+            console.log("Nuevo listener adjuntado al botón Continuar.");
         }
 
         /**
@@ -1394,6 +1346,7 @@
          * @param {number} index - Índice de la pregunta a mostrar.
          */
         function mostrarPregunta(index) {
+            console.log("mostrarPregunta: Mostrando pregunta índice:", index);
             // Evita mostrar la misma pregunta si ya está activa o si no es la pregunta actual
             if (index !== progreso.actual || ventanaPregunta.classList.contains('mostrar')) {
                 return;
@@ -1449,6 +1402,7 @@
          * Inicia el seguimiento continuo de la ubicación del usuario y verifica la proximidad a las preguntas.
          */
         function iniciarSeguimientoUbicacion() {
+            console.log("iniciarSeguimientoUbicacion: Iniciando seguimiento de ubicación...");
             if (!navigator.geolocation) {
                 crearModalPersonalizado("Error de Geolocalización", "La geolocalización no está soportada por tu navegador.", [{
                     texto: "Cerrar"
@@ -1459,6 +1413,7 @@
             // Si ya hay un seguimiento, simplemente centra el mapa si hay un marcador
             if (ubicacionWatchId !== null) {
                 if (marcadorUbicacion) mapa.setView(marcadorUbicacion.getLatLng(), 17);
+                console.log("Seguimiento de ubicación ya activo, centrando mapa.");
                 return;
             }
 
@@ -1479,12 +1434,14 @@
                         }).addTo(mapa).bindPopup("¡Estás aquí!");
                         mapa.setView(userLocation, 17); // Centra el mapa en la ubicación inicial
                     }
+                    console.log("Ubicación actualizada:", userLocation);
 
                     // Verifica la proximidad a la pregunta actual
                     if (progreso.actual < obtenerPreguntas().length) {
                         const preguntaActual = obtenerPreguntas()[progreso.actual];
                         const preguntaLocation = L.latLng(preguntaActual.coords);
                         const distance = userLocation.distanceTo(preguntaLocation);
+                        console.log(`Distancia a la pregunta actual (${progreso.actual}): ${distance.toFixed(2)}m`);
 
                         // Asegura que el marcador de la pregunta actual esté visible
                         if (preguntaActual.marker && !mapa.hasLayer(preguntaActual.marker)) {
@@ -1495,10 +1452,11 @@
                         // La pregunta se considera "activa" si su ventana está visible
                         const preguntaYaActiva = ventanaPregunta.classList.contains('mostrar');
                         const felicitacionActiva = ventanaFelicitacion.classList.contains('mostrar');
-                        const felicitacionFinalActiva = ventanaFelicitacionFinal.classList.contains('mostrar'); // Added check for final modal
+                        const felicitacionFinalActiva = ventanaFelicitacionFinal.classList.contains('mostrar');
 
                         // Si el usuario está dentro del radio de activación y la pregunta no está activa ni la ventana de felicitación, muestra la pregunta
-                        if (distance <= ACTIVATION_RADIUS && !preguntaYaActiva && !felicitacionActiva && !felicitacionFinalActiva) { // Added felicitacionFinalActiva check
+                        if (distance <= ACTIVATION_RADIUS && !preguntaYaActiva && !felicitacionActiva && !felicitacionFinalActiva) {
+                            console.log(`Dentro del radio de activación para la pregunta ${progreso.actual}. Mostrando pregunta.`);
                             reproducirAlarma(); // Alarma al activar la pregunta
                             // Deshabilita la interactividad del marcador de pregunta para evitar múltiples activaciones
                             if (preguntaActual.marker.options.interactive) {
@@ -1512,6 +1470,16 @@
                             if (preguntaActual.marker.options.interactive) {
                                 preguntaActual.marker.options.interactive = false;
                                 preguntaActual.marker.closeTooltip();
+                            }
+                            // Ocultar la ventana de pregunta si el usuario se aleja y está visible
+                            if (preguntaYaActiva) {
+                                console.log("Usuario se alejó, ocultando ventana de pregunta.");
+                                ocultarModal(ventanaPregunta);
+                                globalOverlay.style.display = "none";
+                                toggleBodyScroll(false);
+                                if ('speechSynthesis' in window) {
+                                    window.speechSynthesis.cancel();
+                                }
                             }
                         }
                     }
@@ -1527,6 +1495,7 @@
                     if (ubicacionWatchId !== null) {
                         navigator.geolocation.clearWatch(ubicacionWatchId);
                         ubicacionWatchId = null;
+                        console.log("Seguimiento de ubicación detenido debido a error.");
                     }
                 }, {
                     enableHighAccuracy: true, // Solicita la máxima precisión
@@ -1546,6 +1515,7 @@
             document.getElementById("progreso-porcentaje").style.width = porcentajeRespondidas + "%";
             document.getElementById("progreso-texto").textContent =
                 `${progreso.actual} / ${totalPreguntas} preguntas respondidas - Correctas: ${progreso.preguntasCorrectas}`;
+            console.log(`Progreso actualizado: ${progreso.actual}/${totalPreguntas} (${porcentajeRespondidas}%) - Correctas: ${progreso.preguntasCorrectas}`);
         }
 
         /**
@@ -1553,6 +1523,7 @@
          * Pide confirmación al usuario antes de reiniciar.
          */
         function reiniciarTrivia() {
+            console.log("reiniciarTrivia: Solicitando confirmación de reinicio.");
             crearModalPersonalizado(
                 "Reiniciar Trivia",
                 "¿Estás seguro que querés reiniciar tu progreso? Se perderá todo.",
@@ -1567,83 +1538,88 @@
          * Restablece completamente el estado de la aplicación a su inicio.
          */
         function resetApplicationState() {
-            // Resetear variables de estado
+            console.log("resetApplicationState: Reiniciando estado de la aplicación...");
+
+            // 1. Resetear variables de estado
             edadSeleccionada = null;
             progreso = {
                 actual: 0,
                 preguntasCorrectas: 0,
                 intentos: {}
             };
+            bienvenidaLeida = false; // Permite que el texto de bienvenida se reproduzca de nuevo
 
-            // Detener seguimiento de ubicación si está activo
+            // 2. Detener seguimiento de ubicación si está activo
             if (ubicacionWatchId !== null) {
                 navigator.geolocation.clearWatch(ubicacionWatchId);
                 ubicacionWatchId = null;
+                console.log("Seguimiento de ubicación detenido.");
             }
 
-            // Eliminar mapa existente si hay
+            // 3. Eliminar mapa existente si hay
             if (mapa) {
                 mapa.remove();
                 mapa = null;
+                console.log("Mapa removido y restablecido.");
             }
-            marcadorUbicacion = null;
+            marcadorUbicacion = null; // Reiniciar marcador de ubicación
 
-            // Limpiar marcadores de preguntas
-            // Es importante que si se reinicia el mapa, los marcadores se eliminen
-            // y se vuelvan a crear cuando se inicialice el nuevo mapa.
-            // No es necesario removerlos del mapa aquí si el mapa se va a remover completamente.
-            // Basta con limpiar el array para que `iniciarMapa` los cree de nuevo.
-            preguntaMarkers = [];
+            // 4. Limpiar marcadores de preguntas
+            preguntaMarkers = []; // Simplemente vacía el array, ya que iniciarMapa los volverá a crear
+            console.log("Marcadores de preguntas restablecidos.");
 
-            // Eliminar círculo de radio de pregunta actual
+
+            // 5. Eliminar círculo de radio de pregunta actual (asegurando que no haya errores si el mapa ya se removió)
             if (currentQuestionRadiusCircle) {
-                // Verificar si el círculo está en el mapa antes de intentar removerlo.
-                // Esto es crucial si el mapa ya fue removido o aún no se ha inicializado.
-                if (mapa && mapa.hasLayer(currentQuestionRadiusCircle)) {
-                    mapa.removeLayer(currentQuestionRadiusCircle);
+                if (currentQuestionRadiusCircle.getMap()) { // Verificar si el círculo aún está en un mapa
+                    currentQuestionRadiusCircle.remove();
                 }
                 currentQuestionRadiusCircle = null;
+                console.log("Círculo de radio de pregunta restablecido.");
             }
 
-            // Ocultar todos los modales
-            ocultarModal(ventanaBienvenida);
+            // 6. Ocultar todos los modales activos
+            ocultarModal(ventanaBienvenida); // Asegurarse de que esté oculto antes de mostrarlo
             ocultarModal(ventanaInstrucciones);
             ocultarModal(ventanaPregunta);
             ocultarModal(ventanaFelicitacion);
             ocultarModal(ventanaFelicitacionFinal);
+            globalOverlay.style.display = "none"; // Ocultar explícitamente el overlay global
+            toggleBodyScroll(false); // Asegurar que el scroll del body esté habilitado
+            console.log("Todos los modales y overlay ocultos.");
 
-            // Ocultar paneles y botones fijos
+
+            // 7. Ocultar paneles y botones fijos
             panelProgreso.style.display = "none";
             botonesFijos.style.display = "none";
+            console.log("Panel de progreso y botones fijos ocultos.");
 
-            // Reiniciar estado de sonido y sus iconos
+            // 8. Reiniciar estado de sonido y sus iconos
             sonidoActivado = true;
             iconSoundOn.style.display = 'inline-block';
             iconSoundOff.style.display = 'none';
+            console.log("Estado de sonido restablecido.");
 
-            // Resetear botón de edad seleccionado
+            // 9. Resetear botón de edad seleccionado
             if (botonEdadSeleccionado) {
                 botonEdadSeleccionado.classList.remove('seleccionado');
                 botonEdadSeleccionado = null;
+                console.log("Botón de edad seleccionado restablecido.");
             }
 
-            // Reiniciar estado de bienvenida leída para que se reproduzca de nuevo al inicio
-            bienvenidaLeida = false;
-
-            // Cancelar cualquier reproducción de voz actual
+            // 10. Cancelar cualquier reproducción de voz actual
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
+                console.log("Síntesis de voz cancelada.");
             }
 
-            // Volver a mostrar la ventana de bienvenida para iniciar el flujo
+            // 11. Volver a mostrar la ventana de bienvenida para iniciar el flujo
             mostrarModal(ventanaBienvenida);
-
             // Reproducir el texto de bienvenida nuevamente
             const tituloBienvenida = document.getElementById("titulo-bienvenida").textContent;
             const parrafoBienvenida = document.querySelector("#ventana-bienvenida p").textContent;
             reproducirTexto(tituloBienvenida + " " + parrafoBienvenida);
-
-            console.log("Aplicación reiniciada completamente.");
+            console.log("Ventana de bienvenida mostrada. Aplicación reiniciada completamente.");
         }
 
 
@@ -1652,6 +1628,7 @@
          * con un mensaje personalizado basado en el porcentaje de respuestas correctas.
          */
         function mostrarFelicitacionFinal() {
+            console.log("mostrarFelicitacionFinal: Mostrando ventana de felicitación final.");
             const totalPreguntas = obtenerPreguntas().length;
             const porcentajeCorrectas = totalPreguntas > 0 ? (progreso.preguntasCorrectas / totalPreguntas) * 100 : 0;
             let mensajeParaNino = "";
@@ -1678,10 +1655,12 @@
             if (ubicacionWatchId !== null) {
                 navigator.geolocation.clearWatch(ubicacionWatchId);
                 ubicacionWatchId = null;
+                console.log("Seguimiento de ubicación detenido al finalizar la trivia.");
             }
             if (currentQuestionRadiusCircle) {
                 mapa.removeLayer(currentQuestionRadiusCircle);
                 currentQuestionRadiusCircle = null;
+                console.log("Círculo de radio de pregunta removido al finalizar la trivia.");
             }
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel(); // Cancela cualquier habla en curso
@@ -1692,16 +1671,20 @@
          * Muestra la ubicación actual del usuario en el mapa o informa sobre el estado del GPS.
          */
         function accionMostrarUbicacion() {
+            console.log("accionMostrarUbicacion: Intentando mostrar ubicación.");
             if (marcadorUbicacion && mapa.hasLayer(marcadorUbicacion)) {
                 mapa.setView(marcadorUbicacion.getLatLng(), 17); // Centra el mapa en la ubicación del usuario
                 marcadorUbicacion.openPopup(); // Abre el popup del marcador
+                console.log("Ubicación del usuario mostrada en el mapa.");
             } else if (!ubicacionWatchId) {
                 // Si el seguimiento no está activo, intenta iniciarlo
                 iniciarSeguimientoUbicacion();
                 crearModalPersonalizado("Ubicación", "Iniciando seguimiento de ubicación para mostrarte en el mapa.", [{ texto: "OK" }]);
+                console.log("Solicitando iniciar seguimiento de ubicación.");
             } else {
                 // Si el seguimiento ya está activo pero no hay marcador, es que aún no se ha obtenido la posición
                 crearModalPersonalizado("Ubicación", "Esperando señal de GPS para mostrar tu ubicación...", [{ texto: "OK" }]);
+                console.log("Seguimiento de ubicación activo, esperando señal de GPS.");
             }
         }
 
@@ -1713,12 +1696,14 @@
             if (sonidoActivado) {
                 iconSoundOn.style.display = 'inline-block';
                 iconSoundOff.style.display = 'none';
+                console.log("Sonido activado.");
             } else {
                 iconSoundOn.style.display = 'none';
                 iconSoundOff.style.display = 'inline-block';
                 if ('speechSynthesis' in window) {
                     window.speechSynthesis.cancel(); // Cancela cualquier habla si se desactiva el sonido
                 }
+                console.log("Sonido desactivado.");
             }
             crearModalPersonalizado("Sonido", `Sonido ${sonidoActivado ? 'activado' : 'desactivado'}.`, [{ texto: "OK" }]);
         }
@@ -1729,6 +1714,7 @@
 
         // Evento que se dispara cuando el DOM está completamente cargado
         document.addEventListener('DOMContentLoaded', async () => {
+            console.log("DOMContentLoaded: DOM completamente cargado.");
             // Inicializa el chatbot de n8n
             createChat({
                 webhookUrl: 'https://n8n.efficienza.es/webhook/8173e5e9-1b3c-445f-9beb-d0f5360d7ba4/chat',
@@ -1756,6 +1742,7 @@
                     },
                 },
             });
+            console.log("Chatbot n8n inicializado.");
 
             // Asigna listeners a los botones de selección de edad
             document.querySelectorAll('#botones-edad button').forEach(button => {
@@ -1763,6 +1750,7 @@
                     seleccionarEdad(this.dataset.edad, this);
                 });
             });
+            console.log("Listeners de botones de edad asignados.");
 
             // Asigna listeners a los botones de control de la trivia
             document.getElementById('boton-comenzar-instrucciones').addEventListener('click', cerrarVentanaInstrucciones);
@@ -1770,10 +1758,12 @@
             document.getElementById('boton-mostrar-ubicacion').addEventListener('click', accionMostrarUbicacion);
             document.getElementById('boton-reiniciar-final').addEventListener('click', reiniciarTrivia); // Este botón ahora también llama a reiniciarTrivia
             botonToggleSonido.addEventListener('click', toggleSonido);
+            console.log("Listeners de botones de control de trivia asignados.");
 
             // Muestra la ventana de bienvenida al cargar la página
             if (ventanaBienvenida) {
                 mostrarModal(ventanaBienvenida); // Usa la nueva función para mostrar y manejar scroll
+                console.log("Ventana de bienvenida mostrada al cargar la página.");
 
                 // Reproduce el texto de bienvenida si aún no se ha leído (considerando políticas de autoplay)
                 if (!bienvenidaLeida) {
@@ -1781,6 +1771,7 @@
                     const parrafoBienvenida = document.querySelector("#ventana-bienvenida p").textContent;
                     reproducirTexto(tituloBienvenida + " " + parrafoBienvenida);
                     bienvenidaLeida = true;
+                    console.log("Texto de bienvenida reproducido.");
                 }
             } else {
                 console.error('Error: Element with ID "ventana-bienvenida" not found.');
@@ -1791,6 +1782,7 @@
 </body>
 
 </html>
+
 
 
 
