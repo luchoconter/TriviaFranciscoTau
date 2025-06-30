@@ -284,7 +284,7 @@
             position: absolute;
             top: 10px;
             right: 10px;
-            z-index: 10008; /* Se ajustó el z-index para que esté por encima de los modales */
+            z-index: 999; /* Revertido a 999 para que los modales tengan prioridad */
             display: flex;
             flex-direction: column;
             gap: 5px;
@@ -522,15 +522,15 @@
             100% { transform: scale(1); opacity: 1; }
         }
 
-        /* NUEVA ANIMACIÓN para el botón de reiniciar */
+        /* NUEVA ANIMACIÓN para el botón de reiniciar (se usará para el botón dentro del modal) */
         @keyframes highlightPulse {
             0% { transform: scale(1); box-shadow: var(--sombra-elemento); }
             50% { transform: scale(1.03); box-shadow: 0 0 0 4px var(--color-primario-verde-claro), 0 4px 15px rgba(0, 0, 0, 0.3); }
             100% { transform: scale(1); box-shadow: var(--sombra-elemento); }
         }
 
-        /* Clase para resaltar el botón de reiniciar */
-        #botones-fijos .highlight-restart-button {
+        /* Clase para resaltar el botón de reiniciar (se usará para el botón dentro del modal) */
+        #ventana-felicitacion-final .highlight-restart-button {
             animation: highlightPulse 2s infinite ease-in-out;
             border: 3px solid var(--color-primario-verde-oscuro); /* Un borde más notorio */
             /* Asegura que estas propiedades se mantengan sobre los estilos base del botón */
@@ -727,7 +727,7 @@
         <h3 id="titulo-felicitacion-final">¡Felicidades!</h3>
         <p id="mensaje-felicitacion-final"></p>
         <p>Tu puntaje final es: <span id="puntaje-final"></span></p>
-        <!-- BOTÓN ELIMINADO: <button id="boton-reiniciar-final">Volver a jugar</button> -->
+        <button id="boton-reiniciar-final" class="highlight-restart-button">Volver a jugar</button> <!-- Botón de reiniciar ahora dentro del modal -->
     </div>
 
     <!-- Elementos de audio -->
@@ -946,7 +946,7 @@
         const ventanaFelicitacionFinal = document.getElementById("ventana-felicitacion-final");
         const panelProgreso = document.getElementById("panel-progreso");
         const botonesFijos = document.getElementById("botones-fijos");
-        const botonReiniciar = document.getElementById("boton-reiniciar"); // Obtener referencia al botón Reiniciar
+        const botonReiniciar = document.getElementById("boton-reiniciar"); // Obtener referencia al botón Reiniciar de la interfaz fija
         const botonMostrarUbicacion = document.getElementById("boton-mostrar-ubicacion"); // Obtener referencia
         const botonToggleSonido = document.getElementById("boton-toggle-sonido"); // Obtener referencia
         const sonidoCorrecto = document.getElementById("sonido-correcto");
@@ -1629,8 +1629,8 @@
 
             // 6. Ocultar paneles y botones fijos
             panelProgreso.style.display = "none";
-            botonesFijos.style.display = "flex"; // Se asegura que el contenedor de botones fijos esté visible para reiniciar.
-            console.log("Panel de progreso oculto y botones fijos restablecidos.");
+            botonesFijos.style.display = "none"; // Ocultar todos los botones fijos al reiniciar
+            console.log("Panel de progreso y botones fijos ocultos.");
 
             // 7. Reiniciar estado de sonido y sus iconos
             sonidoActivado = true;
@@ -1645,21 +1645,14 @@
                 console.log("Botón de edad seleccionado restablecido.");
             }
 
-            // 9. Quitar el resaltado del botón de reiniciar y habilitar todos los botones fijos
+            // 9. Restaurar el estado de los botones fijos (ya no se deshabilitan/atenúan individualmente)
             if (botonReiniciar) {
-                botonReiniciar.classList.remove('highlight-restart-button');
-                botonReiniciar.disabled = false; // Asegurar que no esté deshabilitado
-                botonReiniciar.style.opacity = '1'; // Restaurar opacidad
+                botonReiniciar.classList.remove('highlight-restart-button'); // Quita el resaltado del botón fijo si existía
+                botonReiniciar.disabled = false;
+                botonReiniciar.style.opacity = '1';
             }
-            if (botonMostrarUbicacion) { // Asegúrate de que el elemento exista
-                botonMostrarUbicacion.disabled = false;
-                botonMostrarUbicacion.style.opacity = '1'; // Restaurar opacidad
-            }
-            if (botonToggleSonido) { // Asegúrate de que el elemento exista
-                botonToggleSonido.disabled = false;
-                botonToggleSonido.style.opacity = '1'; // Restaurar opacidad
-            }
-            console.log("Resaltado del botón de reiniciar removido y todos los botones fijos habilitados.");
+            // Los botones Mostrar Ubicación y Toggle Sonido ya no necesitan restauración individual de disabled/opacity
+            // ya que no se modifican directamente al mostrar el modal final.
 
             // 10. Cancelar cualquier reproducción de voz actual
             if ('speechSynthesis' in window) {
@@ -1705,26 +1698,13 @@
             mostrarModal(ventanaFelicitacionFinal); // Usa la nueva función para mostrar y manejar scroll
 
             reproducirTexto(`¡Felicidades! ${mensajeParaNino} Tu puntaje final es ${progreso.puntajeTotal} de ${maxPuntajePosible} puntos.`);
-            // Ya no enfocamos el botón dentro del modal, porque fue eliminado.
-            // En su lugar, resaltamos el botón de reiniciar de la interfaz principal.
-            if (botonReiniciar) { // Asegúrate de que el elemento exista antes de intentar modificarlo
-                botonReiniciar.classList.add('highlight-restart-button');
-                botonReiniciar.disabled = false; // Asegurarse que el botón esté habilitado para ser clickeable
-                botonReiniciar.focus(); // Enfoca el botón de reiniciar para accesibilidad
-                console.log("Botón de reiniciar resaltado y enfocado.");
+            
+            // Enfoca el nuevo botón de reiniciar dentro del modal
+            const botonReiniciarFinal = document.getElementById("boton-reiniciar-final");
+            if (botonReiniciarFinal) {
+                botonReiniciarFinal.focus();
+                console.log("Botón de reiniciar final enfocado.");
             }
-
-            // Deshabilitar y atenuar los otros botones fijos
-            if (botonMostrarUbicacion) {
-                botonMostrarUbicacion.disabled = true;
-                botonMostrarUbicacion.style.opacity = '0.3'; // Atenuar visualmente
-            }
-            if (botonToggleSonido) {
-                botonToggleSonido.disabled = true;
-                botonToggleSonido.style.opacity = '0.3'; // Atenuar visualmente
-            }
-            console.log("Botones de ubicación y sonido deshabilitados y atenuados.");
-
 
             // Detiene el seguimiento de ubicación y limpia el círculo de radio al finalizar
             if (ubicacionWatchId !== null) {
@@ -1747,12 +1727,6 @@
          */
         function accionMostrarUbicacion() {
             console.log("accionMostrarUbicacion: Intentando mostrar ubicación.");
-            // Solo ejecuta si el botón no está deshabilitado
-            if (this.disabled) {
-                console.log("Botón de ubicación deshabilitado.");
-                return;
-            }
-
             if (marcadorUbicacion && mapa && mapa.hasLayer(marcadorUbicacion)) { // Añadir verificación de mapa
                 mapa.setView(marcadorUbicacion.getLatLng(), 17); // Centra el mapa en la ubicación del usuario
                 marcadorUbicacion.openPopup(); // Abre el popup del marcador
@@ -1773,12 +1747,6 @@
          * Alterna el estado del sonido (activado/desactivado) y actualiza el icono.
          */
         function toggleSonido() {
-            // Solo ejecuta si el botón no está deshabilitado
-            if (this.disabled) {
-                console.log("Botón de sonido deshabilitado.");
-                return;
-            }
-
             sonidoActivado = !sonidoActivado;
             if (sonidoActivado) {
                 iconSoundOn.style.display = 'inline-block';
@@ -1840,10 +1808,12 @@
 
             // Asigna listeners a los botones de control de la trivia
             document.getElementById('boton-comenzar-instrucciones').addEventListener('click', cerrarVentanaInstrucciones);
-            document.getElementById('boton-reiniciar').addEventListener('click', reiniciarTrivia);
-            // Referencias a los botones para agregar el listener
+            document.getElementById('boton-reiniciar').addEventListener('click', reiniciarTrivia); // Botón de reiniciar fijo
             document.getElementById('boton-mostrar-ubicacion').addEventListener('click', accionMostrarUbicacion);
             document.getElementById('boton-toggle-sonido').addEventListener('click', toggleSonido);
+
+            // NUEVO: Listener para el botón de reiniciar dentro del modal de felicitación final
+            document.getElementById('boton-reiniciar-final').addEventListener('click', reiniciarTrivia);
             console.log("Listeners de botones de control de trivia asignados.");
 
             // Muestra la ventana de bienvenida al cargar la página
@@ -1868,6 +1838,7 @@
 </body>
 
 </html>
+
 
 
 
