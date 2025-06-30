@@ -949,6 +949,9 @@
         const botonReiniciar = document.getElementById("boton-reiniciar"); // Obtener referencia al botón Reiniciar de la interfaz fija
         const botonMostrarUbicacion = document.getElementById("boton-mostrar-ubicacion"); // Obtener referencia
         const botonToggleSonido = document.getElementById("boton-toggle-sonido"); // Obtener referencia
+        // Nueva referencia para el botón de reiniciar dentro del modal final
+        const botonReiniciarFinal = document.getElementById("boton-reiniciar-final");
+
         const sonidoCorrecto = document.getElementById("sonido-correcto");
         const sonidoIncorrecto = document.getElementById("sonido-incorrecto");
         const iconSoundOn = document.getElementById("icon-sound-on");
@@ -1700,11 +1703,14 @@
             reproducirTexto(`¡Felicidades! ${mensajeParaNino} Tu puntaje final es ${progreso.puntajeTotal} de ${maxPuntajePosible} puntos.`);
             
             // Enfoca el nuevo botón de reiniciar dentro del modal
-            const botonReiniciarFinal = document.getElementById("boton-reiniciar-final");
+            // Asegúrate de que el botón exista antes de intentar enfocarlo
             if (botonReiniciarFinal) {
                 botonReiniciarFinal.focus();
-                console.log("Botón de reiniciar final enfocado.");
+                console.log("mostrarFelicitacionFinal: Botón de reiniciar final enfocado.");
+            } else {
+                console.warn("mostrarFelicitacionFinal: No se encontró el elemento botonReiniciarFinal.");
             }
+
 
             // Detiene el seguimiento de ubicación y limpia el círculo de radio al finalizar
             if (ubicacionWatchId !== null) {
@@ -1813,7 +1819,13 @@
             document.getElementById('boton-toggle-sonido').addEventListener('click', toggleSonido);
 
             // NUEVO: Listener para el botón de reiniciar dentro del modal de felicitación final
-            document.getElementById('boton-reiniciar-final').addEventListener('click', reiniciarTrivia);
+            // Asegúrate de que el botón exista antes de intentar añadir el listener
+            if (botonReiniciarFinal) {
+                botonReiniciarFinal.addEventListener('click', reiniciarTrivia);
+                console.log("DOMContentLoaded: Listener para 'boton-reiniciar-final' asignado.");
+            } else {
+                console.warn("DOMContentLoaded: No se encontró el elemento 'boton-reiniciar-final'.");
+            }
             console.log("Listeners de botones de control de trivia asignados.");
 
             // Muestra la ventana de bienvenida al cargar la página
@@ -1838,6 +1850,7 @@
 </body>
 
 </html>
+
 
 
 
