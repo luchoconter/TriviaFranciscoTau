@@ -284,7 +284,7 @@
             position: absolute;
             top: 10px;
             right: 10px;
-            z-index: 999; /* Revertido a 999 para que los modales tengan prioridad */
+            z-index: 999; /* Asegura que los modales tengan prioridad */
             display: flex;
             flex-direction: column;
             gap: 5px;
@@ -522,15 +522,15 @@
             100% { transform: scale(1); opacity: 1; }
         }
 
-        /* NUEVA ANIMACIÓN para el botón de reiniciar (se usará para el botón dentro del modal) */
+        /* NUEVA ANIMACIÓN para el botón de reiniciar (se usará para el botón fijo) */
         @keyframes highlightPulse {
             0% { transform: scale(1); box-shadow: var(--sombra-elemento); }
             50% { transform: scale(1.03); box-shadow: 0 0 0 4px var(--color-primario-verde-claro), 0 4px 15px rgba(0, 0, 0, 0.3); }
             100% { transform: scale(1); box-shadow: var(--sombra-elemento); }
         }
 
-        /* Clase para resaltar el botón de reiniciar (se usará para el botón dentro del modal) */
-        #ventana-felicitacion-final .highlight-restart-button {
+        /* Clase para resaltar el botón de reiniciar (se usará para el botón fijo) */
+        #botones-fijos .highlight-restart-button {
             animation: highlightPulse 2s infinite ease-in-out;
             border: 3px solid var(--color-primario-verde-oscuro); /* Un borde más notorio */
             /* Asegura que estas propiedades se mantengan sobre los estilos base del botón */
@@ -727,7 +727,7 @@
         <h3 id="titulo-felicitacion-final">¡Felicidades!</h3>
         <p id="mensaje-felicitacion-final"></p>
         <p>Tu puntaje final es: <span id="puntaje-final"></span></p>
-        <button id="boton-reiniciar-final" class="highlight-restart-button">Volver a jugar</button> <!-- Botón de reiniciar ahora dentro del modal -->
+        <button id="boton-reiniciar-final">Cerrar</button> <!-- Ahora es un botón para cerrar el modal -->
     </div>
 
     <!-- Elementos de audio -->
@@ -949,8 +949,8 @@
         const botonReiniciar = document.getElementById("boton-reiniciar"); // Obtener referencia al botón Reiniciar de la interfaz fija
         const botonMostrarUbicacion = document.getElementById("boton-mostrar-ubicacion"); // Obtener referencia
         const botonToggleSonido = document.getElementById("boton-toggle-sonido"); // Obtener referencia
-        // Nueva referencia para el botón de reiniciar dentro del modal final
-        const botonReiniciarFinal = document.getElementById("boton-reiniciar-final");
+        // Nueva referencia para el botón de cerrar dentro del modal final
+        const botonCerrarFinal = document.getElementById("boton-reiniciar-final"); // Cambiado el nombre de la constante para mayor claridad
 
         const sonidoCorrecto = document.getElementById("sonido-correcto");
         const sonidoIncorrecto = document.getElementById("sonido-incorrecto");
@@ -1648,14 +1648,11 @@
                 console.log("Botón de edad seleccionado restablecido.");
             }
 
-            // 9. Restaurar el estado de los botones fijos (ya no se deshabilitan/atenúan individualmente)
+            // 9. Quitar el resaltado del botón fijo de Reiniciar
             if (botonReiniciar) {
-                botonReiniciar.classList.remove('highlight-restart-button'); // Quita el resaltado del botón fijo si existía
-                botonReiniciar.disabled = false;
-                botonReiniciar.style.opacity = '1';
+                botonReiniciar.classList.remove('highlight-restart-button');
+                // No es necesario restaurar disabled/opacity aquí porque siempre debería estar habilitado
             }
-            // Los botones Mostrar Ubicación y Toggle Sonido ya no necesitan restauración individual de disabled/opacity
-            // ya que no se modifican directamente al mostrar el modal final.
 
             // 10. Cancelar cualquier reproducción de voz actual
             if ('speechSynthesis' in window) {
@@ -1702,13 +1699,18 @@
 
             reproducirTexto(`¡Felicidades! ${mensajeParaNino} Tu puntaje final es ${progreso.puntajeTotal} de ${maxPuntajePosible} puntos.`);
             
-            // Enfoca el nuevo botón de reiniciar dentro del modal
-            // Asegúrate de que el botón exista antes de intentar enfocarlo
-            if (botonReiniciarFinal) {
-                botonReiniciarFinal.focus();
-                console.log("mostrarFelicitacionFinal: Botón de reiniciar final enfocado.");
+            // Enfoca el nuevo botón de cerrar dentro del modal
+            if (botonCerrarFinal) {
+                botonCerrarFinal.focus();
+                console.log("mostrarFelicitacionFinal: Botón de cerrar final enfocado.");
             } else {
-                console.warn("mostrarFelicitacionFinal: No se encontró el elemento botonReiniciarFinal.");
+                console.warn("mostrarFelicitacionFinal: No se encontró el elemento botonCerrarFinal.");
+            }
+
+            // Resalta el botón fijo de Reiniciar
+            if (botonReiniciar) {
+                botonReiniciar.classList.add('highlight-restart-button');
+                console.log("mostrarFelicitacionFinal: Botón Reiniciar fijo resaltado.");
             }
 
 
@@ -1818,13 +1820,22 @@
             document.getElementById('boton-mostrar-ubicacion').addEventListener('click', accionMostrarUbicacion);
             document.getElementById('boton-toggle-sonido').addEventListener('click', toggleSonido);
 
-            // NUEVO: Listener para el botón de reiniciar dentro del modal de felicitación final
-            // Asegúrate de que el botón exista antes de intentar añadir el listener
-            if (botonReiniciarFinal) {
-                botonReiniciarFinal.addEventListener('click', reiniciarTrivia);
-                console.log("DOMContentLoaded: Listener para 'boton-reiniciar-final' asignado.");
+            // Listener para el botón de CERRAR dentro del modal de felicitación final
+            if (botonCerrarFinal) {
+                botonCerrarFinal.addEventListener('click', () => {
+                    console.log("Boton 'Cerrar' de felicitación final clickeado.");
+                    ocultarModal(ventanaFelicitacionFinal);
+                    globalOverlay.style.display = "none";
+                    toggleBodyScroll(false); // Habilita el scroll del body
+                    // Enfoca y resalta el botón fijo de Reiniciar
+                    if (botonReiniciar) {
+                        botonReiniciar.focus();
+                        botonReiniciar.classList.add('highlight-restart-button');
+                    }
+                });
+                console.log("DOMContentLoaded: Listener para 'boton-cerrar-final' asignado.");
             } else {
-                console.warn("DOMContentLoaded: No se encontró el elemento 'boton-reiniciar-final'.");
+                console.warn("DOMContentLoaded: No se encontró el elemento 'boton-reiniciar-final' para el botón de cerrar.");
             }
             console.log("Listeners de botones de control de trivia asignados.");
 
@@ -1850,6 +1861,7 @@
 </body>
 
 </html>
+
 
 
 
