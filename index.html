@@ -746,6 +746,10 @@
         <source src="alarma.mp3" type="audio/mpeg"> <!-- Asegúrate de que 'alarma.mp3' exista en la misma carpeta -->
         Tu navegador no soporta el elemento de audio.
     </audio>
+    <audio id="sonido-aplausos" preload="auto">
+        <source src="aplausos.mp3" type="audio/mpeg"> <!-- Asegúrate de que 'aplausos.mp3' exista en la misma carpeta -->
+        Tu navegador no soporta el elemento de audio.
+    </audio>
 
     <!-- Contenedor para el chatbot de n8n -->
     <div id="n8n-chat"></div>
@@ -961,13 +965,12 @@
 
         const sonidoCorrecto = document.getElementById("sonido-correcto");
         const sonidoIncorrecto = document.getElementById("sonido-incorrecto");
+        const alarmaAudio = document.getElementById("alarmaSonido"); // Referencia directa
+        const sonidoAplausos = document.getElementById("sonido-aplausos"); // NUEVO: Referencia al sonido de aplausos
         const iconSoundOn = document.getElementById("icon-sound-on");
         const iconSoundOff = document.getElementById("icon-sound-off");
         const globalOverlay = document.getElementById("global-overlay");
         const opcionesDiv = document.getElementById("opciones"); // Referencia global para limpiar opciones
-
-        // Audio para la alarma (inicializado de forma perezosa)
-        let alarmaAudio;
 
         // ==================================================================== */
         //                             FUNCIONES DE UTILIDAD                    */
@@ -1020,12 +1023,9 @@
         }
 
         /**
-         * Reproduce el sonido de alarma. Se inicializa el elemento de audio si aún no lo está.
+         * Reproduce el sonido de alarma.
          */
         function reproducirAlarma() {
-            if (!alarmaAudio) {
-                alarmaAudio = document.getElementById('alarmaSonido');
-            }
             if (sonidoActivado && alarmaAudio && alarmaAudio.readyState >= 2) { // readyState >=2 significa que los datos están disponibles
                 alarmaAudio.currentTime = 0;
                 alarmaAudio.play().catch(e => console.error("Error al reproducir la alarma:", e));
@@ -1714,6 +1714,7 @@
 
             mostrarModal(ventanaFelicitacionFinal); // Usa la nueva función para mostrar y manejar scroll
 
+            reproducirSonido(sonidoAplausos); // NUEVO: Reproduce el sonido de aplausos
             reproducirTexto(`¡Felicidades! ${mensajeParaNino} Tu puntaje final es ${progreso.puntajeTotal} de ${maxPuntajePosible} puntos.`);
             
             // Enfoca el nuevo botón de cerrar dentro del modal
@@ -1871,6 +1872,7 @@
 </body>
 
 </html>
+
 
 
 
