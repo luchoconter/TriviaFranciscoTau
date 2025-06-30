@@ -76,6 +76,11 @@
             overflow: hidden;
         }
 
+        /* Clase para forzar el repintado del body */
+        body.force-repaint {
+            outline: 1px solid transparent; /* Cambio mínimo para forzar repaint */
+        }
+
         #map {
             height: 100vh;
             width: 100%;
@@ -1632,6 +1637,18 @@
             toggleBodyScroll(false);
             console.log("Todos los modales y overlay ocultos.");
 
+            // Diagnostic: Check body background style *before* forcing repaint
+            const computedBodyStyle = getComputedStyle(document.body);
+            console.log("Diagnostic: body.backgroundImage:", computedBodyStyle.backgroundImage);
+            console.log("Diagnostic: body.backgroundColor:", computedBodyStyle.backgroundColor);
+
+            // Force body repaint to ensure background image is re-rendered correctly
+            document.body.classList.add('force-repaint');
+            setTimeout(() => {
+                document.body.classList.remove('force-repaint');
+                console.log("Forced body repaint completed.");
+            }, 50); // Small delay to allow repaint
+
             // 6. Ocultar paneles y botones fijos
             panelProgreso.style.display = "none";
             botonesFijos.style.display = "none"; // Ocultar todos los botones fijos al reiniciar
@@ -1863,6 +1880,7 @@
 </body>
 
 </html>
+
 
 
 
