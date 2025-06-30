@@ -1152,6 +1152,15 @@
 
             edadSeleccionada = rango;
 
+            // Reproduce el texto de bienvenida y la alarma al seleccionar la edad (interacción del usuario)
+            if (!bienvenidaLeida) {
+                const tituloBienvenida = document.getElementById("titulo-bienvenida").textContent;
+                const parrafoBienvenida = document.querySelector("#ventana-bienvenida p").textContent;
+                reproducirTexto(tituloBienvenida + " " + parrafoBienvenida);
+                bienvenidaLeida = true;
+                reproducirAlarma(); // Reproduce la alarma aquí, ligada a la interacción del usuario
+            }
+
             // Inicia la aplicación una vez que se ha seleccionado la edad
             iniciarAplicacionPorEdad();
         }
@@ -1164,7 +1173,6 @@
             console.log("iniciarAplicacionPorEdad: Edad seleccionada:", edadSeleccionada);
             if (edadSeleccionada) {
                 ocultarModal(ventanaBienvenida); // Usa la nueva función para ocultar y manejar scroll
-                reproducirAlarma(); // Reproduce la alarma al iniciar la aplicación
 
                 iniciarMapa(); // Inicializa el mapa
 
@@ -1637,17 +1645,10 @@
             toggleBodyScroll(false);
             console.log("Todos los modales y overlay ocultos.");
 
-            // Diagnostic: Check body background style *before* forcing repaint
-            const computedBodyStyle = getComputedStyle(document.body);
-            console.log("Diagnostic: body.backgroundImage:", computedBodyStyle.backgroundImage);
-            console.log("Diagnostic: body.backgroundColor:", computedBodyStyle.backgroundColor);
+            // Forzar la recarga de la imagen de fondo del body
+            document.body.style.backgroundImage = "url('fondo.jpg')";
+            console.log("Fondo del body reestablecido explícitamente.");
 
-            // Force body repaint to ensure background image is re-rendered correctly
-            document.body.classList.add('force-repaint');
-            setTimeout(() => {
-                document.body.classList.remove('force-repaint');
-                console.log("Forced body repaint completed.");
-            }, 50); // Small delay to allow repaint
 
             // 6. Ocultar paneles y botones fijos
             panelProgreso.style.display = "none";
@@ -1681,10 +1682,7 @@
 
             // 11. Volver a mostrar la ventana de bienvenida para iniciar el flujo
             mostrarModal(ventanaBienvenida);
-            // Reproducir el texto de bienvenida nuevamente
-            const tituloBienvenida = document.getElementById("titulo-bienvenida").textContent;
-            const parrafoBienvenida = document.querySelector("#ventana-bienvenida p").textContent;
-            reproducirTexto(tituloBienvenida + " " + parrafoBienvenida);
+            // NOTA: El texto de bienvenida y la alarma se reproducirán al hacer clic en un botón de edad.
             console.log("Ventana de bienvenida mostrada. Aplicación reiniciada completamente.");
         }
 
@@ -1863,14 +1861,7 @@
                 mostrarModal(ventanaBienvenida); // Usa la nueva función para mostrar y manejar scroll
                 console.log("Ventana de bienvenida mostrada al cargar la página.");
 
-                // Reproduce el texto de bienvenida si aún no se ha leído (considerando políticas de autoplay)
-                if (!bienvenidaLeida) {
-                    const tituloBienvenida = document.getElementById("titulo-bienvenida").textContent;
-                    const parrafoBienvenida = document.querySelector("#ventana-bienvenida p").textContent;
-                    reproducirTexto(tituloBienvenida + " " + parrafoBienvenida);
-                    bienvenidaLeida = true;
-                    console.log("Texto de bienvenida reproducido.");
-                }
+                // NOTA: El texto de bienvenida y la alarma se reproducirán al hacer clic en un botón de edad.
             } else {
                 console.error('Error: Element with ID "ventana-bienvenida" not found.');
             }
@@ -1880,6 +1871,7 @@
 </body>
 
 </html>
+
 
 
 
