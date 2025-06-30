@@ -284,7 +284,7 @@
             position: absolute;
             top: 10px;
             right: 10px;
-            z-index: 999;
+            z-index: 10008; /* Se ajustó el z-index para que esté por encima de los modales */
             display: flex;
             flex-direction: column;
             gap: 5px;
@@ -1647,7 +1647,9 @@
             // 9. Quitar el resaltado del botón de reiniciar
             if (botonReiniciar) { // Asegúrate de que el elemento exista antes de intentar modificarlo
                 botonReiniciar.classList.remove('highlight-restart-button');
-                console.log("Resaltado del botón de reiniciar removido.");
+                // Asegurar que el botón no esté deshabilitado si alguna lógica previa lo hizo
+                botonReiniciar.disabled = false;
+                console.log("Resaltado del botón de reiniciar removido y habilitado.");
             }
 
             // 10. Cancelar cualquier reproducción de voz actual
@@ -1698,6 +1700,8 @@
             // En su lugar, resaltamos el botón de reiniciar de la interfaz principal.
             if (botonReiniciar) { // Asegúrate de que el elemento exista antes de intentar modificarlo
                 botonReiniciar.classList.add('highlight-restart-button');
+                // Asegurarse que el botón esté habilitado para ser clickeable
+                botonReiniciar.disabled = false;
                 botonReiniciar.focus(); // Enfoca el botón de reiniciar para accesibilidad
                 console.log("Botón de reiniciar resaltado y enfocado.");
             }
@@ -1789,7 +1793,6 @@
                         title: 'Guarda parque Virtual',
                         subtitle: "Inicia una conversación. Estamos aquí para ayudarte.",
                         footer: '',
-                        getStarted: 'Nueva Conversación',
                         inputPlaceholder: 'Escribe tu mensaje..',
                     },
                 },
@@ -1834,6 +1837,7 @@
 </body>
 
 </html>
+
 
 
 
