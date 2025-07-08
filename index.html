@@ -13,7 +13,7 @@
 
     <style>
         /* ==================================================================== */
-        /* VARIABLES CSS GLOBALES                      */
+        /* VARIABLES CSS GLOBALES                                             */
         /* ==================================================================== */
         :root {
             --color-primario-verde: #4CAF50;
@@ -48,7 +48,7 @@
         }
 
         /* ==================================================================== */
-        /* ESTILOS GENERALES                         */
+        /* ESTILOS GENERALES                                                  */
         /* ==================================================================== */
         body, html {
             margin: 0;
@@ -92,7 +92,7 @@
         }
 
         /* ==================================================================== */
-        /* ESTILOS DE MODALES                      */
+        /* ESTILOS DE MODALES                                                 */
         /* ==================================================================== */
         .modal-base {
             position: fixed; /* Cambiado a fixed para asegurar que no se desplace con el scroll */
@@ -144,9 +144,6 @@
 
         /* Estilos específicos para la ventana de felicitación de respuesta */
         #ventana-felicitacion {
-            /* Asegúrate de que herede o tenga las propiedades de modal-base */
-            /* En este caso, ya tiene su propio estilo que duplica modal-base,
-               pero se asegura 'position: fixed' para que no se desplace. */
             position: fixed; /* Asegura que no se desplace */
             top: 50%;
             left: 50%;
@@ -212,7 +209,7 @@
         }
 
         /* ==================================================================== */
-        /* ESTILOS DE BOTONES                      */
+        /* ESTILOS DE BOTONES                                                 */
         /* ==================================================================== */
         button, .button-style {
             margin: 10px 5px;
@@ -261,27 +258,29 @@
         }
 
         /* Estilo para los botones de selección de edad */
+        /* Se eliminaron los !important, la especificidad y el orden de las reglas garantizan el mismo resultado. */
         .age-selection-button {
-            background: linear-gradient(135deg, var(--color-secundario-azul-claro) 0%, var(--color-secundario-azul) 100%) !important;
-            border: 3px solid var(--color-secundario-azul-claro) !important;
-            box-shadow: var(--sombra-elemento) !important;
+            background: linear-gradient(135deg, var(--color-secundario-azul-claro) 0%, var(--color-secundario-azul) 100%);
+            border: 3px solid var(--color-secundario-azul-claro);
+            box-shadow: var(--sombra-elemento);
         }
 
         .age-selection-button.seleccionado {
-            border-color: var(--color-primario-verde-oscuro) !important;
-            box-shadow: 0 0 0 4px var(--color-primario-verde-claro), var(--sombra-elemento-hover) !important;
+            border-color: var(--color-primario-verde-oscuro);
+            box-shadow: 0 0 0 4px var(--color-primario-verde-claro), var(--sombra-elemento-hover);
             transform: scale(1.02);
-            background: linear-gradient(135deg, var(--color-primario-verde) 0%, var(--color-primario-verde-oscuro) 100%) !important;
+            background: linear-gradient(135deg, var(--color-primario-verde) 0%, var(--color-primario-verde-oscuro) 100%);
         }
 
         /* Estilo para botones deshabilitados */
+        /* Se eliminaron los !important, la especificidad y el orden de las reglas garantizan el mismo resultado. */
         button:disabled {
             opacity: 0.6;
             cursor: not-allowed;
-            background: #ccc !important;
-            box-shadow: none !important;
-            transform: none !important;
-            border-color: #aaa !important;
+            background: #ccc;
+            box-shadow: none;
+            transform: none;
+            border-color: #aaa;
         }
 
         /* Botones fijos en la esquina superior derecha */
@@ -372,7 +371,7 @@
         }
 
         /* ==================================================================== */
-        /* PANEL DE PROGRESO                          */
+        /* PANEL DE PROGRESO                                                  */
         /* ==================================================================== */
         #panel-progreso {
             position: absolute;
@@ -408,7 +407,7 @@
         }
 
         /* ==================================================================== */
-        /* MODAL DE FELICITACIÓN FINAL (Nuevo)        */
+        /* MODAL DE FELICITACIÓN FINAL (Nuevo)                                */
         /* ==================================================================== */
         #ventana-felicitacion-final {
             position: fixed;
@@ -456,7 +455,7 @@
         /* ELIMINADO: No hay botón "Volver a jugar" aquí */
 
         /* ==================================================================== */
-        /* EXPLICACIÓN DE RESPUESTA                   */
+        /* EXPLICACIÓN DE RESPUESTA                                           */
         /* ==================================================================== */
         #explicacion-respuesta {
             margin-top: 20px;
@@ -477,7 +476,7 @@
         }
 
         /* ==================================================================== */
-        /* MODAL CUSTOM JS                          */
+        /* MODAL CUSTOM JS                                                    */
         /* ==================================================================== */
         .custom-js-modal {
             position: fixed;
@@ -516,7 +515,7 @@
         }
 
         /* ==================================================================== */
-        /* ANIMACIONES                            */
+        /* ANIMACIONES                                                        */
         /* ==================================================================== */
         @keyframes fadeIn {
             0% { opacity: 0; transform: translate(-50%, -55%); }
@@ -546,7 +545,7 @@
         }
 
         /* ==================================================================== */
-        /* ICONO DE UBICACIÓN LEAFLET                 */
+        /* ICONO DE UBICACIÓN LEAFLET                                         */
         /* ==================================================================== */
         .leaflet-div-icon {
             background: none;
@@ -568,7 +567,7 @@
         }
 
         /* ==================================================================== */
-        /* MEDIA QUERIES (RESPONSIVE)                */
+        /* MEDIA QUERIES (RESPONSIVE)                                         */
         /* ==================================================================== */
         @media (max-width: 600px) {
             .modal-base, .custom-js-modal, #ventana-felicitacion, #ventana-felicitacion-final {
@@ -609,7 +608,10 @@
         }
 
         /* ==================================================================== */
-        /* ESTILOS CHATBOT N8N                       */
+        /* ESTILOS CHATBOT N8N                                                */
+        /* NOTA: Se mantienen los !important aquí para asegurar que los estilos
+           personalizados del chatbot prevalezcan sobre los estilos por defecto
+           de la librería externa, según el requisito de no cambiar la visualización. */
         /* ==================================================================== */
         #n8n-chat {
             position: fixed;
@@ -757,11 +759,15 @@
     <!-- Scripts externos -->
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script type="module">
+        // Importa la función createChat del SDK de n8n.
         import { createChat } from 'https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js';
 
-        // ==================================================================== */
-        //                         VARIABLES GLOBALES Y DATOS                   */
         /* ==================================================================== */
+        /* VARIABLES GLOBALES Y DATOS                   */
+        /* ==================================================================== */
+        // Objeto que contiene las preguntas de la trivia, categorizadas por rango de edad.
+        // Cada pregunta incluye coordenadas, texto, opciones de respuesta, la respuesta correcta,
+        // una explicación y una URL de foto asociada.
         const preguntasData = {
             "menor6": [
                 {
@@ -932,24 +938,25 @@
         };
 
         // Variables de estado de la aplicación
-        let edadSeleccionada = null;
+        let edadSeleccionada = null; // Almacena el rango de edad seleccionado por el usuario.
         let progreso = {
-            actual: 0,
-            preguntasCorrectas: 0, // Cuenta las preguntas correctas (aunque ya no es la métrica principal de puntaje)
-            puntajeTotal: 0, // NUEVO: Total de puntos acumulados
-            intentos: {} // Guarda el número de intentos por pregunta
+            actual: 0,              // Índice de la pregunta actual en el array de preguntas.
+            preguntasCorrectas: 0,  // Cantidad de preguntas respondidas correctamente.
+            puntajeTotal: 0,        // Puntos acumulados por el usuario.
+            intentos: {}            // Objeto para guardar el número de intentos por pregunta (clave: `pregunta_idx`).
         };
-        let mapa;
-        let marcadorUbicacion;
-        let ubicacionWatchId = null;
-        const ACTIVATION_RADIUS = 10; // Radio en metros para activar una pregunta
-        let preguntaMarkers = []; // Almacena los marcadores de preguntas en el mapa
-        let currentQuestionRadiusCircle = null; // Círculo que muestra el radio de activación de la pregunta actual
-        let sonidoActivado = true;
-        let botonEdadSeleccionado = null; // Referencia al botón de edad actualmente seleccionado
-        let bienvenidaLeida = false; // Bandera para controlar si la bienvenida de voz ya se reprodujo
+        let mapa;                       // Instancia del mapa Leaflet.
+        let marcadorUbicacion;          // Marcador de la ubicación actual del usuario en el mapa.
+        let ubicacionWatchId = null;    // ID del observador de geolocalización para detener el seguimiento.
+        const ACTIVATION_RADIUS = 10;   // Radio en metros para activar una pregunta cuando el usuario está cerca.
+        let preguntaMarkers = [];       // Array para almacenar los marcadores de las preguntas en el mapa.
+        let currentQuestionRadiusCircle = null; // Círculo que visualiza el radio de activación de la pregunta actual.
+        let sonidoActivado = true;      // Booleano que controla si los sonidos y la síntesis de voz están activados.
+        let botonEdadSeleccionado = null; // Referencia al botón de edad actualmente seleccionado para manejar su estilo.
+        let bienvenidaLeida = false;    // Bandera para asegurar que el texto de bienvenida de voz se reproduzca solo una vez.
 
-        // Referencias a elementos del DOM
+        // Referencias a elementos del DOM (Document Object Model)
+        // Se obtienen referencias a los elementos HTML por su ID para manipularlos fácilmente.
         const ventanaBienvenida = document.getElementById("ventana-bienvenida");
         const ventanaInstrucciones = document.getElementById("ventana-instrucciones");
         const ventanaPregunta = document.getElementById("pregunta");
@@ -957,27 +964,27 @@
         const ventanaFelicitacionFinal = document.getElementById("ventana-felicitacion-final");
         const panelProgreso = document.getElementById("panel-progreso");
         const botonesFijos = document.getElementById("botones-fijos");
-        const botonReiniciar = document.getElementById("boton-reiniciar"); // Obtener referencia al botón Reiniciar de la interfaz fija
-        const botonMostrarUbicacion = document.getElementById("boton-mostrar-ubicacion"); // Obtener referencia
-        const botonToggleSonido = document.getElementById("boton-toggle-sonido"); // Obtener referencia
-        // Nueva referencia para el botón de cerrar dentro del modal final
-        const botonCerrarFinal = document.getElementById("boton-reiniciar-final"); // Cambiado el nombre de la constante para mayor claridad
+        const botonReiniciar = document.getElementById("boton-reiniciar");
+        const botonMostrarUbicacion = document.getElementById("boton-mostrar-ubicacion");
+        const botonToggleSonido = document.getElementById("boton-toggle-sonido");
+        const botonCerrarFinal = document.getElementById("boton-reiniciar-final"); // Botón para cerrar el modal de felicitación final.
 
-        const sonidoCorrecto = document.getElementById("sonido-correcto");
-        const sonidoIncorrecto = document.getElementById("sonido-incorrecto");
-        const alarmaAudio = document.getElementById("alarmaSonido"); // Referencia directa
-        const sonidoAplausos = document.getElementById("sonido-aplausos"); // NUEVO: Referencia al sonido de aplausos
-        const iconSoundOn = document.getElementById("icon-sound-on");
-        const iconSoundOff = document.getElementById("icon-sound-off");
-        const globalOverlay = document.getElementById("global-overlay");
-        const opcionesDiv = document.getElementById("opciones"); // Referencia global para limpiar opciones
+        const sonidoCorrecto = document.getElementById("sonido-correcto");     // Elemento de audio para respuesta correcta.
+        const sonidoIncorrecto = document.getElementById("sonido-incorrecto"); // Elemento de audio para respuesta incorrecta.
+        const alarmaAudio = document.getElementById("alarmaSonido");           // Elemento de audio para la alarma de proximidad.
+        const sonidoAplausos = document.getElementById("sonido-aplausos");     // Elemento de audio para los aplausos finales.
+        const iconSoundOn = document.getElementById("icon-sound-on");         // Icono de sonido activado.
+        const iconSoundOff = document.getElementById("icon-sound-off");       // Icono de sonido desactivado.
+        const globalOverlay = document.getElementById("global-overlay");      // Overlay para bloquear la interacción del fondo.
+        const opcionesDiv = document.getElementById("opciones");              // Contenedor de las opciones de respuesta de la pregunta.
 
-        // ==================================================================== */
-        //                             FUNCIONES DE UTILIDAD                    */
+        /* ==================================================================== */
+        /* FUNCIONES DE UTILIDAD                    */
         /* ==================================================================== */
 
         /**
          * Añade o quita la clase 'no-scroll' al body para controlar el scroll.
+         * Cuando un modal está abierto, el scroll del body se deshabilita.
          * @param {boolean} disable - Si es true, añade 'no-scroll'; si es false, la quita.
          */
         function toggleBodyScroll(disable) {
@@ -989,8 +996,8 @@
         }
 
         /**
-         * Muestra un modal y el overlay, y deshabilita el scroll del body.
-         * @param {HTMLElement} modalElement - El elemento modal a mostrar.
+         * Muestra un modal específico y el overlay global, y deshabilita el scroll del body.
+         * @param {HTMLElement} modalElement - El elemento modal HTML a mostrar.
          */
         function mostrarModal(modalElement) {
             modalElement.classList.add("mostrar");
@@ -999,17 +1006,18 @@
         }
 
         /**
-         * Oculta un modal. El control del globalOverlay y el scroll del body
+         * Oculta un modal específico. El control del globalOverlay y el scroll del body
          * se gestiona centralmente en `resetApplicationState` o cuando no hay
-         * otros modales visibles.
-         * @param {HTMLElement} modalElement - El elemento modal a ocultar.
+         * otros modales visibles, para evitar ocultar el overlay prematuramente.
+         * @param {HTMLElement} modalElement - El elemento modal HTML a ocultar.
          */
         function ocultarModal(modalElement) {
             modalElement.classList.remove("mostrar");
         }
 
         /**
-         * Reproduce un elemento de audio si el sonido está activado.
+         * Reproduce un elemento de audio si el sonido global está activado.
+         * Reinicia el audio al principio antes de reproducirlo.
          * @param {HTMLAudioElement} audio - El elemento de audio a reproducir.
          */
         function reproducirSonido(audio) {
@@ -1023,11 +1031,13 @@
         }
 
         /**
-         * Reproduce el sonido de alarma.
+         * Reproduce el sonido de alarma, utilizado para notificar la proximidad a una pregunta.
+         * Solo se reproduce si el sonido está activado y el audio está listo.
          */
         function reproducirAlarma() {
-            if (sonidoActivado && alarmaAudio && alarmaAudio.readyState >= 2) { // readyState >=2 significa que los datos están disponibles
-                alarmaAudio.currentTime = 0;
+            // readyState >= 2 significa que los datos están disponibles (at least current playback position is available)
+            if (sonidoActivado && alarmaAudio && alarmaAudio.readyState >= 2) {
+                alarmaAudio.currentTime = 0; // Reinicia el audio al principio
                 alarmaAudio.play().catch(e => console.error("Error al reproducir la alarma:", e));
                 console.log("Intentando reproducir alarma.mp3"); // Debugging
             } else {
@@ -1037,7 +1047,7 @@
 
         /**
          * Genera un feedback háptico (vibración) si el dispositivo lo soporta.
-         * @param {number|number[]} pattern - Patrón de vibración en milisegundos.
+         * @param {number|number[]} pattern - Patrón de vibración en milisegundos (ej. 50 para un toque corto, [200, 100, 200] para un patrón).
          */
         function feedbackHaptico(pattern = 50) {
             if ('vibrate' in navigator) {
@@ -1046,17 +1056,18 @@
         }
 
         /**
-         * Reproduce un texto usando la API de síntesis de voz del navegador.
+         * Reproduce un texto usando la API de síntesis de voz del navegador (Web Speech API).
+         * Solo se reproduce si la API está soportada y el sonido está activado.
          * @param {string} text - El texto a reproducir.
          */
         function reproducirTexto(text) {
             if ('speechSynthesis' in window && sonidoActivado) {
                 const utterance = new SpeechSynthesisUtterance(text);
-                utterance.lang = 'es-ES'; // Configura el idioma a español
-                utterance.volume = 1;
-                utterance.rate = 1;
-                utterance.pitch = 1;
-                window.speechSynthesis.cancel(); // Cancela cualquier habla en curso
+                utterance.lang = 'es-ES'; // Configura el idioma a español para una pronunciación correcta.
+                utterance.volume = 1;     // Volumen (0 a 1)
+                utterance.rate = 1;       // Velocidad (0.1 a 10)
+                utterance.pitch = 1;      // Tono (0 a 2)
+                window.speechSynthesis.cancel(); // Cancela cualquier habla en curso para evitar superposiciones.
                 window.speechSynthesis.speak(utterance);
                 console.log(`Reproduciendo texto: "${text.substring(0, Math.min(text.length, 50))}..."`); // Debugging
             } else if (!('speechSynthesis' in window)) {
@@ -1068,125 +1079,136 @@
 
         /**
          * Crea y muestra un modal personalizado con título, mensaje y botones.
-         * Este modal no afecta el scroll del body, se encarga de sí mismo.
+         * Este modal es dinámico y se añade/elimina del DOM. No afecta el scroll del body.
          * @param {string} titulo - Título del modal.
          * @param {string} mensaje - Contenido HTML del mensaje.
          * @param {Array<Object>} botonesConfig - Array de objetos {texto: string, clase: string, callback: function}.
          */
         function crearModalPersonalizado(titulo, mensaje, botonesConfig) {
-            // Elimina cualquier modal personalizado existente para evitar duplicados
+            // Elimina cualquier modal personalizado existente para evitar duplicados.
             const modalExistente = document.querySelector('.custom-js-modal');
             if (modalExistente) {
                 document.body.removeChild(modalExistente);
             }
 
+            // Crea el elemento div para el modal.
             const modal = document.createElement('div');
             modal.className = 'custom-js-modal';
-            modal.setAttribute('role', 'alertdialog');
-            modal.setAttribute('aria-modal', 'true');
+            modal.setAttribute('role', 'alertdialog'); // Rol ARIA para un diálogo de alerta.
+            modal.setAttribute('aria-modal', 'true');  // Indica que es un modal y bloquea el contenido de fondo.
 
+            // Crea y añade el título del modal.
             const modalTitulo = document.createElement('h3');
             modalTitulo.textContent = titulo;
             modal.appendChild(modalTitulo);
-            // Asegura un ID único para el aria-labelledby
+            // Asegura un ID único para el aria-labelledby para accesibilidad.
             const tituloId = 'custom-modal-titulo-' + Date.now();
             modalTitulo.id = tituloId;
             modal.setAttribute('aria-labelledby', tituloId);
 
+            // Crea y añade el mensaje del modal.
             const modalMensaje = document.createElement('p');
-            modalMensaje.innerHTML = mensaje;
+            modalMensaje.innerHTML = mensaje; // Usa innerHTML para permitir HTML en el mensaje.
             modal.appendChild(modalMensaje);
 
+            // Crea el contenedor para los botones.
             const botonesDiv = document.createElement('div');
             botonesDiv.className = 'modal-botones';
 
+            // Itera sobre la configuración de botones y crea cada botón.
             botonesConfig.forEach(btnConfig => {
                 const button = document.createElement("button");
                 button.textContent = btnConfig.texto;
                 if (btnConfig.clase) {
+                    // Añade clases CSS al botón si están definidas.
                     button.classList.add(...btnConfig.clase.split(' '));
                 }
+                // Añade un event listener para cerrar el modal y ejecutar el callback.
                 button.addEventListener('click', () => {
                     if (btnConfig.callback) {
-                        btnConfig.callback();
+                        btnConfig.callback(); // Ejecuta la función de callback si existe.
                     }
-                    document.body.removeChild(modal); // Cierra el modal al hacer click
+                    document.body.removeChild(modal); // Cierra el modal al hacer click.
                 });
                 botonesDiv.appendChild(button);
             });
 
             modal.appendChild(botonesDiv);
-            document.body.appendChild(modal);
-            // Enfoca el primer botón para accesibilidad
+            document.body.appendChild(modal); // Añade el modal al body.
+            // Enfoca el primer botón para mejorar la accesibilidad con teclado.
             if (botonesDiv.firstChild && typeof botonesDiv.firstChild.focus === 'function') {
                 botonesDiv.firstChild.focus();
             }
         }
 
         /**
-         * Obtiene el array de preguntas para la edad seleccionada.
-         * @returns {Array} Array de objetos de preguntas.
+         * Obtiene el array de preguntas correspondiente a la edad seleccionada.
+         * @returns {Array} Array de objetos de preguntas para la edad actual, o un array vacío si no hay.
          */
         function obtenerPreguntas() {
             return preguntasData[edadSeleccionada] || [];
         }
 
-        // ==================================================================== */
-        //                       FUNCIONES DE LÓGICA DE LA TRIVIA               */
+        /* ==================================================================== */
+        /* FUNCIONES DE LÓGICA DE LA TRIVIA               */
         /* ==================================================================== */
 
         /**
-         * Maneja la selección de un rango de edad.
+         * Maneja la selección de un rango de edad al inicio de la aplicación.
+         * Actualiza la variable `edadSeleccionada` y el estilo del botón.
+         * También reproduce el texto de bienvenida y la alarma por primera vez.
          * @param {string} rango - El rango de edad seleccionado ('menor6', '6a12', 'mayor12').
          * @param {HTMLElement} botonElement - El botón HTML que fue clickeado.
          */
         function seleccionarEdad(rango, botonElement) {
-            // Quita la clase 'seleccionado' del botón previamente activo
+            // Quita la clase 'seleccionado' del botón previamente activo, si existe.
             if (botonEdadSeleccionado) {
                 botonEdadSeleccionado.classList.remove('seleccionado');
             }
 
-            // Añade la clase 'seleccionado' al botón clickeado y guarda su referencia
+            // Añade la clase 'seleccionado' al botón clickeado y guarda su referencia.
             botonElement.classList.add('seleccionado');
             botonEdadSeleccionado = botonElement;
 
             edadSeleccionada = rango;
 
-            // Reproduce el texto de bienvenida y la alarma al seleccionar la edad (interacción del usuario)
+            // Reproduce el texto de bienvenida y la alarma solo una vez al seleccionar la edad
+            // (esto es una interacción del usuario, necesaria para la reproducción automática de audio).
             if (!bienvenidaLeida) {
                 const tituloBienvenida = document.getElementById("titulo-bienvenida").textContent;
                 const parrafoBienvenida = document.querySelector("#ventana-bienvenida p").textContent;
                 reproducirTexto(tituloBienvenida + " " + parrafoBienvenida);
                 bienvenidaLeida = true;
-                reproducirAlarma(); // Reproduce la alarma aquí, ligada a la interacción del usuario
+                reproducirAlarma(); // Reproduce la alarma aquí, ligada a la interacción del usuario.
             }
 
-            // Inicia la aplicación una vez que se ha seleccionado la edad
+            // Inicia la aplicación una vez que se ha seleccionado la edad.
             iniciarAplicacionPorEdad();
         }
 
         /**
-         * Inicia el flujo principal de la aplicación después de la selección de edad.
-         * Oculta la ventana de bienvenida, reproduce alarma y texto de instrucciones.
+         * Inicia el flujo principal de la aplicación después de que el usuario selecciona una edad.
+         * Oculta la ventana de bienvenida, inicializa el mapa y muestra las instrucciones.
          */
         function iniciarAplicacionPorEdad() {
             console.log("iniciarAplicacionPorEdad: Edad seleccionada:", edadSeleccionada);
             if (edadSeleccionada) {
-                ocultarModal(ventanaBienvenida); // Usa la nueva función para ocultar y manejar scroll
+                ocultarModal(ventanaBienvenida); // Oculta la ventana de bienvenida.
 
-                iniciarMapa(); // Inicializa el mapa
+                iniciarMapa(); // Inicializa el mapa Leaflet.
 
-                mostrarModal(ventanaInstrucciones); // Usa la nueva función para mostrar y manejar scroll
+                mostrarModal(ventanaInstrucciones); // Muestra la ventana de instrucciones.
 
-                // Reproduce el texto de las instrucciones
+                // Reproduce el texto de las instrucciones usando síntesis de voz.
                 const tituloInstrucciones = document.getElementById("titulo-instrucciones").textContent;
                 const parrafosInstrucciones = Array.from(document.querySelectorAll("#ventana-instrucciones p")).map(p => p.textContent).join(" ");
                 reproducirTexto(tituloInstrucciones + " " + parrafosInstrucciones);
 
-                // Enfoca el botón de comenzar para accesibilidad
+                // Enfoca el botón de comenzar para accesibilidad (navegación por teclado).
                 document.getElementById("boton-comenzar-instrucciones").focus();
 
             } else {
+                // Si por alguna razón no se seleccionó una edad, muestra un modal de error.
                 crearModalPersonalizado(
                     "Error de Ingreso",
                     "Por favor, selecciona un rango de edad para comenzar.",
@@ -1196,25 +1218,26 @@
         }
 
         /**
-         * Cierra la ventana de instrucciones y comienza el seguimiento de la ubicación.
+         * Cierra la ventana de instrucciones y comienza el seguimiento de la ubicación del usuario.
+         * También oculta el overlay global y habilita el scroll del body.
          */
         function cerrarVentanaInstrucciones() {
-            ocultarModal(ventanaInstrucciones); // Usa la nueva función para ocultar y manejar scroll
+            ocultarModal(ventanaInstrucciones); // Oculta la ventana de instrucciones.
             if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel(); // Cancela cualquier habla en curso (ej. si el usuario hace clic rápido)
+                window.speechSynthesis.cancel(); // Cancela cualquier habla en curso.
             }
-            // Inicia el seguimiento de la ubicación si aún no está activo
+            // Inicia el seguimiento de la ubicación si aún no está activo.
             if (!ubicacionWatchId) {
                 iniciarSeguimientoUbicacion();
             }
-            // Oculta el overlay global después de cerrar las instrucciones
-            // Esto es crucial si la ventana de instrucciones es la última modal abierta
+            // Oculta el overlay global y habilita el scroll del body.
             globalOverlay.style.display = "none";
-            toggleBodyScroll(false); // Habilita el scroll del body
+            toggleBodyScroll(false);
         }
 
         /**
-         * Inicializa el mapa Leaflet y añade los marcadores de preguntas.
+         * Inicializa el mapa Leaflet en el elemento con ID 'map' y añade los marcadores de preguntas.
+         * Destruye cualquier instancia de mapa existente antes de crear una nueva.
          */
         function iniciarMapa() {
             console.log("iniciarMapa: Inicializando mapa...");
@@ -1226,66 +1249,69 @@
                 return;
             }
 
-            // Si ya existe una instancia de mapa, destrúyela antes de crear una nueva
+            // Si ya existe una instancia de mapa, la remueve para evitar duplicados.
             if (mapa) {
                 mapa.remove();
                 console.log("Mapa existente removido.");
             }
 
-            // Inicializa el mapa centrado en la primera pregunta
+            // Inicializa el mapa centrado en las coordenadas de la primera pregunta.
             mapa = L.map('map').setView(preguntas[0].coords, 15);
+            // Añade una capa de OpenStreetMap al mapa.
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '© OpenStreetMap contributors'
             }).addTo(mapa);
             console.log("Nuevo mapa inicializado y centrado.");
 
-            // Elimina marcadores anteriores y limpia el array
+            // Elimina marcadores de preguntas anteriores y limpia el array.
             preguntaMarkers.forEach(marker => marker.remove());
-            preguntaMarkers = []; // Reinicia el array
+            preguntaMarkers = []; // Reinicia el array para las nuevas preguntas.
             console.log("Marcadores de preguntas anteriores eliminados.");
 
-            // Crea un marcador para cada pregunta y lo guarda en el array
+            // Crea un marcador para cada pregunta y lo asocia al objeto de pregunta,
+            // añadiéndolo al array `preguntaMarkers`.
             preguntas.forEach((p, index) => {
                 const marker = L.marker(p.coords, {
-                    opacity: 0.5, // Marcadores iniciales semitransparentes
-                    interactive: false // No interactivos hasta que se activen
+                    opacity: 0.5, // Marcadores iniciales semitransparentes.
+                    interactive: false // No interactivos hasta que se activen por proximidad.
                 });
-                p.marker = marker; // Asocia el marcador al objeto de pregunta
+                p.marker = marker; // Asocia el marcador al objeto de pregunta para fácil acceso.
                 preguntaMarkers.push(marker);
             });
             console.log("Nuevos marcadores de preguntas creados.");
 
-            actualizarPanelProgreso(); // Actualiza el progreso inicial
-            botonesFijos.style.display = "flex"; // Muestra los botones fijos
-            panelProgreso.style.display = "block"; // Muestra el panel de progreso
+            actualizarPanelProgreso(); // Actualiza el panel de progreso con el total de preguntas.
+            botonesFijos.style.display = "flex"; // Muestra los botones fijos (reiniciar, ubicación, sonido).
+            panelProgreso.style.display = "block"; // Muestra el panel de progreso.
             console.log("Panel de progreso y botones fijos mostrados.");
         }
 
         /**
-         * Actualiza la visibilidad del marcador de la pregunta actual y su círculo de radio.
+         * Actualiza la visibilidad del marcador de la pregunta actual en el mapa
+         * y dibuja un círculo alrededor de ella para indicar el radio de activación.
          */
         function actualizarVisibilidadMarcadorActual() {
             console.log("actualizarVisibilidadMarcadorActual: Actualizando visibilidad del marcador...");
             if (progreso.actual < obtenerPreguntas().length) {
                 const preguntaActual = obtenerPreguntas()[progreso.actual];
-                // Si el marcador de la pregunta actual no está en el mapa, lo añade y le da opacidad total
+                // Si el marcador de la pregunta actual no está en el mapa, lo añade y le da opacidad total.
                 if (preguntaActual.marker && mapa && !mapa.hasLayer(preguntaActual.marker)) {
                     preguntaActual.marker.setOpacity(1).addTo(mapa);
                 }
-                // Remueve el círculo de radio anterior si existe
+                // Remueve el círculo de radio anterior si existe.
                 if (currentQuestionRadiusCircle && mapa && mapa.hasLayer(currentQuestionRadiusCircle)) {
                     mapa.removeLayer(currentQuestionRadiusCircle);
                 }
-                // Dibuja un nuevo círculo de radio alrededor de la pregunta actual
+                // Dibuja un nuevo círculo de radio alrededor de la pregunta actual.
                 currentQuestionRadiusCircle = L.circle(L.latLng(preguntaActual.coords), {
                     color: 'blue',
                     fillColor: '#0000ff',
                     fillOpacity: 0.2,
-                    radius: ACTIVATION_RADIUS
+                    radius: ACTIVATION_RADIUS // Usa el radio de activación definido.
                 }).addTo(mapa);
                 console.log("Nuevo círculo de radio dibujado.");
-            } else if (currentQuestionRadiusCircle && mapa) { // Asegúrate de que el mapa exista antes de intentar remover la capa
-                // Si no hay más preguntas, remueve el círculo
+            } else if (currentQuestionRadiusCircle && mapa) {
+                // Si no hay más preguntas (trivia completada), remueve el círculo.
                 mapa.removeLayer(currentQuestionRadiusCircle);
                 currentQuestionRadiusCircle = null;
                 console.log("Todas las preguntas completadas, círculo de radio removido.");
@@ -1294,142 +1320,145 @@
 
         /**
          * Muestra la ventana de felicitación después de una respuesta correcta.
-         * @param {Object} pregunta - Objeto de la pregunta respondida correctamente.
+         * Calcula los puntos ganados, actualiza el puntaje total y reproduce sonidos/texto.
+         * @param {Object} pregunta - Objeto de la pregunta que fue respondida correctamente.
          */
         function mostrarFelicitacionCorrecta(pregunta) {
             console.log("Entrando a mostrarFelicitacionCorrecta para la pregunta:", pregunta);
 
-            // Calcular puntos ganados
-            const preguntaId = `pregunta_${progreso.actual}`; // ID para acceder a los intentos de esta pregunta
-            const incorrectAttempts = progreso.intentos[preguntaId] || 0; // Número de intentos incorrectos antes de esta respuesta
+            // Calcular puntos ganados basados en el número de intentos incorrectos previos.
+            const preguntaId = `pregunta_${progreso.actual}`; // ID único para esta pregunta en el progreso.
+            const incorrectAttempts = progreso.intentos[preguntaId] || 0; // Número de intentos incorrectos antes de esta respuesta.
 
             let pointsEarned = 0;
             if (incorrectAttempts === 0) {
-                pointsEarned = 3; // Correcto en el primer intento
+                pointsEarned = 3; // Correcto en el primer intento.
             } else if (incorrectAttempts === 1) {
-                pointsEarned = 2; // Correcto en el segundo intento
+                pointsEarned = 2; // Correcto en el segundo intento.
             } else { // incorrectAttempts >= 2
-                pointsEarned = 1; // Correcto en el tercer intento o posterior
+                pointsEarned = 1; // Correcto en el tercer intento o posterior.
             }
-            progreso.puntajeTotal += pointsEarned; // Sumar puntos al total
+            progreso.puntajeTotal += pointsEarned; // Suma los puntos al total acumulado.
             console.log(`Pregunta ${preguntaId} respondida correctamente. Intentos incorrectos antes: ${incorrectAttempts}. Puntos ganados: ${pointsEarned}. Puntaje total actual: ${progreso.puntajeTotal}`);
-            // Fin del cálculo de puntos
 
-            // 1. Ocultar la ventana de pregunta inmediatamente
+            // 1. Ocultar la ventana de pregunta inmediatamente.
             ocultarModal(ventanaPregunta);
             if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel(); // Cancela cualquier habla en curso (la de la pregunta)
+                window.speechSynthesis.cancel(); // Cancela cualquier habla en curso (la de la pregunta).
             }
 
+            // Configura la imagen y explicación en la ventana de felicitación.
             const felicitacionImagen = document.getElementById("felicitacion-imagen");
-            // Añade un manejador de error para la imagen y un fallback
+            // Añade un manejador de error para la imagen y un fallback en caso de que no cargue.
             felicitacionImagen.onerror = () => {
                 console.error("Error al cargar la imagen:", pregunta.fotoUrl);
-                felicitacionImagen.src = "https://placehold.co/150x100/CCCCCC/000000?text=Imagen+no+cargada"; // Imagen de fallback
+                felicitacionImagen.src = "https://placehold.co/150x100/CCCCCC/000000?text=Imagen+no+cargada"; // Imagen de fallback.
             };
-            felicitacionImagen.src = pregunta.fotoUrl || "https://placehold.co/150x100/CCCCCC/000000?text=Imagen+no+disponible"; // Fallback si fotoUrl falta
-            felicitacionImagen.alt = `Imagen relacionada con la pregunta: ${pregunta.texto || 'sin texto'}`; // Texto alternativo fallback
+            felicitacionImagen.src = pregunta.fotoUrl || "https://placehold.co/150x100/CCCCCC/000000?text=Imagen+no+disponible"; // Fallback si fotoUrl falta.
+            felicitacionImagen.alt = `Imagen relacionada con la pregunta: ${pregunta.texto || 'sin texto'}`; // Texto alternativo para accesibilidad.
 
-            document.getElementById("felicitacion-explicacion").textContent = pregunta.explicacion || 'No hay explicación disponible.'; // Texto de explicación fallback
+            document.getElementById("felicitacion-explicacion").textContent = pregunta.explicacion || 'No hay explicación disponible.'; // Texto de explicación con fallback.
 
-            mostrarModal(ventanaFelicitacion); // Usa la nueva función para mostrar y manejar scroll
+            mostrarModal(ventanaFelicitacion); // Muestra la ventana de felicitación.
 
-            reproducirSonido(sonidoCorrecto); // Sonido de respuesta correcta
-            feedbackHaptico(100); // Vibración
-            reproducirTexto(pregunta.explicacion || 'Respuesta correcta.'); // Lee la explicación, con fallback
+            reproducirSonido(sonidoCorrecto); // Reproduce el sonido de respuesta correcta.
+            feedbackHaptico(100); // Genera una vibración.
+            reproducirTexto(pregunta.explicacion || 'Respuesta correcta.'); // Lee la explicación.
 
-            // Asegura que el botón sea visible y enfocable
+            // Asegura que el botón "Continuar" sea visible y enfocable.
             const botonContinuar = document.getElementById("boton-continuar-felicitacion");
-            botonContinuar.style.display = 'inline-block'; // Asegura que no esté oculto por alguna regla anterior
-            botonContinuar.focus(); // Enfoca el botón de continuar
+            botonContinuar.style.display = 'inline-block';
+            botonContinuar.focus();
             console.log("Intento de enfocar el botón:", botonContinuar);
 
-            // Maneja el listener del botón "Continuar" para evitar múltiples bindings
+            // Maneja el listener del botón "Continuar" para evitar múltiples bindings.
+            // Se guarda una referencia al listener actual para poder removerlo antes de añadir uno nuevo.
             const oldListener = botonContinuar._currentListener;
             if (oldListener) {
                 botonContinuar.removeEventListener('click', oldListener);
                 console.log("Eliminado listener anterior del botón Continuar.");
             }
 
+            // Define el nuevo listener para el botón "Continuar".
             const newListener = () => {
                 console.log("Botón Continuar clickeado.");
                 if ('speechSynthesis' in window) {
-                    window.speechSynthesis.cancel(); // Cancela el habla si sigue reproduciendo
+                    window.speechSynthesis.cancel(); // Cancela el habla si sigue reproduciendo.
                 }
-                // Al ocultar la ventana de felicitación, también ocultar el globalOverlay y habilitar el scroll
+                // Al ocultar la ventana de felicitación, también oculta el globalOverlay y habilita el scroll.
                 ocultarModal(ventanaFelicitacion);
                 globalOverlay.style.display = "none";
                 toggleBodyScroll(false);
 
-                if (pregunta.marker && mapa && mapa.hasLayer(pregunta.marker)) { // Verifica si el marcador existe antes de acceder a sus propiedades
-                    pregunta.marker.setOpacity(0.4); // Baja la opacidad del marcador de la pregunta respondida
-                    pregunta.marker.options.interactive = false;
+                // Reduce la opacidad del marcador de la pregunta respondida en el mapa.
+                if (pregunta.marker && mapa && mapa.hasLayer(pregunta.marker)) {
+                    pregunta.marker.setOpacity(0.4);
+                    pregunta.marker.options.interactive = false; // Deshabilita la interactividad.
                 }
 
-                if (currentQuestionRadiusCircle && mapa) { // Asegúrate de que el mapa exista antes de intentar remover la capa
-                    mapa.removeLayer(currentQuestionRadiusCircle); // Remueve el círculo de radio
+                // Remueve el círculo de radio de la pregunta anterior.
+                if (currentQuestionRadiusCircle && mapa) {
+                    mapa.removeLayer(currentQuestionRadiusCircle);
                     currentQuestionRadiusCircle = null;
                 }
 
-                progreso.actual++; // Avanza a la siguiente pregunta
-                actualizarPanelProgreso();
-                actualizarVisibilidadMarcadorActual();
+                progreso.actual++; // Avanza al índice de la siguiente pregunta.
+                actualizarPanelProgreso(); // Actualiza el panel de progreso.
+                actualizarVisibilidadMarcadorActual(); // Actualiza la visibilidad del marcador de la nueva pregunta.
 
+                // Si todas las preguntas han sido respondidas, muestra la felicitación final.
                 if (progreso.actual >= obtenerPreguntas().length) {
                     console.log("Todas las preguntas respondidas, mostrando felicitación final.");
-                    mostrarFelicitacionFinal(); // Si no hay más preguntas, muestra la nueva ventana final de felicitación
+                    mostrarFelicitacionFinal();
                 }
-                // Ya no necesitamos ocultar ventanaPregunta aquí, se hizo al inicio de mostrarFelicitacionCorrecta
             };
-            botonContinuar.addEventListener('click', newListener);
-            botonContinuar._currentListener = newListener; // Guarda la referencia al listener actual
+            botonContinuar.addEventListener('click', newListener); // Asigna el nuevo listener.
+            botonContinuar._currentListener = newListener; // Guarda la referencia al listener actual.
             console.log("Nuevo listener adjuntado al botón Continuar.");
         }
 
         /**
          * Muestra una pregunta específica en el modal de pregunta.
-         * @param {number} index - Índice de la pregunta a mostrar.
+         * @param {number} index - Índice de la pregunta a mostrar en el array de preguntas.
          */
         function mostrarPregunta(index) {
             console.log("mostrarPregunta: Mostrando pregunta índice:", index);
-            // Evita mostrar la misma pregunta si ya está activa o si no es la pregunta actual
+            // Evita mostrar la misma pregunta si ya está activa o si no es la pregunta actual.
             if (index !== progreso.actual || ventanaPregunta.classList.contains('mostrar')) {
                 return;
             }
 
             const p = obtenerPreguntas()[index];
             const preguntaId = `pregunta_${index}`;
-            // Inicializa intentos si es la primera vez que se muestra esta pregunta.
+            // Inicializa los intentos para esta pregunta si es la primera vez que se muestra.
             // Los intentos se incrementan SOLO cuando la respuesta es INCORRECTA.
             if (progreso.intentos[preguntaId] === undefined) {
                 progreso.intentos[preguntaId] = 0;
             }
 
             document.getElementById("texto-pregunta").textContent = p.texto;
-            // Nuevo: Reproduce el texto de la pregunta
-            reproducirTexto(p.texto);
+            reproducirTexto(p.texto); // Reproduce el texto de la pregunta.
 
-            opcionesDiv.innerHTML = ""; // Limpia opciones anteriores
+            opcionesDiv.innerHTML = ""; // Limpia opciones anteriores del div.
 
-            const fragment = document.createDocumentFragment(); // Usa un fragmento para mejor rendimiento
+            const fragment = document.createDocumentFragment(); // Usa un fragmento para mejor rendimiento al añadir elementos.
 
-            // Crea los botones de opción para la pregunta
+            // Crea los botones de opción para la pregunta actual.
             p.opciones.forEach((opcion, i) => {
                 const btn = document.createElement("button");
                 btn.textContent = opcion;
                 btn.addEventListener('click', () => {
                     if (i === p.correcta) {
-                        // Respuesta correcta
+                        // Lógica para respuesta correcta.
                         reproducirSonido(sonidoCorrecto);
                         feedbackHaptico(100);
-                        progreso.preguntasCorrectas++; // Incrementa contador de preguntas correctas
-
-                        mostrarFelicitacionCorrecta(p); // Muestra felicitación y avanza
+                        progreso.preguntasCorrectas++; // Incrementa el contador de preguntas correctas.
+                        mostrarFelicitacionCorrecta(p); // Muestra la felicitación y avanza.
                     } else {
-                        // Respuesta incorrecta
+                        // Lógica para respuesta incorrecta.
                         reproducirSonido(sonidoIncorrecto);
-                        feedbackHaptico([200, 100, 200]);
-                        progreso.intentos[preguntaId]++; // Incrementa intentos para esta pregunta
+                        feedbackHaptico([200, 100, 200]); // Patrón de vibración para error.
+                        progreso.intentos[preguntaId]++; // Incrementa los intentos para esta pregunta.
                         crearModalPersonalizado(
                             "Respuesta Incorrecta",
                             "¡Ups! Esa no es la respuesta. Intentá de nuevo.",
@@ -1437,17 +1466,19 @@
                         );
                     }
                 });
-                fragment.appendChild(btn);
+                fragment.appendChild(btn); // Añade el botón al fragmento.
             });
-            opcionesDiv.appendChild(fragment);
-            mostrarModal(ventanaPregunta); // Usa la nueva función para mostrar y manejar scroll
+            opcionesDiv.appendChild(fragment); // Añade todos los botones al DOM de una vez.
+            mostrarModal(ventanaPregunta); // Muestra el modal de la pregunta.
+            // Enfoca la primera opción para accesibilidad.
             if (opcionesDiv.firstChild && typeof opcionesDiv.firstChild.focus === 'function') {
-                opcionesDiv.firstChild.focus(); // Enfoca la primera opción para accesibilidad
+                opcionesDiv.firstChild.focus();
             }
         }
 
         /**
          * Inicia el seguimiento continuo de la ubicación del usuario y verifica la proximidad a las preguntas.
+         * Utiliza `navigator.geolocation.watchPosition` para actualizaciones en tiempo real.
          */
         function iniciarSeguimientoUbicacion() {
             console.log("iniciarSeguimientoUbicacion: Iniciando seguimiento de ubicación...");
@@ -1458,20 +1489,22 @@
                 return;
             }
 
-            // Si ya hay un seguimiento, simplemente centra el mapa si hay un marcador
+            // Si ya hay un seguimiento activo, simplemente centra el mapa si hay un marcador de ubicación.
             if (ubicacionWatchId !== null) {
-                if (marcadorUbicacion && mapa) mapa.setView(marcadorUbicacion.getLatLng(), 17); // Añadir verificación de mapa
+                if (marcadorUbicacion && mapa) mapa.setView(marcadorUbicacion.getLatLng(), 17);
                 console.log("Seguimiento de ubicación ya activo, centrando mapa.");
                 return;
             }
 
+            // Inicia el seguimiento de la posición del usuario.
             ubicacionWatchId = navigator.geolocation.watchPosition(
                 (pos) => {
                     const userLocation = L.latLng(pos.coords.latitude, pos.coords.longitude);
-                    // Actualiza o crea el marcador de la ubicación del usuario
+                    // Actualiza o crea el marcador de la ubicación del usuario en el mapa.
                     if (marcadorUbicacion) {
                         marcadorUbicacion.setLatLng(userLocation);
                     } else {
+                        // Crea un marcador personalizado con un SVG para la ubicación del usuario.
                         marcadorUbicacion = L.marker(userLocation, {
                             icon: L.divIcon({
                                 className: 'leaflet-div-icon',
@@ -1479,47 +1512,48 @@
                                 iconSize: [30, 30],
                                 iconAnchor: [15, 30]
                             })
-                        }).addTo(mapa).bindPopup("¡Estás aquí!");
-                        mapa.setView(userLocation, 17); // Centra el mapa en la ubicación inicial
+                        }).addTo(mapa).bindPopup("¡Estás aquí!"); // Añade un popup al marcador.
+                        mapa.setView(userLocation, 17); // Centra el mapa en la ubicación inicial del usuario.
                     }
                     console.log("Ubicación actualizada:", userLocation);
 
-                    // Verifica la proximidad a la pregunta actual
+                    // Verifica la proximidad a la pregunta actual.
                     if (progreso.actual < obtenerPreguntas().length) {
                         const preguntaActual = obtenerPreguntas()[progreso.actual];
                         const preguntaLocation = L.latLng(preguntaActual.coords);
-                        const distance = userLocation.distanceTo(preguntaLocation);
+                        const distance = userLocation.distanceTo(preguntaLocation); // Calcula la distancia entre el usuario y la pregunta.
                         console.log(`Distancia a la pregunta actual (${progreso.actual}): ${distance.toFixed(2)}m`);
 
-                        // Asegura que el marcador de la pregunta actual esté visible
+                        // Asegura que el marcador de la pregunta actual esté visible.
                         if (preguntaActual.marker && mapa && !mapa.hasLayer(preguntaActual.marker)) {
                             preguntaActual.marker.setOpacity(1).addTo(mapa);
                         }
-                        actualizarVisibilidadMarcadorActual();
+                        actualizarVisibilidadMarcadorActual(); // Actualiza el círculo de radio.
 
-                        // La pregunta se considera "activa" si su ventana está visible
+                        // Determina si alguna ventana modal (pregunta, felicitación) está activa.
                         const preguntaYaActiva = ventanaPregunta.classList.contains('mostrar');
                         const felicitacionActiva = ventanaFelicitacion.classList.contains('mostrar');
                         const felicitacionFinalActiva = ventanaFelicitacionFinal.classList.contains('mostrar');
 
-                        // Si el usuario está dentro del radio de activación y la pregunta no está activa ni la ventana de felicitación, muestra la pregunta
+                        // Si el usuario está dentro del radio de activación y ninguna ventana modal importante está activa,
+                        // muestra la pregunta.
                         if (distance <= ACTIVATION_RADIUS && !preguntaYaActiva && !felicitacionActiva && !felicitacionFinalActiva) {
                             console.log(`Dentro del radio de activación para la pregunta ${progreso.actual}. Mostrando pregunta.`);
-                            reproducirAlarma(); // Alarma al activar la pregunta
-                            // Deshabilita la interactividad del marcador de pregunta para evitar múltiples activaciones
+                            reproducirAlarma(); // Alarma al activar la pregunta.
+                            // Deshabilita la interactividad del marcador de pregunta para evitar múltiples activaciones.
                             if (preguntaActual.marker.options.interactive) {
                                 preguntaActual.marker.closeTooltip();
                                 preguntaActual.marker.options.interactive = false;
                             }
-                            if (mapa) mapa.setView(preguntaLocation, 17); // Añadir verificación de mapa
-                            mostrarPregunta(progreso.actual); // Muestra el modal de la pregunta
+                            if (mapa) mapa.setView(preguntaLocation, 17); // Centra el mapa en la pregunta.
+                            mostrarPregunta(progreso.actual); // Muestra el modal de la pregunta.
                         } else if (distance > ACTIVATION_RADIUS) {
-                            // Si el usuario se aleja, asegura que el marcador no sea interactivo
+                            // Si el usuario se aleja del radio de activación.
                             if (preguntaActual.marker.options.interactive) {
                                 preguntaActual.marker.options.interactive = false;
                                 preguntaActual.marker.closeTooltip();
                             }
-                            // Ocultar la ventana de pregunta si el usuario se aleja y está visible
+                            // Oculta la ventana de pregunta si el usuario se aleja y está visible.
                             if (preguntaYaActiva) {
                                 console.log("Usuario se alejó, ocultando ventana de pregunta.");
                                 ocultarModal(ventanaPregunta);
@@ -1533,29 +1567,31 @@
                     }
                 },
                 (err) => {
+                    // Manejo de errores de geolocalización.
                     console.error(`ERROR(${err.code}): ${err.message}`);
                     crearModalPersonalizado(
                         "Error de Geolocalización",
                         `No se pudo obtener tu ubicación: ${err.message}. Verifica los permisos.`,
                         [{ texto: "Cerrar" }]
                     );
-                    // Detiene el seguimiento si hay un error persistente
+                    // Detiene el seguimiento si hay un error persistente.
                     if (ubicacionWatchId !== null) {
                         navigator.geolocation.clearWatch(ubicacionWatchId);
                         ubicacionWatchId = null;
                         console.log("Seguimiento de ubicación detenido debido a error.");
                     }
                 }, {
-                    enableHighAccuracy: true, // Solicita la máxima precisión
-                    timeout: 10000,          // Tiempo máximo para obtener la ubicación (10 segundos)
-                    maximumAge: 0            // No usa caché, siempre intenta obtener una ubicación nueva
+                    enableHighAccuracy: true, // Solicita la máxima precisión.
+                    timeout: 10000,          // Tiempo máximo para obtener la ubicación (10 segundos).
+                    maximumAge: 0            // No usa caché, siempre intenta obtener una ubicación nueva.
                 }
             );
-            actualizarVisibilidadMarcadorActual(); // Asegura la visibilidad del marcador al inicio del seguimiento
+            actualizarVisibilidadMarcadorActual(); // Asegura la visibilidad del marcador al inicio del seguimiento.
         }
 
         /**
-         * Actualiza el panel de progreso en la interfaz.
+         * Actualiza el panel de progreso en la interfaz, mostrando el número de preguntas respondidas
+         * y el porcentaje de completado.
          */
         function actualizarPanelProgreso() {
             const totalPreguntas = obtenerPreguntas().length;
@@ -1567,8 +1603,7 @@
         }
 
         /**
-         * Reinicia la trivia, restableciendo todas las variables de estado y la interfaz de usuario.
-         * Pide confirmación al usuario antes de reiniciar.
+         * Inicia el proceso de reinicio de la trivia, pidiendo confirmación al usuario.
          */
         function reiniciarTrivia() {
             console.log("reiniciarTrivia: Solicitando confirmación de reinicio.");
@@ -1583,36 +1618,37 @@
         }
 
         /**
-         * Restablece completamente el estado de la aplicación a su inicio.
+         * Restablece completamente el estado de la aplicación a su inicio original.
+         * Esto incluye variables, mapa, marcadores, modales y sonidos.
          */
         function resetApplicationState() {
             console.log("resetApplicationState: Reiniciando estado de la aplicación...");
 
-            // 1. Resetear variables de estado
+            // 1. Resetear variables de estado a sus valores iniciales.
             edadSeleccionada = null;
             progreso = {
                 actual: 0,
                 preguntasCorrectas: 0,
-                puntajeTotal: 0, // Reiniciar el puntaje total
+                puntajeTotal: 0,
                 intentos: {}
             };
-            bienvenidaLeida = false; // Permite que el texto de bienvenida se reproduzca de nuevo
+            bienvenidaLeida = false; // Permite que el texto de bienvenida se reproduzca de nuevo.
 
-            // 2. Detener seguimiento de ubicación si está activo
+            // 2. Detener seguimiento de ubicación si está activo.
             if (ubicacionWatchId !== null) {
                 navigator.geolocation.clearWatch(ubicacionWatchId);
                 ubicacionWatchId = null;
                 console.log("Seguimiento de ubicación detenido.");
             }
 
-            // 3. Eliminar marcadores de preguntas y círculo de radio del mapa *antes* de remover el mapa.
+            // 3. Eliminar marcadores de preguntas y círculo de radio del mapa.
             // Es crucial verificar si el mapa existe y si la capa está en él antes de intentar removerla.
             preguntaMarkers.forEach(marker => {
                 if (mapa && mapa.hasLayer(marker)) {
                     mapa.removeLayer(marker);
                 }
             });
-            preguntaMarkers = []; // Vacía el array para futuras inicializaciones
+            preguntaMarkers = []; // Vacía el array para futuras inicializaciones.
             console.log("Marcadores de preguntas removidos del mapa y array vaciado.");
 
             if (currentQuestionRadiusCircle && mapa && mapa.hasLayer(currentQuestionRadiusCircle)) {
@@ -1620,84 +1656,83 @@
                 currentQuestionRadiusCircle = null;
                 console.log("Círculo de radio de pregunta removido del mapa.");
             } else {
-                currentQuestionRadiusCircle = null; // Asegurarse de que la referencia se limpie incluso si no está en el mapa
+                currentQuestionRadiusCircle = null; // Asegurarse de que la referencia se limpie.
             }
 
-            // 4. Eliminar mapa existente si hay
+            // 4. Eliminar mapa existente si hay.
             if (mapa) {
                 mapa.remove();
                 mapa = null;
                 console.log("Mapa removido y restablecido.");
             }
-            marcadorUbicacion = null; // Reiniciar marcador de ubicación
+            marcadorUbicacion = null; // Reiniciar marcador de ubicación del usuario.
 
-            // 5. Ocultar todos los modales activos
-            // Llamar a ocultarModal para cada uno solo remueve la clase 'mostrar'.
+            // 5. Ocultar todos los modales activos.
             ocultarModal(ventanaBienvenida);
             ocultarModal(ventanaInstrucciones);
             ocultarModal(ventanaPregunta);
-            opcionesDiv.innerHTML = ""; // Limpiar explícitamente las opciones de la pregunta
+            opcionesDiv.innerHTML = ""; // Limpiar explícitamente las opciones de la pregunta.
             ocultarModal(ventanaFelicitacion);
             ocultarModal(ventanaFelicitacionFinal);
 
-            // El globalOverlay y el scroll del body se gestionan aquí de forma centralizada
+            // El globalOverlay y el scroll del body se gestionan aquí de forma centralizada.
             globalOverlay.style.display = "none";
             toggleBodyScroll(false);
             console.log("Todos los modales y overlay ocultos.");
 
-            // Forzar la recarga de la imagen de fondo del body
+            // Forzar la recarga de la imagen de fondo del body (puede ser útil en algunos navegadores).
             document.body.style.backgroundImage = "url('fondo.jpg')";
             console.log("Fondo del body reestablecido explícitamente.");
 
-
-            // 6. Ocultar paneles y botones fijos
+            // 6. Ocultar paneles y botones fijos.
             panelProgreso.style.display = "none";
-            botonesFijos.style.display = "none"; // Ocultar todos los botones fijos al reiniciar
+            botonesFijos.style.display = "none"; // Ocultar todos los botones fijos al reiniciar.
             console.log("Panel de progreso y botones fijos ocultos.");
 
-            // 7. Reiniciar estado de sonido y sus iconos
+            // 7. Reiniciar estado de sonido y sus iconos.
             sonidoActivado = true;
             iconSoundOn.style.display = 'inline-block';
             iconSoundOff.style.display = 'none';
             console.log("Estado de sonido restablecido.");
 
-            // 8. Resetear botón de edad seleccionado
+            // 8. Resetear botón de edad seleccionado.
             if (botonEdadSeleccionado) {
                 botonEdadSeleccionado.classList.remove('seleccionado');
                 botonEdadSeleccionado = null;
                 console.log("Botón de edad seleccionado restablecido.");
             }
 
-            // 9. Quitar el resaltado del botón fijo de Reiniciar
+            // 9. Quitar el resaltado del botón fijo de Reiniciar.
             if (botonReiniciar) {
                 botonReiniciar.classList.remove('highlight-restart-button');
-                // No es necesario restaurar disabled/opacity aquí porque siempre debería estar habilitado
             }
 
-            // 10. Cancelar cualquier reproducción de voz actual
+            // 10. Cancelar cualquier reproducción de voz actual.
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
                 console.log("Síntesis de voz cancelada.");
             }
 
-            // 11. Volver a mostrar la ventana de bienvenida para iniciar el flujo
+            // 11. Volver a mostrar la ventana de bienvenida para iniciar el flujo de nuevo.
             mostrarModal(ventanaBienvenida);
-            // NOTA: El texto de bienvenida y la alarma se reproducirán al hacer clic en un botón de edad.
             console.log("Ventana de bienvenida mostrada. Aplicación reiniciada completamente.");
         }
 
 
         /**
-         * Muestra la nueva ventana de felicitaciones final al completar la trivia,
-         * con un mensaje personalizado basado en el porcentaje de respuestas correctas.
+         * Muestra la ventana de felicitaciones final al completar la trivia,
+         * con un mensaje personalizado basado en el porcentaje de respuestas correctas
+         * y el puntaje total.
          */
         function mostrarFelicitacionFinal() {
             console.log("mostrarFelicitacionFinal: Mostrando ventana de felicitación final.");
             const totalPreguntas = obtenerPreguntas().length;
-            const maxPuntajePosible = totalPreguntas * 3; // 3 puntos por pregunta si todas son correctas al primer intento
+            // Calcula el puntaje máximo posible (3 puntos por pregunta si todas son correctas al primer intento).
+            const maxPuntajePosible = totalPreguntas * 3;
             const porcentajeCorrectas = totalPreguntas > 0 ? (progreso.preguntasCorrectas / totalPreguntas) * 100 : 0;
             let mensajeParaNino = "";
 
+            // Determina el mensaje de felicitación basado en el porcentaje de respuestas correctas.
             if (porcentajeCorrectas < 25) {
                 mensajeParaNino = "¡Uhm... parece que aún hay mucho por aprender! No te preocupes, ¡sigue explorando el parque y lo lograrás!";
             } else if (porcentajeCorrectas >= 25 && porcentajeCorrectas <= 50) {
@@ -1709,15 +1744,15 @@
             }
 
             document.getElementById("mensaje-felicitacion-final").textContent = mensajeParaNino;
-            // Actualización para mostrar el puntaje total sobre el máximo posible
+            // Muestra el puntaje total obtenido sobre el puntaje máximo posible.
             document.getElementById("puntaje-final").textContent = `${progreso.puntajeTotal} de ${maxPuntajePosible} puntos.`;
 
-            mostrarModal(ventanaFelicitacionFinal); // Usa la nueva función para mostrar y manejar scroll
+            mostrarModal(ventanaFelicitacionFinal); // Muestra el modal de felicitación final.
 
-            reproducirSonido(sonidoAplausos); // NUEVO: Reproduce el sonido de aplausos
+            reproducirSonido(sonidoAplausos); // Reproduce el sonido de aplausos.
             reproducirTexto(`¡Felicidades! ${mensajeParaNino} Tu puntaje final es ${progreso.puntajeTotal} de ${maxPuntajePosible} puntos.`);
             
-            // Enfoca el nuevo botón de cerrar dentro del modal
+            // Enfoca el botón de cerrar dentro del modal final para accesibilidad.
             if (botonCerrarFinal) {
                 botonCerrarFinal.focus();
                 console.log("mostrarFelicitacionFinal: Botón de cerrar final enfocado.");
@@ -1725,55 +1760,57 @@
                 console.warn("mostrarFelicitacionFinal: No se encontró el elemento botonCerrarFinal.");
             }
 
-            // Resalta el botón fijo de Reiniciar
+            // Resalta el botón fijo de Reiniciar en la interfaz principal.
             if (botonReiniciar) {
                 botonReiniciar.classList.add('highlight-restart-button');
                 console.log("mostrarFelicitacionFinal: Botón Reiniciar fijo resaltado.");
             }
 
-
-            // Detiene el seguimiento de ubicación y limpia el círculo de radio al finalizar
+            // Detiene el seguimiento de ubicación y limpia el círculo de radio al finalizar la trivia.
             if (ubicacionWatchId !== null) {
                 navigator.geolocation.clearWatch(ubicacionWatchId);
                 ubicacionWatchId = null;
                 console.log("Seguimiento de ubicación detenido al finalizar la trivia.");
             }
-            if (currentQuestionRadiusCircle && mapa) { // Asegúrate de que el mapa exista antes de intentar remover la capa
+            if (currentQuestionRadiusCircle && mapa) {
                 mapa.removeLayer(currentQuestionRadiusCircle);
                 currentQuestionRadiusCircle = null;
                 console.log("Círculo de radio de pregunta removido al finalizar la trivia.");
             }
             if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel(); // Cancela cualquier habla en curso
+                window.speechSynthesis.cancel(); // Cancela cualquier habla en curso.
             }
         }
 
         /**
-         * Muestra la ubicación actual del usuario en el mapa o informa sobre el estado del GPS.
+         * Muestra la ubicación actual del usuario en el mapa (centra el mapa y abre el popup del marcador).
+         * Si el seguimiento de ubicación no está activo, intenta iniciarlo.
          */
         function accionMostrarUbicacion() {
             console.log("accionMostrarUbicacion: Intentando mostrar ubicación.");
-            if (marcadorUbicacion && mapa && mapa.hasLayer(marcadorUbicacion)) { // Añadir verificación de mapa
-                mapa.setView(marcadorUbicacion.getLatLng(), 17); // Centra el mapa en la ubicación del usuario
-                marcadorUbicacion.openPopup(); // Abre el popup del marcador
+            // Si el marcador de ubicación existe y está en el mapa, centra el mapa y abre su popup.
+            if (marcadorUbicacion && mapa && mapa.hasLayer(marcadorUbicacion)) {
+                mapa.setView(marcadorUbicacion.getLatLng(), 17); // Centra el mapa en la ubicación del usuario.
+                marcadorUbicacion.openPopup(); // Abre el popup del marcador.
                 console.log("Ubicación del usuario mostrada en el mapa.");
             } else if (!ubicacionWatchId) {
-                // Si el seguimiento no está activo, intenta iniciarlo
+                // Si el seguimiento no está activo, intenta iniciarlo y notifica al usuario.
                 iniciarSeguimientoUbicacion();
                 crearModalPersonalizado("Ubicación", "Iniciando seguimiento de ubicación para mostrarte en el mapa.", [{ texto: "OK" }]);
                 console.log("Solicitando iniciar seguimiento de ubicación.");
             } else {
-                // Si el seguimiento ya está activo pero no hay marcador, es que aún no se ha obtenido la posición
+                // Si el seguimiento ya está activo pero el marcador no ha aparecido (ej. esperando señal GPS).
                 crearModalPersonalizado("Ubicación", "Esperando señal de GPS para mostrar tu ubicación...", [{ texto: "OK" }]);
                 console.log("Seguimiento de ubicación activo, esperando señal de GPS.");
             }
         }
 
         /**
-         * Alterna el estado del sonido (activado/desactivado) y actualiza el icono.
+         * Alterna el estado del sonido (activado/desactivado) y actualiza el icono correspondiente.
+         * También cancela cualquier síntesis de voz si el sonido se desactiva.
          */
         function toggleSonido() {
-            sonidoActivado = !sonidoActivado;
+            sonidoActivado = !sonidoActivado; // Cambia el estado del sonido.
             if (sonidoActivado) {
                 iconSoundOn.style.display = 'inline-block';
                 iconSoundOff.style.display = 'none';
@@ -1782,21 +1819,22 @@
                 iconSoundOn.style.display = 'none';
                 iconSoundOff.style.display = 'inline-block';
                 if ('speechSynthesis' in window) {
-                    window.speechSynthesis.cancel(); // Cancela cualquier habla si se desactiva el sonido
+                    window.speechSynthesis.cancel(); // Cancela cualquier habla si se desactiva el sonido.
                 }
                 console.log("Sonido desactivado.");
             }
+            // Muestra un modal informativo sobre el estado del sonido.
             crearModalPersonalizado("Sonido", `Sonido ${sonidoActivado ? 'activado' : 'desactivado'}.`, [{ texto: "OK" }]);
         }
 
-        // ==================================================================== */
-        //                             INICIALIZACIÓN                           */
+        /* ==================================================================== */
+        /* INICIALIZACIÓN                           */
         /* ==================================================================== */
 
-        // Evento que se dispara cuando el DOM está completamente cargado
+        // Evento que se dispara cuando el DOM está completamente cargado.
         document.addEventListener('DOMContentLoaded', async () => {
             console.log("DOMContentLoaded: DOM completamente cargado.");
-            // Inicializa el chatbot de n8n
+            // Inicializa el chatbot de n8n con la configuración especificada.
             createChat({
                 webhookUrl: 'https://n8n.efficienza.es/webhook/8173e5e9-1b3c-445f-9beb-d0f5360d7ba4/chat',
                 webhookConfig: {
@@ -1824,28 +1862,28 @@
             });
             console.log("Chatbot n8n inicializado.");
 
-            // Asigna listeners a los botones de selección de edad
+            // Asigna event listeners a los botones de selección de edad.
             document.querySelectorAll('#botones-edad button').forEach(button => {
                 button.addEventListener('click', function () {
-                    seleccionarEdad(this.dataset.edad, this);
+                    seleccionarEdad(this.dataset.edad, this); // 'this' se refiere al botón clickeado.
                 });
             });
             console.log("Listeners de botones de edad asignados.");
 
-            // Asigna listeners a los botones de control de la trivia
+            // Asigna event listeners a los botones de control de la trivia (fijos en la interfaz).
             document.getElementById('boton-comenzar-instrucciones').addEventListener('click', cerrarVentanaInstrucciones);
-            document.getElementById('boton-reiniciar').addEventListener('click', reiniciarTrivia); // Botón de reiniciar fijo
+            document.getElementById('boton-reiniciar').addEventListener('click', reiniciarTrivia);
             document.getElementById('boton-mostrar-ubicacion').addEventListener('click', accionMostrarUbicacion);
             document.getElementById('boton-toggle-sonido').addEventListener('click', toggleSonido);
 
-            // Listener para el botón de CERRAR dentro del modal de felicitación final
+            // Listener para el botón de CERRAR dentro del modal de felicitación final.
             if (botonCerrarFinal) {
                 botonCerrarFinal.addEventListener('click', () => {
                     console.log("Boton 'Cerrar' de felicitación final clickeado.");
                     ocultarModal(ventanaFelicitacionFinal);
                     globalOverlay.style.display = "none";
-                    toggleBodyScroll(false); // Habilita el scroll del body
-                    // Enfoca y resalta el botón fijo de Reiniciar
+                    toggleBodyScroll(false); // Habilita el scroll del body.
+                    // Enfoca y resalta el botón fijo de Reiniciar después de cerrar el modal final.
                     if (botonReiniciar) {
                         botonReiniciar.focus();
                         botonReiniciar.classList.add('highlight-restart-button');
@@ -1857,12 +1895,13 @@
             }
             console.log("Listeners de botones de control de trivia asignados.");
 
-            // Muestra la ventana de bienvenida al cargar la página
+            // Muestra la ventana de bienvenida al cargar la página.
             if (ventanaBienvenida) {
-                mostrarModal(ventanaBienvenida); // Usa la nueva función para mostrar y manejar scroll
+                mostrarModal(ventanaBienvenida); // Usa la función centralizada para mostrar el modal.
                 console.log("Ventana de bienvenida mostrada al cargar la página.");
 
-                // NOTA: El texto de bienvenida y la alarma se reproducirán al hacer clic en un botón de edad.
+                // NOTA: El texto de bienvenida y la alarma se reproducirán al hacer clic en un botón de edad
+                // debido a las políticas de reproducción automática de navegadores.
             } else {
                 console.error('Error: Element with ID "ventana-bienvenida" not found.');
             }
@@ -1872,6 +1911,7 @@
 </body>
 
 </html>
+
 
 
 
