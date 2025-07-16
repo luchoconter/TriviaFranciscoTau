@@ -1834,19 +1834,21 @@
         // Evento que se dispara cuando el DOM está completamente cargado.
         document.addEventListener('DOMContentLoaded', async () => {
             console.log("DOMContentLoaded: DOM completamente cargado.");
+
             // Inicializa el chatbot de n8n con la configuración especificada.
+            // Asegúrate de que 'webhookUrl' sea la URL de tu instancia de n8n.
             createChat({
                 webhookUrl: 'https://n8n.efficienza.es/webhook/8173e5e9-1b3c-445f-9beb-d0f5360d7ba4/chat',
                 webhookConfig: {
                     method: 'POST',
                     headers: {}
                 },
-                target: '#n8n-chat',
-                mode: 'window',
+                target: '#n8n-chat', // El ID del contenedor HTML donde se renderizará el chatbot.
+                mode: 'window', // 'window' para un chat flotante, 'inline' para incrustarlo.
                 chatInputKey: 'chatInput',
                 chatSessionKey: 'sessionId',
                 metadata: {},
-                showWelcomeScreen: false,
+                showWelcomeScreen: false, // Puedes cambiar a true si quieres una pantalla de bienvenida por defecto.
                 defaultLanguage: 'es',
                 initialMessages: [
                     '¡Hola! Soy tu Guarda parque Virtual. Escribe tu mensaje en la barra de abajo.'
@@ -1911,39 +1913,3 @@
 </body>
 
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
